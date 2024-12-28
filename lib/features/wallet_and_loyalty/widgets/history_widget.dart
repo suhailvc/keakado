@@ -140,14 +140,31 @@ class WalletHistory extends StatelessWidget {
                   : Theme.of(context).primaryColor,
             ),
           )),
-          subtitle: Text(
-            getTranslated(transaction!.transactionType, context),
-            style: poppinsMedium.copyWith(
-              fontSize: Dimensions.fontSizeDefault,
-              color: Theme.of(context).disabledColor,
-            ),
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
+          subtitle: Row(
+            //  crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                getTranslated(transaction!.transactionType, context),
+                style: poppinsMedium.copyWith(
+                  fontSize: Dimensions.fontSizeDefault,
+                  color: Theme.of(context).disabledColor,
+                ),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+              SizedBox(
+                width: MediaQuery.of(context).size.width * 0.02,
+              ),
+              if (transaction!.orderId != null)
+                Text(
+                  '#${getTranslated(transaction!.orderId!, context)}',
+                  style: poppinsRegular.copyWith(
+                      fontSize: Dimensions.fontSizeSmall,
+                      color: Theme.of(context).disabledColor),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+            ],
           ),
           trailing: Column(
             crossAxisAlignment: CrossAxisAlignment.end,

@@ -47,6 +47,7 @@ import 'package:flutter_grocery/common/widgets/third_party_chat_widget.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_strategy/url_strategy.dart';
 import 'di_container.dart' as di;
 import 'helper/notification_helper.dart';
@@ -64,7 +65,7 @@ Future<void> main() async {
   }
   setPathUrlStrategy();
   WidgetsFlutterBinding.ensureInitialized();
-
+  sharedPreferences1 = await SharedPreferences.getInstance();
   if (!kIsWeb) {
     await Firebase.initializeApp();
     if (defaultTargetPlatform == TargetPlatform.android) {
@@ -155,6 +156,8 @@ Future<void> main() async {
     child: MyApp(orderID: orderID, isWeb: !kIsWeb),
   ));
 }
+
+late SharedPreferences sharedPreferences1;
 
 class MyApp extends StatefulWidget {
   final int? orderID;

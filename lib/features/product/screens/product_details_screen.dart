@@ -239,9 +239,10 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen>
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,
                                         children: [
-                                          const Text(
-                                            'Special Request',
-                                            style: TextStyle(
+                                          Text(
+                                            getTranslated(
+                                                "Special Request", context),
+                                            style: const TextStyle(
                                                 fontSize: 16,
                                                 fontWeight: FontWeight.bold),
                                           ),
@@ -258,8 +259,9 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen>
                                               controller: requestController,
                                               maxLines: 5,
                                               decoration: InputDecoration(
-                                                hintText:
-                                                    'Enter your request here...',
+                                                hintText: getTranslated(
+                                                    "Enter your request here...",
+                                                    context),
                                                 border: InputBorder.none,
                                               ),
                                             ),
@@ -284,7 +286,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen>
                                         borderRadius: 50,
                                         height: 55,
                                         buttonText: getTranslated(
-                                            'Go To Cart', context),
+                                            "Go To Cart", context),
                                         onPressed: () {
                                           if (requestController
                                               .text.isNotEmpty) {

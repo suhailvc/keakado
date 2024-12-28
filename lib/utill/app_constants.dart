@@ -73,6 +73,7 @@ class AppConstants {
   static const String flashDealUri = '/api/v1/flash-deals';
   static const String featuredProduct = '/api/v1/products/featured';
   static const String mostReviewedProduct = '/api/v1/products/most-reviewed';
+  static const String organicProduct = '/api/v1/products/organic';
   static const String addGuest = '/api/v1/guest/add';
   static const String offlinePaymentMethod =
       '/api/v1/offline-payment-method/list';
@@ -119,11 +120,11 @@ class AppConstants {
         languageName: 'English',
         countryCode: 'US',
         languageCode: 'en'),
-    LanguageModel(
-        imageUrl: Images.bd,
-        languageName: 'বাংলা',
-        countryCode: 'BD',
-        languageCode: 'bn'),
+    // LanguageModel(
+    //     imageUrl: Images.bd,
+    //     languageName: 'বাংলা',
+    //     countryCode: 'BD',
+    //     languageCode: 'bn'),
     LanguageModel(
         imageUrl: Images.arabicFlag,
         languageName: 'العربية',
@@ -135,13 +136,13 @@ class AppConstants {
   static final List<Map<String, String>> walletTransactionSortingList = [
     {'title': 'all_transactions', 'value': 'all'},
     {'title': 'order_transactions', 'value': 'order_place'},
-    {
-      'title': 'converted_from_loyalty_point',
-      'value': 'loyalty_point_to_wallet'
-    },
-    {'title': 'added_via_payment_method', 'value': 'add_fund'},
-    {'title': 'earned_by_referral', 'value': 'referral_order_place'},
-    {'title': 'earned_by_bonus', 'value': 'add_fund_bonus'},
+    // {
+    //   'title': 'converted_from_loyalty_point',
+    //   'value': 'loyalty_point_to_wallet'
+    // },
+    // {'title': 'added_via_payment_method', 'value': 'add_fund'},
+    // {'title': 'earned_by_referral', 'value': 'referral_order_place'},
+    // {'title': 'earned_by_bonus', 'value': 'add_fund_bonus'},
     {'title': 'added_by_admin', 'value': 'add_fund_by_admin'},
   ];
 }

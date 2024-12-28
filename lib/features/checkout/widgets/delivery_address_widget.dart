@@ -277,7 +277,8 @@ class DeliveryAddressWidget extends StatelessWidget {
                                                   .primaryColor,
                                             ),
                                             Text(
-                                              " Add Address",
+                                              getTranslated(
+                                                  "Add Address", context),
                                               style: poppinsMedium.copyWith(
                                                 fontSize:
                                                     Dimensions.fontSizeLarge,

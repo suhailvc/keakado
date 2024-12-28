@@ -15,6 +15,7 @@ import 'package:flutter_grocery/features/order/providers/order_provider.dart';
 import 'package:flutter_grocery/features/order/providers/return_product_provider.dart';
 import 'package:flutter_grocery/features/order/widgets/image_picker_widget.dart';
 import 'package:flutter_grocery/features/splash/providers/splash_provider.dart';
+import 'package:flutter_grocery/helper/custom_snackbar_helper.dart';
 import 'package:flutter_grocery/helper/date_converter_helper.dart';
 import 'package:flutter_grocery/localization/language_constraints.dart';
 import 'package:flutter_grocery/utill/color_resources.dart';
@@ -367,9 +368,10 @@ class _OrderReturnScreenState extends State<OrderReturnScreen> {
                                                                               10),
                                                                     ),
                                                                   ),
-                                                                  child:
-                                                                      const Text(
-                                                                    'Add Image',
+                                                                  child: Text(
+                                                                    getTranslated(
+                                                                        "Add Image",
+                                                                        context),
                                                                     style: TextStyle(
                                                                         color: Colors
                                                                             .white),
@@ -743,66 +745,79 @@ class _OrderReturnScreenState extends State<OrderReturnScreen> {
                                         i < selectedProducts.length;
                                         i++) {
                                       if (selectedProducts[i]) {
-                                        selectedProductIds.add({
-                                          'product_id': orderProvider
-                                              .orderDetails![i]
-                                              .productDetails!
-                                              .id
-                                              .toString(),
-                                          'remarks':
-                                              remarksControllers[i].text.isEmpty
-                                                  ? ''
-                                                  : remarksControllers[i].text,
-                                          'qty': returnQuantities[i],
-                                          // 'qty': returnQuantities[i].isEmpty
-                                          //     ? ""
-                                          //     : returnQuantities[i],
-                                          "image": (i < returnImages.length &&
-                                                  returnImages[i].isNotEmpty &&
-                                                  returnImages[i][0] != null)
-                                              ? (returnImages[i][0]!.isEmpty
-                                                  ? ""
-                                                  : returnImages[i][0]!)
-                                              : "",
+                                        if (remarksControllers[i]
+                                            .text
+                                            .isEmpty) {
+                                          showCustomSnackBarHelper(
+                                              'Need Return Reason');
+                                        } else {
+                                          selectedProductIds.add({
+                                            'product_id': orderProvider
+                                                .orderDetails![i]
+                                                .productDetails!
+                                                .id
+                                                .toString(),
+                                            'remarks': remarksControllers[i]
+                                                    .text
+                                                    .isEmpty
+                                                ? ''
+                                                : remarksControllers[i].text,
+                                            'qty': returnQuantities[i],
+                                            // 'qty': returnQuantities[i].isEmpty
+                                            //     ? ""
+                                            //     : returnQuantities[i],
+                                            "image": (i < returnImages.length &&
+                                                    returnImages[i]
+                                                        .isNotEmpty &&
+                                                    returnImages[i][0] != null)
+                                                ? (returnImages[i][0]!.isEmpty
+                                                    ? ""
+                                                    : returnImages[i][0]!)
+                                                : "",
 
-                                          // "image": returnImages[i][0].isEmpty
-                                          //     ? ""
-                                          //     : returnImages[i][0]!
-                                        });
+                                            // "image": returnImages[i][0].isEmpty
+                                            //     ? ""
+                                            //     : returnImages[i][0]!
+                                          });
+                                          if (selectedProductIds.isNotEmpty) {
+                                            await orderReturnProvider
+                                                .returnProducts(
+                                                    widget.orderId.toString(),
+                                                    selectedProductIds,
+                                                    // 'eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIzIiwianRpIjoiMTA1MGZhMzgzNWRmZWQ0ZmQ4YTVhOTllMzIxNTE5NjUyMTczNDgzZWQxZTFmM2FiMzZhOTkyOGY1Y2UzYzM2ZjYyNDRkYTgwNjg5Mjc3NTMiLCJpYXQiOjE3MzM0MDA1NDUuNTgzNTg3LCJuYmYiOjE3MzM0MDA1NDUuNTgzNTg4LCJleHAiOjE3NjQ5MzY1NDUuNTc3MzkxLCJzdWIiOiIxMCIsInNjb3BlcyI6W119.FA4LJSLVFNe0x4iUQLJ27dOYbfoe3Vta2Q_txneV2qbQovP45bNarPw0nJCHKGLsaYa4R7hsc0Kam-KC8ua4V5ZNxrsKmCWO5ubHgKpHmFBY1UKPVyJI6iHuHLXNjB6BUPlrjFUDvqbiqf0JzjFJSyWuPU4VkYEdZfOWy5AwCWr1muDdNENU4HPCGbegHo3Hk4ZhqKsqg1waXPoOLse8jVpEMObHHndqJ1j4YrTtrzLsM9gmn-5nWLIo_MlD8W_PDAYTb4SLJ9Y9ybpo0BhLxRYtjWafwx_dZsWuyf33kJ2K2exF7qhpQ4oL8HQUCoaGP2lPicKM94XntP0P_aImjFfiWZgIoet56NCluDgEN7wPPnruBaBMq13I2sPRXSAn1JwBcyR-fGypuN1Ja2VyMtlAMHSvmp9zVbbAoEUfzkWeZAzvUg8Ei8c9x19TQe8BB33IpVDuW1tQOlVelDwBWVGARYqGht3Dr8kQk-nhOibnSyeiUuEY-p6KKKzdTQNQsc93_DrStyaqwH_BIvaqLplkoeZWyn7BRNqfB1hoBQVlLUX4YTr61oN2VXBtsrxopXpxWoepyMP0dKhRcQQsK6zFKR4KSbb2a4slL5z9GLDp_J3TidAYWZhBg8s-xcPS0n_2dG'
+                                                    Provider.of<AuthProvider>(
+                                                            context,
+                                                            listen: false)
+                                                        .getUserToken());
+
+                                            if (orderReturnProvider
+                                                    .responseMessage !=
+                                                null) {
+                                              ScaffoldMessenger.of(context)
+                                                  .showSnackBar(
+                                                SnackBar(
+                                                    content: Text(
+                                                        orderReturnProvider
+                                                            .responseMessage!)),
+                                              );
+                                              orderProvider.getOrderDetails(
+                                                orderID:
+                                                    widget.orderId.toString(),
+                                                phoneNumber: widget.phoneNumber,
+                                              );
+                                              Navigator.pop(context);
+                                              Navigator.pop(context);
+                                            }
+                                          } else {
+                                            ScaffoldMessenger.of(context)
+                                                .showSnackBar(
+                                              const SnackBar(
+                                                  content: Text(
+                                                      "Please select at least one product to return.")),
+                                            );
+                                          }
+                                        }
                                       }
-                                    }
-
-                                    if (selectedProductIds.isNotEmpty) {
-                                      await orderReturnProvider.returnProducts(
-                                          widget.orderId.toString(),
-                                          selectedProductIds,
-                                          // 'eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIzIiwianRpIjoiMTA1MGZhMzgzNWRmZWQ0ZmQ4YTVhOTllMzIxNTE5NjUyMTczNDgzZWQxZTFmM2FiMzZhOTkyOGY1Y2UzYzM2ZjYyNDRkYTgwNjg5Mjc3NTMiLCJpYXQiOjE3MzM0MDA1NDUuNTgzNTg3LCJuYmYiOjE3MzM0MDA1NDUuNTgzNTg4LCJleHAiOjE3NjQ5MzY1NDUuNTc3MzkxLCJzdWIiOiIxMCIsInNjb3BlcyI6W119.FA4LJSLVFNe0x4iUQLJ27dOYbfoe3Vta2Q_txneV2qbQovP45bNarPw0nJCHKGLsaYa4R7hsc0Kam-KC8ua4V5ZNxrsKmCWO5ubHgKpHmFBY1UKPVyJI6iHuHLXNjB6BUPlrjFUDvqbiqf0JzjFJSyWuPU4VkYEdZfOWy5AwCWr1muDdNENU4HPCGbegHo3Hk4ZhqKsqg1waXPoOLse8jVpEMObHHndqJ1j4YrTtrzLsM9gmn-5nWLIo_MlD8W_PDAYTb4SLJ9Y9ybpo0BhLxRYtjWafwx_dZsWuyf33kJ2K2exF7qhpQ4oL8HQUCoaGP2lPicKM94XntP0P_aImjFfiWZgIoet56NCluDgEN7wPPnruBaBMq13I2sPRXSAn1JwBcyR-fGypuN1Ja2VyMtlAMHSvmp9zVbbAoEUfzkWeZAzvUg8Ei8c9x19TQe8BB33IpVDuW1tQOlVelDwBWVGARYqGht3Dr8kQk-nhOibnSyeiUuEY-p6KKKzdTQNQsc93_DrStyaqwH_BIvaqLplkoeZWyn7BRNqfB1hoBQVlLUX4YTr61oN2VXBtsrxopXpxWoepyMP0dKhRcQQsK6zFKR4KSbb2a4slL5z9GLDp_J3TidAYWZhBg8s-xcPS0n_2dG'
-                                          Provider.of<AuthProvider>(context,
-                                                  listen: false)
-                                              .getUserToken());
-
-                                      if (orderReturnProvider.responseMessage !=
-                                          null) {
-                                        ScaffoldMessenger.of(context)
-                                            .showSnackBar(
-                                          SnackBar(
-                                              content: Text(orderReturnProvider
-                                                  .responseMessage!)),
-                                        );
-                                        orderProvider.getOrderDetails(
-                                          orderID: widget.orderId.toString(),
-                                          phoneNumber: widget.phoneNumber,
-                                        );
-                                        Navigator.pop(context);
-                                        Navigator.pop(context);
-                                      }
-                                    } else {
-                                      ScaffoldMessenger.of(context)
-                                          .showSnackBar(
-                                        const SnackBar(
-                                            content: Text(
-                                                "Please select at least one product to return.")),
-                                      );
                                     }
                                   },
                           ),

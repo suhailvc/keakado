@@ -25,7 +25,7 @@ class ProductRepo {
   Future<ApiResponseModel> getAllBrands(int? limit) async {
     try {
       final response = await dioClient!.get(
-          '${AppConstants.brandsList}?offset=0${limit == null ? "" : "&limit=$limit"}');
+          '${AppConstants.brandsList}?offset=0${limit == null ? "" : "&limit=1000"}');
       return ApiResponseModel.withSuccess(response);
     } catch (e) {
       return ApiResponseModel.withError(ApiErrorHandler.getMessage(e));
@@ -34,8 +34,8 @@ class ProductRepo {
 
   Future<ApiResponseModel> getAllBrandProducts(String brandId) async {
     try {
-      final response = await dioClient!
-          .get('${AppConstants.allProductList}?brand_id=$brandId');
+      final response = await dioClient!.get(
+          '${AppConstants.allProductList}?sort_by=brand&brand_id=$brandId');
 
       return ApiResponseModel.withSuccess(response);
     } catch (e) {
@@ -52,6 +52,8 @@ class ProductRepo {
         apiUrl = AppConstants.dailyItemUri;
       } else if (productType == ProductType.mostReviewed) {
         apiUrl = AppConstants.mostReviewedProduct;
+      } else if (productType == ProductType.organicProduct) {
+        apiUrl = AppConstants.organicProduct;
       }
 
       final response = await dioClient!.get(

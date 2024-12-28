@@ -26,6 +26,7 @@ class ProductProvider extends ChangeNotifier {
   Product? _product;
   int? _imageSliderIndex;
   ProductModel? _dailyProductModel;
+  ProductModel? _organicProductModel;
   ProductModel? _featuredProductModel;
   ProductModel? _mostViewedProductModel;
   ProductModel? _relatedProductModel;
@@ -37,6 +38,7 @@ class ProductProvider extends ChangeNotifier {
   ProductModel? get allProductModel => _allProductModel;
   ProductModel? get brandProductModel => _brandProductModel;
   ProductModel? get dailyProductModel => _dailyProductModel;
+  ProductModel? get organicProductModel => _organicProductModel;
   ProductModel? get featuredProductModel => _featuredProductModel;
   ProductModel? get mostViewedProductModel => _mostViewedProductModel;
   ProductModel? get reltedProductModel => _relatedProductModel;
@@ -90,7 +92,7 @@ class ProductProvider extends ChangeNotifier {
   Future<void> getAllBrands([int? limit = 10]) async {
     try {
       isLoading = true;
-      ApiResponseModel? response = await productRepo.getAllBrands(limit);
+      ApiResponseModel? response = await productRepo.getAllBrands(1000);
       if (response.response != null &&
           response.response?.data != null &&
           response.response?.statusCode == 200) {
@@ -139,7 +141,7 @@ class ProductProvider extends ChangeNotifier {
       _dailyProductModel = null;
       _featuredProductModel = null;
       _mostViewedProductModel = null;
-
+      _organicProductModel = null;
       if (isUpdate) {
         notifyListeners();
       }
@@ -154,6 +156,9 @@ class ProductProvider extends ChangeNotifier {
               ProductModel.fromJson(apiResponse.response?.data);
         } else if (productType == ProductType.featuredItem) {
           _featuredProductModel =
+              ProductModel.fromJson(apiResponse.response?.data);
+        } else if (productType == ProductType.organicProduct) {
+          _organicProductModel =
               ProductModel.fromJson(apiResponse.response?.data);
         } else if (productType == ProductType.mostReviewed) {
           _mostViewedProductModel =
@@ -173,6 +178,13 @@ class ProductProvider extends ChangeNotifier {
           _featuredProductModel?.totalSize =
               ProductModel.fromJson(apiResponse.response?.data).totalSize;
           _featuredProductModel?.products?.addAll(
+              ProductModel.fromJson(apiResponse.response?.data).products ?? []);
+        } else if (productType == ProductType.organicProduct) {
+          _organicProductModel?.offset =
+              ProductModel.fromJson(apiResponse.response?.data).offset;
+          _organicProductModel?.totalSize =
+              ProductModel.fromJson(apiResponse.response?.data).totalSize;
+          _organicProductModel?.products?.addAll(
               ProductModel.fromJson(apiResponse.response?.data).products ?? []);
         } else if (productType == ProductType.mostReviewed) {
           _mostViewedProductModel?.offset =

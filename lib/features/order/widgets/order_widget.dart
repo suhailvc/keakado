@@ -21,15 +21,15 @@ class OrderWidget extends StatefulWidget {
 }
 
 class _OrderWidgetState extends State<OrderWidget> {
-  bool _isFirstLoad = true;
-  @override
-  void didChangeDependencies() {
-    if (_isFirstLoad) {
-      Provider.of<OrderProvider>(context, listen: false).getOrderList(context);
-      _isFirstLoad = false;
-    }
-    super.didChangeDependencies();
-  }
+//  bool _isFirstLoad = true;
+  // @override
+  // void didChangeDependencies() {
+  //   if (_isFirstLoad) {
+  //     Provider.of<OrderProvider>(context, listen: false).getOrderList(context);
+  //     _isFirstLoad = false;
+  //   }
+  //   super.didChangeDependencies();
+  // }
 
   @override
   Widget build(BuildContext context) {

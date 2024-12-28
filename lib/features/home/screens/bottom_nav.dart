@@ -1,6 +1,7 @@
 // ignore_for_file: deprecated_member_use
 
 import 'package:flutter/material.dart';
+import 'package:flutter_grocery/common/providers/cart_provider.dart';
 import 'package:flutter_grocery/features/cart/screens/cart_screen.dart';
 import 'package:flutter_grocery/features/category/screens/all_categories_screen.dart';
 import 'package:flutter_grocery/features/menu/domain/models/custom_drawer_controller_model.dart';
@@ -8,6 +9,7 @@ import 'package:flutter_grocery/features/menu/screens/main_screen.dart';
 import 'package:flutter_grocery/features/offers/screens/offer_screen.dart';
 import 'package:flutter_grocery/features/profile/screens/profile_screen.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:provider/provider.dart';
 
 class BottomBarView extends StatefulWidget {
   const BottomBarView({Key? key, this.navigation}) : super(key: key);
@@ -93,22 +95,138 @@ class _MaterialBottomBarViewState extends State<BottomBarView> {
     );
   }
 
-  BottomNavigationBarItem bottomNavIcons(String iconUrl, String label, index) {
+  BottomNavigationBarItem bottomNavIcons(
+      String iconUrl, String label, int index) {
     return BottomNavigationBarItem(
-      icon: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: SvgPicture.asset(
-          iconUrl,
-          color: Colors.grey,
-        ),
-      ),
+      icon: label == "Cart"
+          ? Stack(
+              clipBehavior: Clip.none,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: SvgPicture.asset(
+                    iconUrl,
+                    color: Colors.grey,
+                  ),
+                ),
+                Positioned(
+                  right: -4,
+                  top: -4,
+                  child: Consumer<CartProvider>(
+                    builder: (context, cartProvider, child) {
+                      return cartProvider.cartList.isNotEmpty
+                          ? Container(
+                              padding: const EdgeInsets.all(4.0),
+                              decoration: const BoxDecoration(
+                                color: Colors.red,
+                                shape: BoxShape.circle,
+                              ),
+                              child: Text(
+                                cartProvider.cartList.length.toString(),
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            )
+                          : const SizedBox();
+                    },
+                  ),
+                ),
+              ],
+            )
+          : Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: SvgPicture.asset(
+                iconUrl,
+                color: Colors.grey,
+              ),
+            ),
       label: label,
-      activeIcon: Container(
-        padding: const EdgeInsets.all(8),
-        decoration: BoxDecoration(
-            color: Theme.of(context).primaryColor, shape: BoxShape.circle),
-        child: SvgPicture.asset(iconUrl, color: Colors.white),
-      ),
+      activeIcon: label == "Cart"
+          ? Stack(
+              clipBehavior: Clip.none,
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).primaryColor,
+                    shape: BoxShape.circle,
+                  ),
+                  child: SvgPicture.asset(
+                    iconUrl,
+                    color: Colors.white,
+                  ),
+                ),
+                Positioned(
+                  right: -4,
+                  top: -4,
+                  child: Consumer<CartProvider>(
+                    builder: (context, cartProvider, child) {
+                      return cartProvider.cartList.isNotEmpty
+                          ? Container(
+                              padding: const EdgeInsets.all(4.0),
+                              decoration: const BoxDecoration(
+                                color: Colors.red,
+                                shape: BoxShape.circle,
+                              ),
+                              child: Text(
+                                cartProvider.cartList.length.toString(),
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            )
+                          : const SizedBox();
+                    },
+                  ),
+                ),
+              ],
+            )
+          : Container(
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: Theme.of(context).primaryColor,
+                shape: BoxShape.circle,
+              ),
+              child: SvgPicture.asset(
+                iconUrl,
+                color: Colors.white,
+              ),
+            ),
+      // activeIcon: Container(
+      //   padding: const EdgeInsets.all(8),
+      //   decoration: BoxDecoration(
+      //     color: Theme.of(context).primaryColor,
+      //     shape: BoxShape.circle,
+      //   ),
+      //   child: SvgPicture.asset(
+      //     iconUrl,
+      //     color: Colors.white,
+      //   ),
+      // ),
     );
   }
+
+  // BottomNavigationBarItem bottomNavIcons(String iconUrl, String label, index) {
+  //   return BottomNavigationBarItem(
+  //     icon: Padding(
+  //       padding: const EdgeInsets.all(8.0),
+  //       child: SvgPicture.asset(
+  //         iconUrl,
+  //         color: Colors.grey,
+  //       ),
+  //     ),
+  //     label: label,
+  //     activeIcon: Container(
+  //       padding: const EdgeInsets.all(8),
+  //       decoration: BoxDecoration(
+  //           color: Theme.of(context).primaryColor, shape: BoxShape.circle),
+  //       child: SvgPicture.asset(iconUrl, color: Colors.white),
+  //     ),
+  //   );
+  // }
 }

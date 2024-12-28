@@ -17,27 +17,28 @@ class OrderDetailsModel {
   Map<String, dynamic>? formattedVariation;
   int? isReturned; // New field
   OrderDetails? order; // New nested field for "order"
-
-  OrderDetailsModel({
-    this.id,
-    this.productId,
-    this.orderId,
-    this.price,
-    this.productDetails,
-    this.discountOnProduct,
-    this.discountType,
-    this.quantity,
-    this.maxQuantity,
-    this.taxAmount,
-    this.createdAt,
-    this.updatedAt,
-    this.variant,
-    this.timeSlotId,
-    this.isVatInclude,
-    this.formattedVariation,
-    this.isReturned, // Initialize new field
-    this.order, // Initialize new nested field
-  });
+  String? remarks;
+  OrderDetailsModel(
+      {this.id,
+      this.productId,
+      this.orderId,
+      this.price,
+      this.productDetails,
+      this.discountOnProduct,
+      this.discountType,
+      this.quantity,
+      this.maxQuantity,
+      this.taxAmount,
+      this.createdAt,
+      this.updatedAt,
+      this.variant,
+      this.timeSlotId,
+      this.isVatInclude,
+      this.formattedVariation,
+      this.isReturned, // Initialize new field
+      this.order,
+      this.remarks // Initialize new nested field
+      });
 
   OrderDetailsModel.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -65,6 +66,7 @@ class OrderDetailsModel {
     order = json['order'] != null
         ? OrderDetails.fromJson(json['order'])
         : null; // Assign "order" field
+    remarks = json['remarks'];
   }
 
   Map<String, dynamic> toJson() {
@@ -87,6 +89,7 @@ class OrderDetailsModel {
     data['time_slot_id'] = timeSlotId;
     data['formatted_variation'] = formattedVariation;
     data['is_returned'] = isReturned;
+    data['remarks'] = remarks;
     if (order != null) {
       data['order'] = order!.toJson(); // Include "order" field in toJson
     }

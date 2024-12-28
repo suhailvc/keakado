@@ -67,10 +67,14 @@ class PlaceOrderButtonWidget extends StatelessWidget {
                                     //:
                                     checkOutData?.amount ?? 0,
                                 freeDelivery: (checkOutData?.amount ?? 0) +
-                                        (checkOutData?.placeOrderDiscount ??
-                                            0) +
-                                        (checkOutData?.itemDiscount ?? 0) >
-                                    AppConstants.mimimumOrderValue,
+                                            (checkOutData?.placeOrderDiscount ??
+                                                0) +
+                                            (checkOutData?.itemDiscount ?? 0) >
+                                        AppConstants.mimimumOrderValue ||
+                                    Provider.of<CouponProvider>(context,
+                                                listen: false)
+                                            .freeDeliveryCoupon ==
+                                        true,
                                 deliveryCharge:
                                     checkOutData?.deliveryCharge ?? 0,
                               ),

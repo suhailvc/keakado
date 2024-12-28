@@ -32,6 +32,7 @@ class _BrandProductsScreenState extends State<BrandProductsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    print('-----brand is ${widget.brandId}');
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,

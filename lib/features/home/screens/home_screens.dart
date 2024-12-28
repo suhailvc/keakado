@@ -86,6 +86,10 @@ class HomeScreen extends StatefulWidget {
       productProvider.getItemList(1,
           isUpdate: false, productType: ProductType.mostReviewed);
     }
+    if (productProvider.organicProductModel == null) {
+      productProvider.getItemList(1,
+          isUpdate: false, productType: ProductType.organicProduct);
+    }
 
     productProvider.getAllProductList(1, reload, isUpdate: false);
 
@@ -111,6 +115,10 @@ class _HomeScreenState extends State<HomeScreen> {
     super.initState();
     _loadInitialData();
     Provider.of<ProfileProvider>(context, listen: false).getUserInfo();
+    Provider.of<CategoryProvider>(context, listen: false)
+        .getCategoryList(context, true);
+    // final CategoryProvider categoryProvider =
+    Provider.of<CategoryProvider>(context, listen: false);
   }
 
   Future<void> _loadInitialData() async {
@@ -260,6 +268,17 @@ class _HomeScreenState extends State<HomeScreen> {
                           ),
                         )
                       ]),
+                    TitleWidget(
+                        title: getTranslated('Organic Products', context),
+                        onTap: () {
+                          Navigator.pushNamed(
+                              context,
+                              RouteHelper.getHomeItemRoute(
+                                  ProductType.organicProduct));
+                        }),
+                    HomeItemWidget(
+                        productList:
+                            productProvider.organicProductModel?.products)
                   ]);
                 }),
                 // if (categoryProvider.categoryList!
@@ -270,9 +289,9 @@ class _HomeScreenState extends State<HomeScreen> {
                 //         )
                 //         .id !=
                 //     null)
-                //   TitleWidget(
-                //     title: getTranslated('Organic Products', context),
-                //   ),
+                // TitleWidget(
+                //   title: getTranslated('Organic Products', context),
+                // ),
                 // if (categoryProvider.categoryList!
                 //         .firstWhere(
                 //           (element) =>
@@ -281,6 +300,9 @@ class _HomeScreenState extends State<HomeScreen> {
                 //         )
                 //         .id !=
                 //     null)
+                // HomeItemWidget(
+                //     productList:
+                //         productProvider.mostViewedProductModel?.products),
                 // Consumer<CategoryProvider>(
                 //   builder: (context, value, child) {
                 //     // Get the first 10 items if the list has more than 10, otherwise use the whole list

@@ -75,9 +75,9 @@ class _PhoneNumberScreenState extends State<PhoneNumberScreen> {
                       ),
                     ),
                     const SizedBox(height: 8),
-                    const Text(
-                      'Create your account now!',
-                      style: TextStyle(
+                    Text(
+                      getTranslated("Create your account now!", context),
+                      style: const TextStyle(
                         color: Color(0xFF252525),
                         fontSize: 20,
                         fontWeight: FontWeight.w600,
@@ -129,8 +129,10 @@ class _PhoneNumberScreenState extends State<PhoneNumberScreen> {
                         style: const TextStyle(color: Colors.red),
                       )
                     else
-                      const Text(
-                        "Securing your personal information is our priority",
+                      Text(
+                        getTranslated(
+                            "Securing your personal information is our priority",
+                            context),
                         style: poppinsMedium,
                       ),
                   ],

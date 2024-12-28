@@ -47,6 +47,7 @@ class _HomeItemScreenState extends State<HomeItemScreen> {
 
   @override
   Widget build(BuildContext context) {
+    print('-------1----${widget.productType}');
     final ProductProvider productProvider =
         Provider.of<ProductProvider>(context);
     final Size screenSize = MediaQuery.sizeOf(context);
@@ -137,6 +138,9 @@ class _HomeItemScreenState extends State<HomeItemScreen> {
                       case ProductType.flashSale:
                         productModel = flashDealProvider.flashDealModel;
                         break;
+                      case ProductType.organicProduct:
+                        productModel = productProvider.organicProductModel;
+                        break;
                     }
 
                     return productModel == null
@@ -188,6 +192,7 @@ class _HomeItemScreenState extends State<HomeItemScreen> {
                                   shrinkWrap: true,
                                   itemCount: productModel.products?.length,
                                   itemBuilder: (context, index) {
+                                    print('-----------${widget.productType}');
                                     return ProductWidget(
                                         product: productModel!.products![index],
                                         isGrid: true,

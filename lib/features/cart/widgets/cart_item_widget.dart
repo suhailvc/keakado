@@ -217,7 +217,9 @@ class CartItemWidget extends StatelessWidget {
                                                   .min, // Wraps content
                                               children: [
                                                 Text(
-                                                  'Edit Special Request',
+                                                  getTranslated(
+                                                      'Edit Special Request',
+                                                      context),
                                                   style:
                                                       poppinsSemiBold.copyWith(
                                                     fontSize: Dimensions
@@ -298,14 +300,27 @@ class CartItemWidget extends StatelessWidget {
                                         },
                                       );
                                     },
-                                    child: Text(
-                                      'Edit Special Request',
-                                      style: poppinsSemiBold.copyWith(
-                                        fontSize: Dimensions.fontSizeDefault,
-                                        color: Theme.of(context)
-                                            .disabledColor
-                                            .withOpacity(0.2),
-                                      ),
+                                    child: Row(
+                                      children: [
+                                        Text(
+                                          getTranslated(
+                                              'Edit Special Request', context),
+                                          style: poppinsSemiBold.copyWith(
+                                            fontSize:
+                                                Dimensions.fontSizeDefault,
+                                            color: Theme.of(context)
+                                                .disabledColor
+                                                .withOpacity(0.2),
+                                          ),
+                                        ),
+                                        Icon(
+                                          Icons.edit,
+                                          size: Dimensions.fontSizeDefault,
+                                          color: Theme.of(context)
+                                              .disabledColor
+                                              .withOpacity(0.2),
+                                        )
+                                      ],
                                     ),
                                   ),
 

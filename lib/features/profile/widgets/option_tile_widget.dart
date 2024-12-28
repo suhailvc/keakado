@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_grocery/features/help_and_support/screens/help_and_support.dart';
+import 'package:flutter_grocery/features/menu/widgets/currency_dialog_widget.dart';
 import 'package:flutter_grocery/features/menu/widgets/delete_dialog_widget.dart';
 import 'package:flutter_grocery/features/menu/widgets/sign_out_dialog_widget.dart';
+import 'package:flutter_grocery/helper/dialog_helper.dart';
 import 'package:flutter_grocery/helper/route_helper.dart';
 import 'package:flutter_grocery/localization/language_constraints.dart';
 import 'package:flutter_grocery/utill/dimensions.dart';
@@ -50,9 +52,10 @@ class OptionTileWidget extends StatelessWidget {
             case "wallet_icon":
               Navigator.pushNamed(context, RouteHelper.getWalletRoute());
               return;
-            // case "language":
-            //   Navigator.pushNamed(context, RouteHelper.language)
-            //   return;
+            case "language":
+              showDialogHelper(context, const CurrencyDialogWidget());
+              // Navigator.pushNamed(context, RouteHelper.language);
+              return;
             case "privacy":
               Navigator.pushNamed(context, RouteHelper.getPolicyRoute());
               return;

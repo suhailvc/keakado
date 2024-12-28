@@ -53,9 +53,9 @@ class _OtpScreenState extends State<OtpScreen> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     const SizedBox(height: 65),
-                    const Text(
-                      'Verify Phone',
-                      style: TextStyle(
+                    Text(
+                      getTranslated('verify_phone', context),
+                      style: const TextStyle(
                         color: Color(0xFF133051),
                         fontSize: 20,
                         fontWeight: FontWeight.w900,

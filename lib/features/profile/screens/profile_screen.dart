@@ -27,7 +27,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     {"icon": "profile", "label": "profile"},
     {"icon": "order", "label": "my_orders"},
     {"icon": "notification", "label": "notifications"},
-    {"icon": "whishlist", "label": "Whishlist"},
+    {"icon": "whishlist", "label": "Wishlist"},
     {"icon": "coupon_icon", "label": "coupon"},
     {"icon": "location", "label": "address"},
     // {"icon": "message_icon", "label": "Message"},
@@ -112,13 +112,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           children: List.generate(
                             screens.length,
                             (index) {
-                              if (screens[index]['label'] != "language") {
-                                return OptionTileWidget(
-                                  screens: screens,
-                                  index: index,
-                                );
-                              }
-                              return Container(); // Return an empty container for "language"
+                              //if (screens[index]['label'] != "language") {
+                              return OptionTileWidget(
+                                screens: screens,
+                                index: index,
+                              );
+                              //  }
+                              //return Container(); // Return an empty container for "language"
                             },
                           ),
                         ),

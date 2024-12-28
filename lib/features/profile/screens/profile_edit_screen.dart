@@ -189,7 +189,7 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
                                   ),
                                   const SizedBox(width: 8),
                                   Text(
-                                    "Edit Photo",
+                                    getTranslated("Edit Photo", context),
                                     style: poppinsMedium.copyWith(
                                       color: Theme.of(context).primaryColor,
                                     ),

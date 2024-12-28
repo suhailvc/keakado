@@ -3,6 +3,7 @@ import 'package:flutter_grocery/common/models/cart_model.dart';
 import 'package:flutter_grocery/features/order/domain/models/order_details_model.dart';
 import 'package:flutter_grocery/helper/order_helper.dart';
 import 'package:flutter_grocery/helper/price_converter_helper.dart';
+import 'package:flutter_grocery/helper/route_helper.dart';
 import 'package:flutter_grocery/localization/language_constraints.dart';
 import 'package:flutter_grocery/common/providers/cart_provider.dart';
 import 'package:flutter_grocery/features/order/providers/order_provider.dart';
@@ -67,6 +68,7 @@ class ReOrderDialogWidget extends StatelessWidget {
               onPressed: () {
                 OrderHelper.addToCartReorderProduct(
                     cartList: orderProvider.reOrderCartList);
+                Navigator.pushNamed(context, RouteHelper.getCartScreen());
               },
             )),
           ])

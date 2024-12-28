@@ -9,7 +9,6 @@ import 'package:flutter_grocery/utill/images.dart';
 import 'package:flutter_grocery/utill/styles.dart';
 import 'package:provider/provider.dart';
 
-
 class MainAppBarWidget extends StatelessWidget implements PreferredSizeWidget {
   const MainAppBarWidget({Key? key}) : super(key: key);
 
@@ -17,28 +16,30 @@ class MainAppBarWidget extends StatelessWidget implements PreferredSizeWidget {
   Widget build(BuildContext context) {
     return Center(
       child: Container(
-        color: Theme.of(context).cardColor,
-        width: 1170.0,
-        height: 45.0,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: InkWell(
-                onTap: () => Navigator.pushNamed(context, RouteHelper.menu),
-                child: Row(
-                children: [
-                  Image.asset(Images.appLogo, color: Theme.of(context).primaryColor),
-                  const SizedBox(width: Dimensions.paddingSizeSmall),
-                  Text(AppConstants.appName, style: poppinsMedium.copyWith(color: Theme.of(context).primaryColor)),
-                ],
-              )),
-            ),
-            const _MenuBarWidget(),
-          ],
-        )
-      ),
+          color: Theme.of(context).cardColor,
+          width: 1170.0,
+          height: 45.0,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: InkWell(
+                    onTap: () => Navigator.pushNamed(context, RouteHelper.menu),
+                    child: Row(
+                      children: [
+                        Image.asset(Images.appLogo,
+                            color: Theme.of(context).primaryColor),
+                        const SizedBox(width: Dimensions.paddingSizeSmall),
+                        Text(AppConstants.appName,
+                            style: poppinsMedium.copyWith(
+                                color: Theme.of(context).primaryColor)),
+                      ],
+                    )),
+              ),
+              const _MenuBarWidget(),
+            ],
+          )),
     );
   }
 
@@ -46,95 +47,89 @@ class MainAppBarWidget extends StatelessWidget implements PreferredSizeWidget {
   Size get preferredSize => const Size(double.maxFinite, 50);
 }
 
-
 class _MenuBarWidget extends StatelessWidget {
   const _MenuBarWidget({Key? key}) : super(key: key);
 
   List<MenuItems> getMenus(BuildContext context) {
-    final bool isLoggedIn = Provider.of<AuthProvider>(context, listen: false).isLoggedIn();
+    final bool isLoggedIn =
+        Provider.of<AuthProvider>(context, listen: false).isLoggedIn();
     return [
       MenuItems(
           title: 'home'.tr,
           icon: Icons.home_filled,
-          onTap: () => Navigator.pushNamed(context, RouteHelper.menu)
-      ),
+          onTap: () => Navigator.pushNamed(context, RouteHelper.menu)),
       MenuItems(
         title: 'all_categories'.tr,
         icon: Icons.category,
         onTap: () => Navigator.pushNamed(context, RouteHelper.categories),
       ),
-
       MenuItems(
         title: 'useful_links'.tr,
         icon: Icons.settings,
         children: [
           MenuItems(
             title: 'privacy_policy'.tr,
-            onTap: () => Navigator.pushNamed(context, RouteHelper.getPolicyRoute()),
+            onTap: () =>
+                Navigator.pushNamed(context, RouteHelper.getPolicyRoute()),
           ),
           MenuItems(
             title: 'terms_and_condition'.tr,
-            onTap: () => Navigator.pushNamed(context, RouteHelper.getTermsRoute()),
+            onTap: () =>
+                Navigator.pushNamed(context, RouteHelper.getTermsRoute()),
           ),
           MenuItems(
             title: 'about_us'.tr,
-            onTap: () => Navigator.pushNamed(context, RouteHelper.getAboutUsRoute()),
+            onTap: () =>
+                Navigator.pushNamed(context, RouteHelper.getAboutUsRoute()),
           ),
-
         ],
       ),
-
-
       MenuItems(
         title: 'search'.tr,
         icon: Icons.search,
-        onTap: () =>  Navigator.pushNamed(context, RouteHelper.searchProduct),
+        onTap: () => Navigator.pushNamed(context, RouteHelper.searchProduct),
       ),
-
       MenuItems(
         title: 'menu'.tr,
         icon: Icons.menu,
         onTap: () => Navigator.pushNamed(context, RouteHelper.profileMenus),
       ),
-
-
-      isLoggedIn ?  MenuItems(
-        title: 'profile'.tr,
-        icon: Icons.person,
-        onTap: () => Navigator.pushNamed(context, RouteHelper.profile),
-      ):  MenuItems(
-        title: 'login'.tr,
-        icon: Icons.lock,
-        onTap: () => Navigator.pushNamed(context, RouteHelper.login),
-      ),
+      isLoggedIn
+          ? MenuItems(
+              title: 'profile'.tr,
+              icon: Icons.person,
+              onTap: () => Navigator.pushNamed(context, RouteHelper.profile),
+            )
+          : MenuItems(
+              title: 'login'.tr,
+              icon: Icons.lock,
+              onTap: () => Navigator.pushNamed(context, RouteHelper.login),
+            ),
       MenuItems(
         title: '',
         icon: Icons.shopping_cart,
         onTap: () => Navigator.pushNamed(context, RouteHelper.cart),
       ),
-
     ];
   }
 
   @override
   Widget build(BuildContext context) {
-
     return SizedBox(
       width: 800,
       child: PlutoMenuBarWidget(
         backgroundColor: Theme.of(context).cardColor,
         gradient: false,
         goBackButtonText: 'Back',
-        textStyle: TextStyle(color: Theme.of(context).textTheme.bodyLarge!.color),
+        textStyle:
+            TextStyle(color: Theme.of(context).textTheme.bodyLarge!.color),
         moreIconColor: Theme.of(context).textTheme.bodyLarge!.color,
         menuIconColor: Theme.of(context).textTheme.bodyLarge!.color,
         menus: getMenus(context),
-
       ),
     );
   }
 }
-
 
 class PlutoMenuBarWidget extends StatefulWidget {
   /// Pass [MenuItems] to List.
@@ -180,7 +175,8 @@ class PlutoMenuBarWidget extends StatefulWidget {
   /// [TextStyle] of Menu title.
   final TextStyle textStyle;
 
-  PlutoMenuBarWidget({Key? key,
+  PlutoMenuBarWidget({
+    Key? key,
     required this.menus,
     this.goBackButtonText = 'Go back',
     this.height = 45,
@@ -191,7 +187,8 @@ class PlutoMenuBarWidget extends StatefulWidget {
     this.moreIconColor = Colors.black54,
     this.gradient = true,
     this.textStyle = const TextStyle(),
-  })  : assert(menus.isNotEmpty), super(key: key);
+  })  : assert(menus.isNotEmpty),
+        super(key: key);
 
   @override
   State<PlutoMenuBarWidget> createState() => _PlutoMenuBarWidgetState();
@@ -230,7 +227,6 @@ class _PlutoMenuBarWidgetState extends State<PlutoMenuBarWidget> {
     );
   }
 }
-
 
 class MenuItems {
   /// Menu title
@@ -290,15 +286,15 @@ class _MenuWidget extends StatelessWidget {
   final TextStyle? textStyle;
 
   _MenuWidget(
-      this.menu, {
-        this.goBackButtonText,
-        this.height,
-        this.backgroundColor,
-        this.menuIconColor,
-        this.menuIconSize,
-        this.moreIconColor,
-        this.textStyle,
-      }) : super(key: menu._key);
+    this.menu, {
+    this.goBackButtonText,
+    this.height,
+    this.backgroundColor,
+    this.menuIconColor,
+    this.menuIconSize,
+    this.moreIconColor,
+    this.textStyle,
+  }) : super(key: menu._key);
 
   Widget _buildPopupItem(MenuItems menu) {
     return Row(
@@ -335,10 +331,11 @@ class _MenuWidget extends StatelessWidget {
   }
 
   Future<MenuItems?> _showPopupMenu(
-      BuildContext context,
-      List<MenuItems> menuItems,
-      ) async {
-    final RenderBox overlay = Overlay.of(context).context.findRenderObject() as RenderBox;
+    BuildContext context,
+    List<MenuItems> menuItems,
+  ) async {
+    final RenderBox overlay =
+        Overlay.of(context).context.findRenderObject() as RenderBox;
 
     final Offset position = menu._position + Offset(0, height! - 11);
 
@@ -362,15 +359,15 @@ class _MenuWidget extends StatelessWidget {
   }
 
   Widget _getMenu(
-      BuildContext context,
-      MenuItems menu,
-      ) {
+    BuildContext context,
+    MenuItems menu,
+  ) {
     Future<MenuItems?> getSelectedMenu(
-        MenuItems menu, {
-          MenuItems? fromPreviousMenu,
-          int? stackIdx,
-          List<MenuItems>? stack,
-        }) async {
+      MenuItems menu, {
+      MenuItems? fromPreviousMenu,
+      int? stackIdx,
+      List<MenuItems>? stack,
+    }) async {
       if (!menu._hasChildren) {
         return menu;
       }
@@ -445,23 +442,38 @@ class _MenuWidget extends StatelessWidget {
           children: [
             if (menu.icon != null) ...[
               Stack(
-                clipBehavior: Clip.none, children: [
-                Icon(menu.icon, size: menuIconSize,color: menuIconColor,),
-                menu.title!.isEmpty? Positioned(
-                  top: -7, right: -7,
-                  child: Container(
-                    padding: const EdgeInsets.all(4),
-                    alignment: Alignment.center,
-                    decoration: const BoxDecoration(shape: BoxShape.circle, color: Colors.red),
-                    child: Center(
-                      child: Text(
-                          Provider.of<CartProvider>(context).cartList.length.toString(),
-                          style: const TextStyle(color: Colors.white, fontSize: 8) //poppinsMedium.copyWith(color: ColorResources.COLOR_WHITE, fontSize: 8),
-                      ),
-                    ),
+                clipBehavior: Clip.none,
+                children: [
+                  Icon(
+                    menu.icon,
+                    size: menuIconSize,
+                    color: menuIconColor,
                   ),
-                ):const SizedBox()
-              ],
+                  menu.title!.isEmpty
+                      ? Positioned(
+                          top: -7,
+                          right: -7,
+                          child: Container(
+                            padding: const EdgeInsets.all(4),
+                            alignment: Alignment.center,
+                            decoration: const BoxDecoration(
+                                shape: BoxShape.circle, color: Colors.red),
+                            child: Center(
+                              child: Text(
+                                  Provider.of<CartProvider>(context)
+                                      .cartList
+                                      .length
+                                      .toString(),
+                                  style: const TextStyle(
+                                      color: Colors.white,
+                                      fontSize:
+                                          8) //poppinsMedium.copyWith(color: ColorResources.COLOR_WHITE, fontSize: 8),
+                                  ),
+                            ),
+                          ),
+                        )
+                      : const SizedBox()
+                ],
               ),
               // menu.icon,
               // color: menuIconColor,

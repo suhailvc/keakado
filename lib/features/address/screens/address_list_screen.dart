@@ -206,7 +206,7 @@ class _AddressListScreenState extends State<AddressListScreen> {
                                         color: Theme.of(context).primaryColor,
                                       ),
                                       Text(
-                                        " Add Address",
+                                        getTranslated("Add Address", context),
                                         style: poppinsMedium.copyWith(
                                           fontSize: Dimensions.fontSizeLarge,
                                           color: Theme.of(context).primaryColor,

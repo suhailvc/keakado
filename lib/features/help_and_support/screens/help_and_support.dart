@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_grocery/features/help_and_support/screens/support_form.dart';
 import 'package:flutter_grocery/features/help_and_support/widgets/gmail_widget.dart';
 import 'package:flutter_grocery/features/help_and_support/widgets/whats_app_widget.dart';
+import 'package:flutter_grocery/localization/language_constraints.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class HelpAndSupportScreen extends StatelessWidget {
@@ -17,7 +18,8 @@ class HelpAndSupportScreen extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: Colors.white,
         centerTitle: true,
-        title: Text('Help & Support'),
+        title: Text(getTranslated("Help & Support", context)),
+        // Text('Help & Support'),
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
           onPressed: () => Navigator.of(context).pop(),
@@ -53,7 +55,7 @@ class HelpAndSupportScreen extends StatelessWidget {
                 children: [
                   ListTile(
                     leading: Text(
-                      'Contact Form',
+                      getTranslated("Contact Form", context),
                       style: TextStyle(
                         color: const Color(0xFF9A9A9A),
                         fontSize: screenWidth * 0.039,
@@ -76,7 +78,7 @@ class HelpAndSupportScreen extends StatelessWidget {
                   const Divider(color: Color(0xFFBEBEBE)),
                   ListTile(
                     leading: Text(
-                      'Connect with us via WhatsApp',
+                      getTranslated("Connect with us via WhatsApp", context),
                       style: TextStyle(
                         color: const Color(0xFF9A9A9A),
                         fontSize: screenWidth * 0.038,
@@ -95,7 +97,7 @@ class HelpAndSupportScreen extends StatelessWidget {
                   const Divider(color: Color(0xFFBEBEBE)),
                   ListTile(
                     leading: Text(
-                      'Connect with us via Mail',
+                      getTranslated("Connect with us via Mail", context),
                       style: TextStyle(
                         color: const Color(0xFF9A9A9A),
                         fontSize: screenWidth * 0.038,
@@ -115,7 +117,8 @@ class HelpAndSupportScreen extends StatelessWidget {
                   SizedBox(height: screenHeight * 0.02),
                   Center(
                     child: Text(
-                      'If any queries contact to this number:',
+                      getTranslated(
+                          "If any queries contact to this number", context),
                       style: TextStyle(
                         color: const Color(0xFF9A9A9A),
                         fontSize: screenWidth * 0.038,

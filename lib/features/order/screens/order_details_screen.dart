@@ -176,6 +176,8 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                               children: List.generate(
                                 orderProvider.orderDetails!.length,
                                 (index) {
+                                  print(
+                                      '-------${index}------${orderProvider.orderDetails![index].isReturned!}');
                                   // if (orderProvider
                                   //         .orderDetails![index].isReturned !=
                                   //     0) {
@@ -185,7 +187,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                                   String _getOrderStatusText(int status) {
                                     switch (status) {
                                       case 1:
-                                        return 'Approved';
+                                        return 'Under Review';
                                       case 2:
                                         return 'Return By Replacement';
                                       case 3:
@@ -282,6 +284,21 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                                                       TextOverflow.ellipsis,
                                                 ),
                                                 const SizedBox(height: 4),
+                                                if (orderProvider
+                                                        .orderDetails![index]
+                                                        .remarks !=
+                                                    null)
+                                                  Text(
+                                                    "${orderProvider.orderDetails![index].remarks}",
+                                                    style:
+                                                        poppinsMedium.copyWith(
+                                                            fontSize: Dimensions
+                                                                .fontSizeLarge),
+                                                    maxLines: 2,
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
+                                                  ),
+                                                const SizedBox(height: 4),
                                                 Text(
                                                   "${orderProvider.orderDetails![index].productDetails?.approximateWeight ?? ""} ${orderProvider.orderDetails![index].productDetails?.approximateUom ?? ""} (Approx)",
                                                   style: poppinsMedium.copyWith(
@@ -291,7 +308,6 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                                                   overflow:
                                                       TextOverflow.ellipsis,
                                                 ),
-                                                const SizedBox(height: 4),
                                                 Row(
                                                   children: [
                                                     Text(
@@ -464,17 +480,37 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                                           context)),
                                 const Divider(),
                                 const SizedBox(height: 16),
-                                orderSummaryTile(context, 'Actual Amount',
-                                    subTotal.toString(), true),
-                                orderSummaryTile(context, 'Product Discount',
-                                    "-$discount", true, true),
-                                orderSummaryTile(context, 'Coupon Discount',
-                                    "-$couponDiscount", true, true),
-                                orderSummaryTile(context, 'Wallet Amount Used',
-                                    "-$walletUsed", true, true),
+                                orderSummaryTile(
+                                    context,
+                                    'Actual Amount',
+                                    subTotal.toStringAsFixed(2).toString(),
+                                    true),
+                                orderSummaryTile(
+                                    context,
+                                    'Product Discount',
+                                    "-${discount.toStringAsFixed(2)}",
+                                    true,
+                                    true),
+                                orderSummaryTile(
+                                    context,
+                                    'Coupon Discount',
+                                    "-${couponDiscount.toStringAsFixed(2)}",
+                                    true,
+                                    true),
+                                orderSummaryTile(
+                                    context,
+                                    'Wallet Amount Used',
+                                    "-${walletUsed.toStringAsFixed(2)}",
+                                    true,
+                                    true),
 
-                                orderSummaryTile(context, 'Delivery Fee',
-                                    deliveryCharge.toString(), true),
+                                orderSummaryTile(
+                                    context,
+                                    'Delivery Fee',
+                                    deliveryCharge
+                                        .toStringAsFixed(2)
+                                        .toString(),
+                                    true),
                                 // orderSummaryTile(
                                 //     context, 'Walle', "-$discount", true, true),
                                 // orderSummaryTile(context, 'Subtotal',
@@ -502,7 +538,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                                               fontSize: Dimensions
                                                   .fontSizeExtraLarge)),
                                       Text(
-                                          "$total ${config!.currencySymbol ?? ""}",
+                                          "${total.toStringAsFixed(2)} ${config!.currencySymbol ?? ""}",
                                           style: poppinsBold.copyWith(
                                               fontSize: Dimensions
                                                   .fontSizeExtraLarge)),

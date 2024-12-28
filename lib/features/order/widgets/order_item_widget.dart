@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_grocery/common/models/cart_model.dart';
 import 'package:flutter_grocery/common/models/config_model.dart';
 import 'package:flutter_grocery/features/order/domain/models/order_model.dart';
+import 'package:flutter_grocery/features/order/widgets/cancel_widget.dart';
 import 'package:flutter_grocery/features/order/widgets/rating_widget.dart';
 import 'package:flutter_grocery/features/splash/providers/splash_provider.dart';
 import 'package:flutter_grocery/helper/date_converter_helper.dart';
@@ -42,6 +43,8 @@ class _OrderItemWidgetState extends State<OrderItemWidget> {
 
   @override
   Widget build(BuildContext context) {
+    // print(
+    //     'status order ${widget.orderList![widget.index].id} ${widget.orderList![widget.index].orderStatus}');
     String _getOrderStatusText(int status) {
       switch (status) {
         case 1:
@@ -101,10 +104,12 @@ class _OrderItemWidgetState extends State<OrderItemWidget> {
               Expanded(
                 child: Center(
                   child: Text(
-                    '${widget.orderList![widget.index].totalQuantity} ${getTranslated(widget.orderList![widget.index].totalQuantity == 1 ? 'item' : 'items', context)}',
-                    style: poppinsRegular.copyWith(
-                        color: Theme.of(context).disabledColor),
-                  ),
+                      '${widget.orderList![widget.index].totalQuantity} ${getTranslated(widget.orderList![widget.index].totalQuantity == 1 ? 'item' : 'items', context)}',
+                      style: poppinsSemiBold.copyWith(
+                          fontSize: Dimensions.fontSizeDefault)
+                      // style: poppinsRegular.copyWith(
+                      //     color: Theme.of(context).disabledColor),
+                      ),
                 ),
               ),
               Expanded(
@@ -165,17 +170,24 @@ class _OrderItemWidgetState extends State<OrderItemWidget> {
                     Row(
                       children: [
                         Text(
-                          '${getTranslated('order_id', context)} #${widget.orderList![widget.index].id.toString()}',
+                          '${getTranslated('order_id', context)} #${widget.orderList![widget.index].id.toString().length > 7 ? widget.orderList![widget.index].id.toString().substring(0, 7) : widget.orderList![widget.index].id.toString()}',
                           style: poppinsBold.copyWith(
                             fontSize: Dimensions.fontSizeLarge,
                           ),
                         ),
+
+                        // Text(
+                        //   '${getTranslated('order_id', context)} #${widget.orderList![widget.index].id.toString()}',
+                        //   style: poppinsBold.copyWith(
+                        //     fontSize: Dimensions.fontSizeLarge,
+                        //   ),
+                        // ),
                         SizedBox(
                           width: MediaQuery.of(context).size.width * 0.07,
                         ),
-                        SizedBox(
-                          width: MediaQuery.of(context).size.width * 0.053,
-                        ),
+                        // SizedBox(
+                        //   width: MediaQuery.of(context).size.width * 0.053,
+                        // ),
                         Container(
                           decoration: BoxDecoration(
                             color: Colors
@@ -220,198 +232,311 @@ class _OrderItemWidgetState extends State<OrderItemWidget> {
                         fontSize: Dimensions.fontSizeSmall,
                       ),
                     ),
-                    const SizedBox(height: Dimensions.paddingSizeSmall),
+                    //const SizedBox(height: Dimensions.paddingSizeSmall),
+                    // Expanded(
+                    //   child: Center(
+                    //child:
+                    Text(
+                        '${widget.orderList![widget.index].totalQuantity} ${getTranslated(widget.orderList![widget.index].totalQuantity == 1 ? 'item' : 'items', context)}',
+                        style: poppinsSemiBold.copyWith(
+                            fontSize: Dimensions.fontSizeDefault)
+                        // style: poppinsRegular.copyWith(
+                        //     color: Theme.of(context).disabledColor),
+                        ),
+                    //   ),
+                    // ),
                     Builder(builder: (context) {
                       final ConfigModel config =
                           Provider.of<SplashProvider>(context, listen: false)
                               .configModel!;
                       return Text(
-                        '${widget.orderList![widget.index].orderAmount} ${config.currencySymbol}',
+                        '${widget.orderList![widget.index].orderAmount!.toStringAsFixed(2)} ${config.currencySymbol}',
                         style: poppinsBold.copyWith(
                           fontSize: Dimensions.fontSizeExtraLarge,
                         ),
                       );
                     }),
                     const SizedBox(height: Dimensions.paddingSizeSmall),
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        GestureDetector(
-                          onTap: () {
-                            Navigator.of(context).pushNamed(
-                              RouteHelper.getOrderDetailsRoute(
-                                  '${widget.orderList?[widget.index].id}'),
-                              arguments: OrderDetailsScreen(
-                                  orderId: widget.orderList![widget.index].id,
-                                  orderModel: widget.orderList![widget.index]),
-                            );
-                          },
-                          child: Container(
+                    widget.orderList![widget.index].orderStatus == 'canceled'
+                        ? Container(
                             height: 40,
-                            width: MediaQuery.of(context).size.width / 3.5,
+                            width: MediaQuery.of(context).size.width / 4,
                             decoration: BoxDecoration(
-                              color: Theme.of(context)
-                                  .primaryColor
-                                  .withOpacity(0.2),
+                              color: Colors.red,
                               borderRadius: BorderRadius.circular(8),
                             ),
                             alignment: Alignment.center,
                             child: Text(
-                              getTranslated("order_details", context),
+                              getTranslated('Cancelled', context),
                               style: poppinsSemiBold.copyWith(
-                                color: Theme.of(context).primaryColor,
+                                color: Colors.white,
                                 letterSpacing: 1.2,
                                 wordSpacing: 1.6,
                               ),
                             ),
-                          ),
-                        ),
-                        // Row(
-                        //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        //     crossAxisAlignment: CrossAxisAlignment.end,
-                        //     children: [
-                        // Padding(
-                        //   padding: const EdgeInsets.only(bottom: 3),
-                        //   child: _OrderStatusCard(
-                        //       orderList: orderList, index: index),
-                        // ),
-                        // orderList![index].orderType != 'pos'
-                        //     ? Consumer<ProductProvider>(
-                        //         builder: (context, productProvider, _) =>
-                        //             Consumer<OrderProvider>(
-                        //                 builder: (context, orderProvider, _) {
-                        //               bool isReOrderAvailable = orderProvider
-                        //                           .getReOrderIndex ==
-                        //                       null ||
-                        //                   (orderProvider.getReOrderIndex !=
-                        //                           null &&
-                        //                       productProvider.product != null);
+                          )
+                        : Row(
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+                              GestureDetector(
+                                onTap: () {
+                                  Navigator.of(context).pushNamed(
+                                    RouteHelper.getOrderDetailsRoute(
+                                        '${widget.orderList?[widget.index].id}'),
+                                    arguments: OrderDetailsScreen(
+                                        orderId:
+                                            widget.orderList![widget.index].id,
+                                        orderModel:
+                                            widget.orderList![widget.index]),
+                                  );
+                                },
+                                child: Container(
+                                  height: 40,
+                                  width:
+                                      MediaQuery.of(context).size.width / 3.5,
+                                  decoration: BoxDecoration(
+                                    color: Theme.of(context)
+                                        .primaryColor
+                                        .withOpacity(0.2),
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                  alignment: Alignment.center,
+                                  child: Text(
+                                    getTranslated("order_details", context),
+                                    style: poppinsSemiBold.copyWith(
+                                      color: Theme.of(context).primaryColor,
+                                      letterSpacing: 1.2,
+                                      wordSpacing: 1.6,
+                                    ),
+                                  ),
+                                ),
+                              ),
 
-                        //               return (orderProvider.isLoading ||
-                        //                           productProvider.product ==
-                        //                               null) &&
-                        //                       index ==
-                        //                           orderProvider
-                        //                               .getReOrderIndex &&
-                        //                       !orderProvider.isActiveOrder
-                        //                   ? CustomLoaderWidget(
-                        //                       color: Theme.of(context)
-                        //                           .primaryColor)
-                        //                   : _TrackOrderView(
-                        //                       orderList: orderList,
-                        //                       index: index,
-                        //                       isReOrderAvailable:
-                        //                           isReOrderAvailable);
-                        //             }))
-                        //     : const SizedBox.shrink(),
-                        // ]),
-                        if (widget.orderList![widget.index].orderType != 'pos')
-                          const SizedBox(width: 12),
-                        if (widget.orderList![widget.index].orderType != 'pos')
-                          Consumer<ProductProvider>(
-                            builder: (context, productProvider, _) =>
-                                Consumer<OrderProvider>(
-                              builder: (context, orderProvider, _) {
-                                bool isReOrderAvailable =
-                                    orderProvider.getReOrderIndex == null ||
-                                        (orderProvider.getReOrderIndex !=
-                                                null &&
-                                            productProvider.product != null);
+                              // Row(
+                              //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              //     crossAxisAlignment: CrossAxisAlignment.end,
+                              //     children: [
+                              // Padding(
+                              //   padding: const EdgeInsets.only(bottom: 3),
+                              //   child: _OrderStatusCard(
+                              //       orderList: orderList, index: index),
+                              // ),
+                              // orderList![index].orderType != 'pos'
+                              //     ? Consumer<ProductProvider>(
+                              //         builder: (context, productProvider, _) =>
+                              //             Consumer<OrderProvider>(
+                              //                 builder: (context, orderProvider, _) {
+                              //               bool isReOrderAvailable = orderProvider
+                              //                           .getReOrderIndex ==
+                              //                       null ||
+                              //                   (orderProvider.getReOrderIndex !=
+                              //                           null &&
+                              //                       productProvider.product != null);
 
-                                return (orderProvider.isLoading ||
-                                            productProvider.product == null) &&
-                                        widget.index ==
-                                            orderProvider.getReOrderIndex &&
-                                        !orderProvider.isActiveOrder
-                                    ? CustomLoaderWidget(
-                                        color: Theme.of(context).primaryColor)
-                                    : GestureDetector(
-                                        onTap: () async {
-                                          if (orderProvider.isActiveOrder) {
-                                            Navigator.of(context).pushNamed(
-                                                RouteHelper
-                                                    .getOrderTrackingRoute(
-                                                        widget
-                                                            .orderList![
-                                                                widget.index]
-                                                            .id,
-                                                        null));
-                                          } else {
-                                            if (!orderProvider.isLoading &&
-                                                isReOrderAvailable) {
-                                              orderProvider.setReorderIndex =
-                                                  widget.index;
-                                              List<CartModel>? cartList =
-                                                  await orderProvider
-                                                      .reorderProduct(
-                                                          widget
-                                                              .orderList![
-                                                                  widget.index]
-                                                              .totalQuantity,
-                                                          '${widget.orderList![widget.index].id}');
-                                              if (cartList != null &&
-                                                  cartList.isNotEmpty) {
-                                                showDialog(
-                                                    context: Get.context!,
-                                                    builder: (context) =>
-                                                        const ReOrderDialogWidget());
-                                              }
-                                            }
-                                          }
-                                        },
-                                        child: Container(
-                                          height: 40,
-                                          width: MediaQuery.of(context)
-                                                  .size
-                                                  .width /
-                                              4,
-                                          decoration: BoxDecoration(
-                                            color:
-                                                Theme.of(context).primaryColor,
-                                            borderRadius:
-                                                BorderRadius.circular(8),
-                                          ),
-                                          alignment: Alignment.center,
-                                          child: Text(
-                                            getTranslated(
-                                                orderProvider.isActiveOrder
-                                                    ? 'track_order'
-                                                    : 're_order',
-                                                context),
-                                            style: poppinsSemiBold.copyWith(
-                                              color: Colors.white,
-                                              letterSpacing: 1.2,
-                                              wordSpacing: 1.6,
-                                            ),
-                                          ),
-                                        ),
+                              //               return (orderProvider.isLoading ||
+                              //                           productProvider.product ==
+                              //                               null) &&
+                              //                       index ==
+                              //                           orderProvider
+                              //                               .getReOrderIndex &&
+                              //                       !orderProvider.isActiveOrder
+                              //                   ? CustomLoaderWidget(
+                              //                       color: Theme.of(context)
+                              //                           .primaryColor)
+                              //                   : _TrackOrderView(
+                              //                       orderList: orderList,
+                              //                       index: index,
+                              //                       isReOrderAvailable:
+                              //                           isReOrderAvailable);
+                              //             }))
+                              //     : const SizedBox.shrink(),
+                              // ]),
+                              if (widget.orderList![widget.index].orderType !=
+                                  'pos')
+                                const SizedBox(width: 12),
+                              if (widget.orderList![widget.index].orderType !=
+                                  'pos')
+                                Consumer<ProductProvider>(
+                                  builder: (context, productProvider, _) =>
+                                      Consumer<OrderProvider>(
+                                    builder: (context, orderProvider, _) {
+                                      bool isReOrderAvailable = orderProvider
+                                                  .getReOrderIndex ==
+                                              null ||
+                                          (orderProvider.getReOrderIndex !=
+                                                  null &&
+                                              productProvider.product != null);
+
+                                      return Row(
+                                        children: [
+                                          (orderProvider.isLoading ||
+                                                      productProvider.product ==
+                                                          null) &&
+                                                  widget.index ==
+                                                      orderProvider
+                                                          .getReOrderIndex &&
+                                                  !orderProvider.isActiveOrder
+                                              ? CustomLoaderWidget(
+                                                  color: Theme.of(context)
+                                                      .primaryColor)
+                                              : GestureDetector(
+                                                  onTap: () async {
+                                                    if (orderProvider
+                                                        .isActiveOrder) {
+                                                      Navigator.of(context)
+                                                          .pushNamed(RouteHelper
+                                                              .getOrderTrackingRoute(
+                                                                  widget
+                                                                      .orderList![
+                                                                          widget
+                                                                              .index]
+                                                                      .id,
+                                                                  null));
+                                                    } else {
+                                                      if (!orderProvider
+                                                              .isLoading &&
+                                                          isReOrderAvailable) {
+                                                        orderProvider
+                                                                .setReorderIndex =
+                                                            widget.index;
+                                                        List<
+                                                                CartModel>?
+                                                            cartList =
+                                                            await orderProvider.reorderProduct(
+                                                                widget
+                                                                    .orderList![
+                                                                        widget
+                                                                            .index]
+                                                                    .totalQuantity,
+                                                                '${widget.orderList![widget.index].id}');
+                                                        if (cartList != null &&
+                                                            cartList
+                                                                .isNotEmpty) {
+                                                          showDialog(
+                                                              context:
+                                                                  Get.context!,
+                                                              builder: (context) =>
+                                                                  const ReOrderDialogWidget());
+                                                        }
+                                                      }
+                                                    }
+                                                  },
+                                                  child: Container(
+                                                    height: 40,
+                                                    width:
+                                                        MediaQuery.of(context)
+                                                                .size
+                                                                .width /
+                                                            4,
+                                                    decoration: BoxDecoration(
+                                                      color: Theme.of(context)
+                                                          .primaryColor,
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              8),
+                                                    ),
+                                                    alignment: Alignment.center,
+                                                    child: Text(
+                                                      getTranslated(
+                                                          orderProvider
+                                                                  .isActiveOrder
+                                                              ? 'track_order'
+                                                              : 're_order',
+                                                          context),
+                                                      style: poppinsSemiBold
+                                                          .copyWith(
+                                                        color: Colors.white,
+                                                        letterSpacing: 1.2,
+                                                        wordSpacing: 1.6,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                          // if (orderProvider.isActiveOrder)
+                                          //   GestureDetector(
+                                          //     onTap: () {
+                                          //       Navigator.of(context).pushNamed(
+                                          //         RouteHelper.getOrderDetailsRoute(
+                                          //             '${widget.orderList?[widget.index].id}'),
+                                          //         arguments: OrderDetailsScreen(
+                                          //             orderId: widget
+                                          //                 .orderList![widget.index]
+                                          //                 .id,
+                                          //             orderModel: widget
+                                          //                 .orderList![widget.index]),
+                                          //       );
+                                          //     },
+                                          //     child: Container(
+                                          //       height: 40,
+                                          //       width: MediaQuery.of(context)
+                                          //               .size
+                                          //               .width /
+                                          //           3.5,
+                                          //       decoration: BoxDecoration(
+                                          //         color:
+                                          //             Theme.of(context).primaryColor,
+                                          //         borderRadius:
+                                          //             BorderRadius.circular(8),
+                                          //       ),
+                                          //       alignment: Alignment.center,
+                                          //       child: Text(
+                                          //         getTranslated(
+                                          //             "Order Cancel", context),
+                                          //         style: poppinsSemiBold.copyWith(
+                                          //           color: Colors.white,
+                                          //           letterSpacing: 1.2,
+                                          //           wordSpacing: 1.6,
+                                          //         ),
+                                          //       ),
+                                          //     ),
+                                          //   ),
+                                        ],
                                       );
-                              },
-                            ),
-                          ),
-                        SizedBox(
-                          width: MediaQuery.of(context).size.width * 0.02,
-                        ),
-                        Consumer<OrderProvider>(
-                            builder: (context, orderProvider, _) {
-                          return orderProvider.isActiveOrder == false
-                              ? GestureDetector(
+                                    },
+                                  ),
+                                ),
+                              SizedBox(
+                                width: MediaQuery.of(context).size.width * 0.02,
+                              ),
+                              Consumer<OrderProvider>(
+                                  builder: (context, orderProvider, _) {
+                                return GestureDetector(
                                   onTap: () {
-                                    showDialog(
-                                      context: context,
-                                      builder: (BuildContext context) {
-                                        return Dialog(
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(10.0),
-                                          ),
-                                          child: RatingScreen(
-                                            orderId: widget
-                                                .orderList![widget.index].id!,
-                                          ),
-                                        );
-                                      },
-                                    );
+                                    orderProvider.isActiveOrder
+                                        ? showDialog(
+                                            context: context,
+                                            builder: (BuildContext context) {
+                                              return Dialog(
+                                                shape: RoundedRectangleBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          10.0),
+                                                ),
+                                                child: ReturnScreen(
+                                                  orderId: widget
+                                                      .orderList![widget.index]
+                                                      .id!,
+                                                ),
+                                              );
+                                            },
+                                          )
+                                        : showDialog(
+                                            context: context,
+                                            builder: (BuildContext context) {
+                                              return Dialog(
+                                                shape: RoundedRectangleBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          10.0),
+                                                ),
+                                                child: RatingScreen(
+                                                  orderId: widget
+                                                      .orderList![widget.index]
+                                                      .id!,
+                                                ),
+                                              );
+                                            },
+                                          );
                                   },
                                   child: Container(
                                     height: 40,
@@ -423,7 +548,16 @@ class _OrderItemWidgetState extends State<OrderItemWidget> {
                                     ),
                                     alignment: Alignment.center,
                                     child: Text(
-                                      getTranslated('Rate Us', context),
+                                      getTranslated(
+                                          orderProvider.isActiveOrder &&
+                                                  widget
+                                                          .orderList![
+                                                              widget.index]
+                                                          .orderStatus !=
+                                                      'canceled'
+                                              ? "Cancel"
+                                              : 'Rate Us',
+                                          context),
                                       style: poppinsSemiBold.copyWith(
                                         color: Colors.white,
                                         letterSpacing: 1.2,
@@ -431,47 +565,46 @@ class _OrderItemWidgetState extends State<OrderItemWidget> {
                                       ),
                                     ),
                                   ),
-                                )
-                              : const SizedBox();
-                        }),
-                        // Padding(
-                        //   padding: const EdgeInsets.only(bottom: 3),
-                        //   child: _OrderStatusCard(
-                        //       orderList: orderList, index: index),
-                        // ),
-                        // orderList![index].orderType != 'pos'
-                        //     ? Consumer<ProductProvider>(
-                        //         builder: (context, productProvider, _) =>
-                        //             Consumer<OrderProvider>(
-                        //           builder: (context, orderProvider, _) {
-                        //             bool isReOrderAvailable =
-                        //                 orderProvider.getReOrderIndex == null ||
-                        //                     (orderProvider.getReOrderIndex !=
-                        //                             null &&
-                        //                         productProvider.product !=
-                        //                             null);
+                                );
+                              }),
+                              // Padding(
+                              //   padding: const EdgeInsets.only(bottom: 3),
+                              //   child: _OrderStatusCard(
+                              //       orderList: orderList, index: index),
+                              // ),
+                              // orderList![index].orderType != 'pos'
+                              //     ? Consumer<ProductProvider>(
+                              //         builder: (context, productProvider, _) =>
+                              //             Consumer<OrderProvider>(
+                              //           builder: (context, orderProvider, _) {
+                              //             bool isReOrderAvailable =
+                              //                 orderProvider.getReOrderIndex == null ||
+                              //                     (orderProvider.getReOrderIndex !=
+                              //                             null &&
+                              //                         productProvider.product !=
+                              //                             null);
 
-                        //             return (orderProvider.isLoading ||
-                        //                         productProvider.product ==
-                        //                             null) &&
-                        //                     index ==
-                        //                         orderProvider.getReOrderIndex &&
-                        //                     !orderProvider.isActiveOrder
-                        //                 ? CustomLoaderWidget(
-                        //                     color:
-                        //                         Theme.of(context).primaryColor)
-                        //                 : _TrackOrderView(
-                        //                     orderList: orderList,
-                        //                     index: index,
-                        //                     isReOrderAvailable:
-                        //                         isReOrderAvailable,
-                        //                   );
-                        //           },
-                        //         ),
-                        //       )
-                        //     : const SizedBox.shrink(),
-                      ],
-                    ),
+                              //             return (orderProvider.isLoading ||
+                              //                         productProvider.product ==
+                              //                             null) &&
+                              //                     index ==
+                              //                         orderProvider.getReOrderIndex &&
+                              //                     !orderProvider.isActiveOrder
+                              //                 ? CustomLoaderWidget(
+                              //                     color:
+                              //                         Theme.of(context).primaryColor)
+                              //                 : _TrackOrderView(
+                              //                     orderList: orderList,
+                              //                     index: index,
+                              //                     isReOrderAvailable:
+                              //                         isReOrderAvailable,
+                              //                   );
+                              //           },
+                              //         ),
+                              //       )
+                              //     : const SizedBox.shrink(),
+                            ],
+                          ),
                   ],
                 ),
               ],

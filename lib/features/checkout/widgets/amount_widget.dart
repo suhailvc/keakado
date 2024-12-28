@@ -7,6 +7,7 @@ import 'package:flutter_grocery/common/widgets/custom_divider_widget.dart';
 import 'package:flutter_grocery/features/checkout/domain/models/check_out_model.dart';
 import 'package:flutter_grocery/features/checkout/widgets/constants.dart';
 import 'package:flutter_grocery/features/checkout/widgets/total_amount_widget.dart';
+import 'package:flutter_grocery/features/coupon/providers/coupon_provider.dart';
 import 'package:flutter_grocery/features/order/providers/order_provider.dart';
 import 'package:flutter_grocery/features/splash/providers/splash_provider.dart';
 import 'package:flutter_grocery/helper/checkout_helper.dart';
@@ -34,9 +35,13 @@ class AmountWidget extends StatelessWidget {
           Provider.of<OrderProvider>(context, listen: false).getCheckOutData;
       // print("-------itemdisocunt----------${checkOutData?.itemDiscount}");
       bool isFreeDelivery = (checkOutData?.amount ?? 0) +
-              (checkOutData?.placeOrderDiscount ?? 0) +
-              (checkOutData?.itemDiscount ?? 0) >
-          AppConstants.mimimumOrderValue;
+                  (checkOutData?.placeOrderDiscount ?? 0) +
+                  (checkOutData?.itemDiscount ?? 0) >
+              AppConstants.mimimumOrderValue ||
+          Provider.of<CouponProvider>(context, listen: false)
+                  .freeDeliveryCoupon ==
+              true;
+
       // CheckOutHelper.isFreeDeliveryCharge(type: checkOutData?.orderType);
       // (checkOutData?.amount ?? 0) +
       //         (checkOutData?.placeOrderDiscount ?? 0) +
@@ -186,9 +191,9 @@ class AmountWidget extends StatelessWidget {
                     child: Text(
                       // '(+)${((checkOutData?.amount ?? 0) < 49 ? checkOutData?.deliveryCharge : 0)}',
                       isFreeDelivery
-                          ? getTranslated('free', context)
+                          ? ' ${PriceConverterHelper.convertPrice(context, 0)}'
                           : (selfPickup || orderProvider.distance != -1)
-                              ? '(+) ${PriceConverterHelper.convertPrice(context, selfPickup ? 0 : ((checkOutData?.amount ?? 0) < AppConstants.mimimumOrderValue ? AppConstants.deliveryCagrge : 0))}'
+                              ? '(+) ${PriceConverterHelper.convertPrice(context, selfPickup ? 0 : (((checkOutData?.amount ?? 0) < AppConstants.mimimumOrderValue) && Provider.of<CouponProvider>(context, listen: false).freeDeliveryCoupon == false ? AppConstants.deliveryCagrge : 0))}'
                               : getTranslated('not_found', context),
                       style: poppinsRegular.copyWith(
                         fontSize: Dimensions.fontSizeLarge,

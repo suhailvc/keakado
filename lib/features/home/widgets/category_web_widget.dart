@@ -35,12 +35,12 @@ class _CategoryWidgetState extends State<CategoryWidget> {
       if (!_isInitialCallMade &&
           categoryProvider.categoryList != null &&
           categoryProvider.categoryList!.isNotEmpty) {
-        categoryProvider.getCategoryProductList(categoryProvider.categoryList!
-            .firstWhere(
-              (element) => element.name!.toLowerCase().contains("fruit"),
-            )
-            .id
-            .toString());
+        // categoryProvider.getCategoryProductList(categoryProvider.categoryList!
+        //     .firstWhere(
+        //       (element) => element.name!.toLowerCase().contains("fruit"),
+        //     )
+        //     .id
+        //     .toString());
         _isInitialCallMade = true; // Mark the flag as true after the call
       }
 
@@ -50,7 +50,7 @@ class _CategoryWidgetState extends State<CategoryWidget> {
           : (categoryProvider.categoryList?.isNotEmpty ?? false)
               ? Column(children: [
                   TitleWidget(
-                    title: getTranslated('Category', context),
+                    title: getTranslated('category', context),
                     onTap: () {
                       Navigator.of(context).pushNamed(RouteHelper.categories);
                     },

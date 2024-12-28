@@ -15,75 +15,40 @@ class OrderReturnProvider with ChangeNotifier {
   File? get selectedImage => _selectedImage;
   bool get isLoading => _isLoading;
   String? get responseMessage => _responseMessage;
-//   Future<void> pickImage(ImageSource source, int index) async {
-//     final picker = ImagePicker();
-//     try {
-//       final XFile? pickedFile = await picker.pickImage(source: source);
-//       if (pickedFile != null) {
-//         // Convert XFile to File
-//         final file = File(pickedFile.path);
 
-//         // Ensure the returnImagess list exists at the index
-//         if (returnImagess[index] == null) {
-//           returnImagess[index] = []; // Initialize the list if null
-//         }
+  // Future<void> pickImage(ImageSource source, int index) async {
+  //   final picker = ImagePicker();
+  //   try {
+  //     final XFile? pickedFile = await picker.pickImage(source: source);
+  //     if (pickedFile != null) {
+  //       // Convert XFile to File
+  //       final file = File(pickedFile.path);
 
-//         // Compress the image to be below 5 MB
-//         File? compressedFile = await _compressImage(file);
+  //       // Ensure the returnImagess list exists at the index
+  //       if (returnImagess[index] == null) {
+  //         returnImagess[index] = []; // Initialize the list if null
+  //       }
 
-//         // Ensure the returnImages list exists at the index
-//         if (returnImages[index] == null) {
-//           returnImages[index] = []; // Initialize the list if null
-//         }
+  //       // Add the file to returnImagess
+  //       returnImagess[index].add(file);
 
-//         // Convert the compressed image file to a Base64 string
-//         final bytes = await compressedFile.readAsBytes();
-//         final base64String = base64Encode(bytes);
+  //       // Convert the image file to a Base64 string
+  //       final bytes = await file.readAsBytes();
+  //       final base64String = base64Encode(bytes);
+  //       if (returnImages[index] == null) {
+  //         returnImages[index] = []; // Initialize the list if null
+  //       }
+  //       print("---------base64---$base64String");
+  //       print("Base64 length: ${base64String.length}");
+  //       returnImages[index].add(base64String);
 
-//         // Add the compressed file and Base64 string to the respective lists
-//         returnImagess[index].add(compressedFile);
-//         returnImages[index].add(base64String);
-
-//         notifyListeners();
-//       }
-//     } catch (error) {
-//       _responseMessage = 'Failed to pick image: $error';
-//       notifyListeners();
-//     }
-//   }
-
-// // Method to compress the image to be under 5 MB
-//   Future<File> _compressImage(File file) async {
-//     File tempImage = file;
-//     int imageSizeInBytes = await tempImage.length();
-//     int maxSizeInBytes = 5 * 1024 * 1024; // 5 MB in bytes
-
-//     // Compress the image and check the size
-//     while (imageSizeInBytes > maxSizeInBytes) {
-//       tempImage = await _compressFile(tempImage);
-//       imageSizeInBytes = await tempImage.length();
-//     }
-
-//     return tempImage;
-//   }
-
-// // Method to perform compression using flutter_image_compress
-//   Future<File> _compressFile(File file) async {
-//     final result = await FlutterImageCompress.compressWithFile(
-//       file.path,
-//       minWidth: 800,
-//       minHeight: 800,
-//       quality: 70, // Adjust the quality if necessary
-//       rotate: 0,
-//     );
-
-//     // Save the compressed image to a temporary file
-//     final tempDir = Directory.systemTemp;
-//     final compressedImage = File('${tempDir.path}/compressed_image.jpg');
-//     compressedImage.writeAsBytesSync(result!);
-
-//     return compressedImage;
-//   }
+  //       notifyListeners();
+  //     }
+  //   } catch (error) {
+  //     _responseMessage = 'Failed to pick image: $error';
+  //     notifyListeners();
+  //   }
+  // }
   Future<void> pickImage(ImageSource source, int index) async {
     final picker = ImagePicker();
     try {
@@ -92,29 +57,53 @@ class OrderReturnProvider with ChangeNotifier {
         // Convert XFile to File
         final file = File(pickedFile.path);
 
-        // Ensure the returnImagess list exists at the index
-        if (returnImagess[index] == null) {
-          returnImagess[index] = []; // Initialize the list if null
-        }
+        // Compress the image before processing
+        final compressedFile = await compressImage(file);
 
-        // Add the file to returnImagess
-        returnImagess[index].add(file);
+        // Ensure the returnImagess list exists at the index
+        returnImagess[index] ??= [];
+        returnImagess[index].add(compressedFile);
 
         // Convert the image file to a Base64 string
-        final bytes = await file.readAsBytes();
+        final bytes = await compressedFile.readAsBytes();
         final base64String = base64Encode(bytes);
-        if (returnImages[index] == null) {
-          returnImages[index] = []; // Initialize the list if null
-        }
-        print("---------base64---$base64String");
-        print("Base64 length: ${base64String.length}");
+
+        // Ensure the returnImages list exists at the index
+        returnImages[index] ??= [];
         returnImages[index].add(base64String);
 
+        print("---------Base64 Encoded Image: $base64String");
+        print("Base64 length: ${base64String.length}");
+
+        notifyListeners();
+      } else {
+        _responseMessage = 'No image selected.';
         notifyListeners();
       }
-    } catch (error) {
-      _responseMessage = 'Failed to pick image: $error';
+    } catch (e) {
+      _responseMessage = 'Failed to pick image: $e';
       notifyListeners();
+    }
+  }
+
+// Compress the image
+  Future<File> compressImage(File file) async {
+    final filePath = file.absolute.path;
+    final targetPath =
+        "${filePath.substring(0, filePath.lastIndexOf('.'))}_compressed.jpg";
+
+    // Compress the image
+    final XFile? result = await FlutterImageCompress.compressAndGetFile(
+      filePath,
+      targetPath,
+      quality: 85, // Adjust quality as needed
+    );
+
+    // If the result is not null, convert it to File and return
+    if (result != null) {
+      return File(result.path); // Convert XFile to File
+    } else {
+      return file; // Return the original file if compression fails
     }
   }
 

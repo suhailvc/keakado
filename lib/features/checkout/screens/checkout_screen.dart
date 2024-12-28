@@ -19,6 +19,7 @@ import 'package:flutter_grocery/features/checkout/provider/exprees_deliver_provi
 import 'package:flutter_grocery/features/checkout/widgets/delivery_address_widget.dart';
 import 'package:flutter_grocery/features/checkout/widgets/details_widget.dart';
 import 'package:flutter_grocery/features/checkout/widgets/place_order_button_widget.dart';
+import 'package:flutter_grocery/features/coupon/providers/coupon_provider.dart';
 import 'package:flutter_grocery/features/home/screens/bottom_nav.dart';
 import 'package:flutter_grocery/features/order/providers/image_note_provider.dart';
 import 'package:flutter_grocery/features/order/providers/order_provider.dart';
@@ -1366,9 +1367,15 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
     orderProvider.setCheckOutData = CheckOutModel(
       itemDiscount: widget.itemDiscount ?? 0.0,
       orderType: widget.orderType,
-      deliveryCharge: widget.amount < AppConstants.mimimumOrderValue
+      deliveryCharge: widget.amount < AppConstants.mimimumOrderValue &&
+              Provider.of<CouponProvider>(context, listen: false)
+                      .freeDeliveryCoupon ==
+                  false
           ? AppConstants.deliveryCagrge
           : 0,
+      // deliveryCharge: widget.amount < AppConstants.mimimumOrderValue
+      //     ? AppConstants.deliveryCagrge
+      //     : 0,
       freeDeliveryType: widget.freeDeliveryType,
       amount: widget.amount,
       placeOrderDiscount: widget.discount,

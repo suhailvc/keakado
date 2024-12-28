@@ -4,6 +4,7 @@ import 'package:flutter_grocery/common/widgets/custom_pop_scope_widget.dart';
 import 'package:flutter_grocery/features/menu/domain/models/custom_drawer_controller_model.dart';
 import 'package:flutter_grocery/common/enums/html_type_enum.dart';
 import 'package:flutter_grocery/features/menu/domain/models/main_screen_model.dart';
+import 'package:flutter_grocery/features/notification/providers/notification_provider.dart';
 import 'package:flutter_grocery/helper/responsive_helper.dart';
 import 'package:flutter_grocery/helper/route_helper.dart';
 import 'package:flutter_grocery/localization/language_constraints.dart';
@@ -102,6 +103,8 @@ class _MainScreenState extends State<MainScreen> {
   void initState() {
     final locationProvider =
         Provider.of<LocationProvider>(context, listen: false);
+    Provider.of<NotificationProvider>(context, listen: false)
+        .getNotificationList();
     locationProvider.getCurrentLocation(context, true);
     if (widget.isReload) {
       HomeScreen.loadData(true, Get.context!);
@@ -252,26 +255,96 @@ class _MainScreenState extends State<MainScreen> {
                                       GestureDetector(
                                         onTap: () {
                                           Navigator.pushNamed(context,
-                                              RouteHelper.notification);
+                                                  RouteHelper.notification)
+                                              .then((_) {
+                                            // Clear the notification count after opening the notification screen
+                                            Provider.of<NotificationProvider>(
+                                                    context,
+                                                    listen: false)
+                                                .clearNewNotificationCount();
+                                          });
                                         },
-                                        child: Container(
-                                          width: 40,
-                                          height: 40,
-                                          decoration: ShapeDecoration(
-                                            shape: RoundedRectangleBorder(
-                                              side: const BorderSide(
-                                                  width: 1,
-                                                  color: Color(0xFFD2F0C9)),
-                                              borderRadius:
-                                                  BorderRadius.circular(14),
+                                        child: Stack(
+                                          children: [
+                                            Container(
+                                              width: 40,
+                                              height: 40,
+                                              decoration: ShapeDecoration(
+                                                shape: RoundedRectangleBorder(
+                                                  side: const BorderSide(
+                                                      width: 1,
+                                                      color: Color(0xFFD2F0C9)),
+                                                  borderRadius:
+                                                      BorderRadius.circular(14),
+                                                ),
+                                              ),
+                                              alignment: Alignment.center,
+                                              child: SvgPicture.asset(
+                                                'assets/svg/notification.svg',
+                                              ),
                                             ),
-                                          ),
-                                          alignment: Alignment.center,
-                                          child: SvgPicture.asset(
-                                            'assets/svg/notification.svg',
-                                          ),
+                                            // Badge to display notification count
+                                            Positioned(
+                                              right: 4,
+                                              top: 4,
+                                              child: Consumer<
+                                                  NotificationProvider>(
+                                                builder:
+                                                    (context, provider, child) {
+                                                  int newNotificationCount =
+                                                      provider
+                                                          .newNotificationCount;
+                                                  return newNotificationCount >
+                                                          0
+                                                      ? CircleAvatar(
+                                                          radius: 8,
+                                                          backgroundColor:
+                                                              Colors.red,
+                                                          child: Text(
+                                                            newNotificationCount
+                                                                .toString(),
+                                                            style:
+                                                                const TextStyle(
+                                                              color:
+                                                                  Colors.white,
+                                                              fontSize: 10,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold,
+                                                            ),
+                                                          ),
+                                                        )
+                                                      : const SizedBox(); // No badge if count is 0
+                                                },
+                                              ),
+                                            ),
+                                          ],
                                         ),
                                       )
+
+                                      // GestureDetector(
+                                      //   onTap: () {
+                                      //     Navigator.pushNamed(context,
+                                      //         RouteHelper.notification);
+                                      //   },
+                                      //   child: Container(
+                                      //     width: 40,
+                                      //     height: 40,
+                                      //     decoration: ShapeDecoration(
+                                      //       shape: RoundedRectangleBorder(
+                                      //         side: const BorderSide(
+                                      //             width: 1,
+                                      //             color: Color(0xFFD2F0C9)),
+                                      //         borderRadius:
+                                      //             BorderRadius.circular(14),
+                                      //       ),
+                                      //     ),
+                                      //     alignment: Alignment.center,
+                                      //     child: SvgPicture.asset(
+                                      //       'assets/svg/notification.svg',
+                                      //     ),
+                                      //   ),
+                                      // )
                                     ],
                                   ),
                                 )
