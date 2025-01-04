@@ -405,7 +405,7 @@ class _AllCategoriesScreenState extends State<AllCategoriesScreen>
                                 itemCount:
                                     categoryProvider.categoryList?.length ??
                                         0, // Ensure safe access
-                                cacheExtent: 250,
+                                cacheExtent: 350,
                                 itemBuilder: (context, index) {
                                   if (index >=
                                       categoryProvider.categoryList!.length) {

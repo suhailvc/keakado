@@ -432,13 +432,13 @@ class OrderProvider extends ChangeNotifier {
     print('-------payment method ${placeOrderBody.paymentMethod}');
     print('-------payment info${placeOrderBody.paymentInfo}');
     print('-------payment note${placeOrderBody.paymentNote}');
-    print('-------order amount${placeOrderBody.orderAmount}');
+    // print('-------order amount${placeOrderBody.orderAmount}');
     _isLoading = true;
     notifyListeners();
     ApiResponseModel apiResponse = await orderRepo!.placeOrder(placeOrderBody,
         imageNote: imageNoteProvider.imageFiles ?? []);
     _isLoading = false;
-
+    print('-----------api response ${apiResponse.response!.statusCode}');
     if (apiResponse.response != null &&
         apiResponse.response!.statusCode == 200) {
       String? message = apiResponse.response!.data['message'];

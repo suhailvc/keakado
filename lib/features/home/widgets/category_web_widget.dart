@@ -68,13 +68,23 @@ class _CategoryWidgetState extends State<CategoryWidget> {
                             itemBuilder: (context, index) {
                               return GestureDetector(
                                 onTap: () {
-                                  categoryProvider.onChangeSelectIndex(-1,
-                                      notify: false);
-                                  Navigator.of(context).pushNamed(
-                                    RouteHelper.getCategoryProductsRoute(
+                                  Navigator.pushNamed(
+                                    context,
+                                    RouteHelper.getSubCategoriesRoute(
                                         categoryId:
-                                            '${categoryProvider.categoryList![index].id}'),
+                                            '${categoryProvider.categoryList![index].id}',
+                                        categoryName:
+                                            '${categoryProvider.categoryList![index].name}'),
                                   );
+                                  // categoryProvider.onChangeSelectIndex(-1,
+                                  //     notify: false);
+                                  // Navigator.of(context).pushNamed(
+                                  //   RouteHelper.getCategoryProductsRoute(
+                                  //       subCategory:
+                                  //           '${categoryProvider.categoryList![index].name}',
+                                  //       categoryId:
+                                  //           '${categoryProvider.categoryList![index].id}'),
+                                  // );
                                 },
                                 child: Column(children: [
                                   Container(
