@@ -8,6 +8,7 @@ import 'package:flutter_grocery/features/order/domain/models/order_details_model
 import 'package:flutter_grocery/features/order/domain/models/order_model.dart';
 
 import 'package:flutter_grocery/features/order/providers/order_provider.dart';
+import 'package:flutter_grocery/features/order/providers/return_status_provider.dart';
 import 'package:flutter_grocery/features/order/screens/oder_return_screen.dart';
 
 import 'package:flutter_grocery/features/splash/providers/splash_provider.dart';
@@ -43,6 +44,8 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
 
   bool returned = false;
   void _loadData(BuildContext context) async {
+    Provider.of<ReturnStatusProvider>(context, listen: false).getReturnStatus();
+
     final splashProvider = Provider.of<SplashProvider>(context, listen: false);
     final orderProvider = Provider.of<OrderProvider>(context, listen: false);
 
@@ -547,7 +550,11 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                                 ),
                                 if (orderProvider.trackModel!.orderStatus ==
                                         'delivered' &&
-                                    widget.orderModel!.isReturnRequested == 0)
+                                    widget.orderModel!.isReturnRequested == 0 &&
+                                    Provider.of<ReturnStatusProvider>(context,
+                                                listen: false)
+                                            .status ==
+                                        '1')
                                   Padding(
                                     padding: const EdgeInsets.only(top: 24),
                                     child: CustomButtonWidget(

@@ -39,6 +39,7 @@ class _OrderItemWidgetState extends State<OrderItemWidget> {
   void initState() {
     // TODO: implement initState
     Provider.of<OrderProvider>(context, listen: false).getOrderList(context);
+    Provider.of<OrderProvider>(context, listen: false).getReturnStatus();
   }
 
   @override
@@ -500,10 +501,14 @@ class _OrderItemWidgetState extends State<OrderItemWidget> {
                               ),
                               Consumer<OrderProvider>(
                                   builder: (context, orderProvider, _) {
-                                return GestureDetector(
-                                  onTap: () {
-                                    orderProvider.isActiveOrder
-                                        ? showDialog(
+                                return orderProvider.isActiveOrder &&
+                                        Provider.of<OrderProvider>(context,
+                                                    listen: false)
+                                                .returnStatus ==
+                                            '1'
+                                    ? GestureDetector(
+                                        onTap: () {
+                                          showDialog(
                                             context: context,
                                             builder: (BuildContext context) {
                                               return Dialog(
@@ -519,8 +524,63 @@ class _OrderItemWidgetState extends State<OrderItemWidget> {
                                                 ),
                                               );
                                             },
-                                          )
-                                        : showDialog(
+                                          );
+                                        },
+                                        child: Container(
+                                          height: 40,
+                                          width: MediaQuery.of(context)
+                                                  .size
+                                                  .width /
+                                              4,
+                                          decoration: BoxDecoration(
+                                            color:
+                                                Theme.of(context).primaryColor,
+                                            borderRadius:
+                                                BorderRadius.circular(8),
+                                          ),
+                                          alignment: Alignment.center,
+                                          child: Text(
+                                            getTranslated("Cancel", context),
+                                            style: poppinsSemiBold.copyWith(
+                                              color: Colors.white,
+                                              letterSpacing: 1.2,
+                                              wordSpacing: 1.6,
+                                            ),
+                                          ),
+                                        ),
+                                      )
+                                    : SizedBox();
+                              }),
+//--------------------------------------------------------------------------------------------------------------------
+                              Consumer<OrderProvider>(
+                                  builder: (context, orderProvider, _) {
+                                return orderProvider.isActiveOrder
+                                    ? SizedBox()
+                                    : GestureDetector(
+                                        onTap: () {
+                                          // orderProvider.isActiveOrder
+                                          //     ? showDialog(
+                                          //         context: context,
+                                          //         builder:
+                                          //             (BuildContext context) {
+                                          //           return Dialog(
+                                          //             shape:
+                                          //                 RoundedRectangleBorder(
+                                          //               borderRadius:
+                                          //                   BorderRadius
+                                          //                       .circular(10.0),
+                                          //             ),
+                                          //             child: ReturnScreen(
+                                          //               orderId: widget
+                                          //                   .orderList![
+                                          //                       widget.index]
+                                          //                   .id!,
+                                          //             ),
+                                          //           );
+                                          //         },
+                                          //       )
+                                          //:
+                                          showDialog(
                                             context: context,
                                             builder: (BuildContext context) {
                                               return Dialog(
@@ -537,35 +597,47 @@ class _OrderItemWidgetState extends State<OrderItemWidget> {
                                               );
                                             },
                                           );
-                                  },
-                                  child: Container(
-                                    height: 40,
-                                    width:
-                                        MediaQuery.of(context).size.width / 4,
-                                    decoration: BoxDecoration(
-                                      color: Theme.of(context).primaryColor,
-                                      borderRadius: BorderRadius.circular(8),
-                                    ),
-                                    alignment: Alignment.center,
-                                    child: Text(
-                                      getTranslated(
-                                          orderProvider.isActiveOrder &&
-                                                  widget
-                                                          .orderList![
-                                                              widget.index]
-                                                          .orderStatus !=
-                                                      'canceled'
-                                              ? "Cancel"
-                                              : 'Rate Us',
-                                          context),
-                                      style: poppinsSemiBold.copyWith(
-                                        color: Colors.white,
-                                        letterSpacing: 1.2,
-                                        wordSpacing: 1.6,
-                                      ),
-                                    ),
-                                  ),
-                                );
+                                        },
+                                        child: Container(
+                                          height: 40,
+                                          width: MediaQuery.of(context)
+                                                  .size
+                                                  .width /
+                                              4,
+                                          decoration: BoxDecoration(
+                                            color:
+                                                Theme.of(context).primaryColor,
+                                            borderRadius:
+                                                BorderRadius.circular(8),
+                                          ),
+                                          alignment: Alignment.center,
+                                          child: Text(
+                                            getTranslated(
+                                                // orderProvider.isActiveOrder &&
+                                                //         widget
+                                                //                 .orderList![
+                                                //                     widget
+                                                //                         .index]
+                                                //                 .orderStatus !=
+                                                //             'canceled' &&
+                                                //         Provider.of<OrderProvider>(
+                                                //                     context,
+                                                //                     listen:
+                                                //                         false)
+                                                //                 .returnStatus ==
+                                                //             '1'
+                                                //     ? "Cancel"
+                                                //:
+                                                'Rate Us',
+                                                context),
+                                            style: poppinsSemiBold.copyWith(
+                                              color: Colors.white,
+                                              letterSpacing: 1.2,
+                                              wordSpacing: 1.6,
+                                            ),
+                                          ),
+                                        ),
+                                      );
                               }),
                               // Padding(
                               //   padding: const EdgeInsets.only(bottom: 3),

@@ -2,11 +2,37 @@ import 'package:flutter/material.dart';
 import 'package:flutter_grocery/features/help_and_support/screens/support_form.dart';
 import 'package:flutter_grocery/features/help_and_support/widgets/gmail_widget.dart';
 import 'package:flutter_grocery/features/help_and_support/widgets/whats_app_widget.dart';
+import 'package:flutter_grocery/features/splash/providers/splash_provider.dart';
 import 'package:flutter_grocery/localization/language_constraints.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:provider/provider.dart';
 
-class HelpAndSupportScreen extends StatelessWidget {
+class HelpAndSupportScreen extends StatefulWidget {
   const HelpAndSupportScreen({Key? key}) : super(key: key);
+
+  @override
+  State<HelpAndSupportScreen> createState() => _HelpAndSupportScreenState();
+}
+
+class _HelpAndSupportScreenState extends State<HelpAndSupportScreen> {
+  late LatLng _initialPosition;
+
+  @override
+  void initState() {
+    super.initState();
+    _initializeMapPosition();
+  }
+
+  void _initializeMapPosition() {
+    final branch = Provider.of<SplashProvider>(context, listen: false)
+        .configModel!
+        .branches![0];
+    _initialPosition = LatLng(
+      double.parse(branch.latitude!),
+      double.parse(branch.longitude!),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -137,6 +163,25 @@ class HelpAndSupportScreen extends StatelessWidget {
                     ),
                   )
                 ],
+              ),
+            ),
+            SizedBox(height: screenHeight * 0.02),
+            Expanded(
+              child: GoogleMap(
+                initialCameraPosition: CameraPosition(
+                  target: _initialPosition,
+                  zoom: 15,
+                ),
+                markers: {
+                  Marker(
+                    draggable: false,
+                    markerId: const MarkerId('branchLocation'),
+                    position: _initialPosition,
+                    infoWindow: const InfoWindow(
+                      title: 'Branch Location',
+                    ),
+                  ),
+                },
               ),
             ),
           ],

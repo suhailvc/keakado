@@ -16,6 +16,7 @@ import 'package:flutter_grocery/features/order/providers/image_note_provider.dar
 import 'package:flutter_grocery/features/order/providers/rating_provider.dart';
 
 import 'package:flutter_grocery/features/order/providers/return_product_provider.dart';
+import 'package:flutter_grocery/features/order/providers/return_status_provider.dart';
 import 'package:flutter_grocery/features/review/providers/review_provider.dart';
 import 'package:flutter_grocery/helper/responsive_helper.dart';
 import 'package:flutter_grocery/helper/route_helper.dart';
@@ -152,6 +153,7 @@ Future<void> main() async {
       ChangeNotifierProvider(create: (context) => OfferProvider()),
       ChangeNotifierProvider(create: (context) => RatingProvider()),
       ChangeNotifierProvider(create: (context) => ExpressDeliveryProvider()),
+      ChangeNotifierProvider(create: (context) => ReturnStatusProvider()),
     ],
     child: MyApp(orderID: orderID, isWeb: !kIsWeb),
   ));

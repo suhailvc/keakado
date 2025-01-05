@@ -13,6 +13,7 @@ import 'package:flutter_grocery/features/order/domain/models/order_model.dart';
 import 'package:flutter_grocery/common/models/product_model.dart';
 import 'package:flutter_grocery/common/models/response_model.dart';
 import 'package:flutter_grocery/features/order/domain/models/timeslote_model.dart';
+import 'package:flutter_grocery/features/order/domain/reposotories/order_cancel_status_repo.dart';
 import 'package:flutter_grocery/features/order/domain/reposotories/order_repo.dart';
 import 'package:flutter_grocery/features/order/providers/image_note_provider.dart';
 import 'package:flutter_grocery/helper/api_checker_helper.dart';
@@ -31,6 +32,13 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 
 class OrderProvider extends ChangeNotifier {
+  String _returnStatus = '';
+
+  String? _error;
+
+  String get returnStatus => _returnStatus;
+
+  String? get error => _error;
   final OrderRepo? orderRepo;
   final SharedPreferences? sharedPreferences;
   OrderProvider({required this.sharedPreferences, required this.orderRepo});
@@ -562,6 +570,24 @@ class OrderProvider extends ChangeNotifier {
     _addressIndex = index;
     if (notify) {
       notifyListeners();
+    }
+  }
+
+  Future<void> getReturnStatus() async {
+    try {
+      _isLoading = true;
+      _error = null;
+      notifyListeners();
+
+      _returnStatus = await cancelStatusService();
+
+      _isLoading = false;
+      notifyListeners();
+    } catch (e) {
+      _error = e.toString();
+      _isLoading = false;
+      notifyListeners();
+      debugPrint('Error in provider: $e');
     }
   }
 
