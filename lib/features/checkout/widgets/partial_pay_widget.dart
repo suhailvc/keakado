@@ -9,6 +9,7 @@ import 'package:flutter_grocery/features/address/providers/location_provider.dar
 import 'package:flutter_grocery/features/order/providers/order_provider.dart';
 import 'package:flutter_grocery/features/profile/providers/profile_provider.dart';
 import 'package:flutter_grocery/features/splash/providers/splash_provider.dart';
+import 'package:flutter_grocery/utill/app_constants.dart';
 import 'package:flutter_grocery/utill/dimensions.dart';
 import 'package:flutter_grocery/utill/images.dart';
 import 'package:flutter_grocery/utill/styles.dart';
@@ -23,6 +24,11 @@ class PartialPayWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print('---------pric-----$totalPrice');
+    double amountNeedToPay = AppConstants.mimimumOrderValue > totalPrice
+        ? (totalPrice + AppConstants.deliveryCagrge)
+        : totalPrice;
+    print('---------anp-----$amountNeedToPay');
     final SplashProvider splashProvider =
         Provider.of<SplashProvider>(context, listen: false);
     final ProfileProvider profileProvider =
@@ -88,11 +94,11 @@ class PartialPayWidget extends StatelessWidget {
                                         context,
                                         (orderProvider.partialAmount != null ||
                                                     isSelected) &&
-                                                totalPrice <
+                                                amountNeedToPay <
                                                     profileProvider
                                                         .userInfoModel!
                                                         .walletBalance!
-                                            ? totalPrice
+                                            ? amountNeedToPay
                                             : profileProvider
                                                 .userInfoModel!.walletBalance!,
                                       ),
@@ -163,12 +169,22 @@ class PartialPayWidget extends StatelessWidget {
 
                                     if (orderProvider.partialAmount != null ||
                                         isSelected) {
+                                      print(
+                                          '-------partialwal1----${orderProvider.partialAmount}');
                                       walletPaid = 0;
                                       orderProvider.changePartialPayment();
                                       orderProvider.savePaymentMethod(
                                           index: null, method: null);
                                     } else {
-                                      walletPaid = totalPrice;
+                                      print(
+                                          '-------partialwal1----${orderProvider.partialAmount}');
+                                      walletPaid = 0;
+                                      profileProvider.userInfoModel!
+                                                  .walletBalance! >
+                                              amountNeedToPay
+                                          ? walletPaid = amountNeedToPay
+                                          : walletPaid = profileProvider
+                                              .userInfoModel!.walletBalance!;
                                       showDialog(
                                           context: context,
                                           builder: (ctx) =>
@@ -176,8 +192,8 @@ class PartialPayWidget extends StatelessWidget {
                                                 isPartialPay: profileProvider
                                                         .userInfoModel!
                                                         .walletBalance! <
-                                                    totalPrice,
-                                                totalPrice: totalPrice,
+                                                    amountNeedToPay,
+                                                totalPrice: amountNeedToPay,
                                               ));
                                     }
                                   },
@@ -233,7 +249,7 @@ class PartialPayWidget extends StatelessWidget {
                             ]),
                         isSelected
                             ? Text(
-                                '${getTranslated('remaining_wallet_balance', context)}: ${PriceConverterHelper.convertPrice(context, profileProvider.userInfoModel!.walletBalance! - totalPrice)}',
+                                '${getTranslated('remaining_wallet_balance', context)}: ${PriceConverterHelper.convertPrice(context, profileProvider.userInfoModel!.walletBalance! - amountNeedToPay)}',
                                 style: poppinsRegular.copyWith(
                                     fontSize: Dimensions.fontSizeSmall),
                               )

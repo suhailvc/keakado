@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:firebase_messaging/firebase_messaging.dart';
+//import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -47,15 +47,15 @@ class _ChatScreenState extends State<ChatScreen> {
 
     final ChatProvider chatProvider = Provider.of<ChatProvider>(context, listen: false);
 
-    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-      if(!kIsWeb){
-        chatProvider.getMessages(1, widget.orderModel, false);
-      }
-    });
+    // FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+    //   if(!kIsWeb){
+    //     chatProvider.getMessages(1, widget.orderModel, false);
+    //   }
+    // });
 
-    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
-      chatProvider.getMessages(1, widget.orderModel, false);
-    });
+    // FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+    //   chatProvider.getMessages(1, widget.orderModel, false);
+    // });
 
     _isLoggedIn = Provider.of<AuthProvider>(context, listen: false).isLoggedIn();
 

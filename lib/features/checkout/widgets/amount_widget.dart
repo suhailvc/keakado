@@ -50,12 +50,11 @@ class AmountWidget extends StatelessWidget {
       bool selfPickup =
           CheckOutHelper.isSelfPickup(orderType: checkOutData?.orderType);
       bool showPayment = orderProvider.selectedPaymentMethod != null;
-      if (orderProvider.partialAmount != null) {
-        // Assign the value of walletPaid only if partialAmount is not null
-        walletPaid = checkOutData!.amount! +
-            (checkOutData.deliveryCharge ?? 0) -
-            (orderProvider.partialAmount ?? 0);
-      }
+      // if (orderProvider.partialAmount != null) {
+      //   // Assign the value of walletPaid only if partialAmount is not null
+      //   walletPaid = checkOutData!.amount! + (checkOutData.deliveryCharge ?? 0);
+      //   //-(orderProvider.partialAmount ?? 0);
+      // }
       print('ConfigModel: $configModel');
       print('Delivery Management: ${configModel?.deliveryManagement}');
       print(
@@ -127,6 +126,38 @@ class AmountWidget extends StatelessWidget {
                 )),
               ]),
               const SizedBox(height: Dimensions.paddingSizeSmall),
+              Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+                Text(
+                  getTranslated('delivery_fee', context),
+                  style: poppinsRegular.copyWith(
+                      fontSize: Dimensions.fontSizeLarge),
+                ),
+                Consumer<OrderProvider>(builder: (context, orderProvider, _) {
+                  return CustomDirectionalityWidget(
+                    child: Text(
+                      // '(+)${((checkOutData?.amount ?? 0) < 49 ? checkOutData?.deliveryCharge : 0)}',
+                      isFreeDelivery
+                          ? ' ${PriceConverterHelper.convertPrice(context, 0)}'
+                          : (selfPickup || orderProvider.distance != -1)
+                              ? '(+) ${PriceConverterHelper.convertPrice(context, selfPickup ? 0 : (((checkOutData?.amount ?? 0) < AppConstants.mimimumOrderValue) && Provider.of<CouponProvider>(context, listen: false).freeDeliveryCoupon == false ? AppConstants.deliveryCagrge : 0))}'
+                              : getTranslated('not_found', context),
+                      style: poppinsRegular.copyWith(
+                        fontSize: Dimensions.fontSizeLarge,
+                      ),
+                    ),
+                    // child: Text(
+                    //   isFreeDelivery
+                    //       ? getTranslated('free', context)
+                    //       : (selfPickup || orderProvider.distance != -1)
+                    //           ? '(+) ${PriceConverterHelper.convertPrice(context, selfPickup ? 0 : checkOutData?.amount)}'
+                    //           : getTranslated('not_found', context),
+                    //   style: poppinsRegular.copyWith(
+                    //       fontSize: Dimensions.fontSizeLarge),
+                    // ),
+                  );
+                }),
+              ]),
+              const SizedBox(height: Dimensions.paddingSizeSmall),
               // if (orderProvider.partialAmount != null)
               // if (walletPaid != 0)
               Column(children: [
@@ -180,37 +211,37 @@ class AmountWidget extends StatelessWidget {
                 //  const SizedBox(height: Dimensions.paddingSizeLarge),
               ]),
               const SizedBox(height: Dimensions.paddingSizeSmall),
-              Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                Text(
-                  getTranslated('delivery_fee', context),
-                  style: poppinsRegular.copyWith(
-                      fontSize: Dimensions.fontSizeLarge),
-                ),
-                Consumer<OrderProvider>(builder: (context, orderProvider, _) {
-                  return CustomDirectionalityWidget(
-                    child: Text(
-                      // '(+)${((checkOutData?.amount ?? 0) < 49 ? checkOutData?.deliveryCharge : 0)}',
-                      isFreeDelivery
-                          ? ' ${PriceConverterHelper.convertPrice(context, 0)}'
-                          : (selfPickup || orderProvider.distance != -1)
-                              ? '(+) ${PriceConverterHelper.convertPrice(context, selfPickup ? 0 : (((checkOutData?.amount ?? 0) < AppConstants.mimimumOrderValue) && Provider.of<CouponProvider>(context, listen: false).freeDeliveryCoupon == false ? AppConstants.deliveryCagrge : 0))}'
-                              : getTranslated('not_found', context),
-                      style: poppinsRegular.copyWith(
-                        fontSize: Dimensions.fontSizeLarge,
-                      ),
-                    ),
-                    // child: Text(
-                    //   isFreeDelivery
-                    //       ? getTranslated('free', context)
-                    //       : (selfPickup || orderProvider.distance != -1)
-                    //           ? '(+) ${PriceConverterHelper.convertPrice(context, selfPickup ? 0 : checkOutData?.amount)}'
-                    //           : getTranslated('not_found', context),
-                    //   style: poppinsRegular.copyWith(
-                    //       fontSize: Dimensions.fontSizeLarge),
-                    // ),
-                  );
-                }),
-              ]),
+              // Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+              //   Text(
+              //     getTranslated('delivery_fee', context),
+              //     style: poppinsRegular.copyWith(
+              //         fontSize: Dimensions.fontSizeLarge),
+              //   ),
+              //   Consumer<OrderProvider>(builder: (context, orderProvider, _) {
+              //     return CustomDirectionalityWidget(
+              //       child: Text(
+              //         // '(+)${((checkOutData?.amount ?? 0) < 49 ? checkOutData?.deliveryCharge : 0)}',
+              //         isFreeDelivery
+              //             ? ' ${PriceConverterHelper.convertPrice(context, 0)}'
+              //             : (selfPickup || orderProvider.distance != -1)
+              //                 ? '(+) ${PriceConverterHelper.convertPrice(context, selfPickup ? 0 : (((checkOutData?.amount ?? 0) < AppConstants.mimimumOrderValue) && Provider.of<CouponProvider>(context, listen: false).freeDeliveryCoupon == false ? AppConstants.deliveryCagrge : 0))}'
+              //                 : getTranslated('not_found', context),
+              //         style: poppinsRegular.copyWith(
+              //           fontSize: Dimensions.fontSizeLarge,
+              //         ),
+              //       ),
+              //       // child: Text(
+              //       //   isFreeDelivery
+              //       //       ? getTranslated('free', context)
+              //       //       : (selfPickup || orderProvider.distance != -1)
+              //       //           ? '(+) ${PriceConverterHelper.convertPrice(context, selfPickup ? 0 : checkOutData?.amount)}'
+              //       //           : getTranslated('not_found', context),
+              //       //   style: poppinsRegular.copyWith(
+              //       //       fontSize: Dimensions.fontSizeLarge),
+              //       // ),
+              //     );
+              //   }),
+              // ]),
               const Padding(
                 padding:
                     EdgeInsets.symmetric(vertical: Dimensions.paddingSizeSmall),

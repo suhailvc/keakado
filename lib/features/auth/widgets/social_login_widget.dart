@@ -15,7 +15,7 @@ import 'package:flutter_grocery/utill/styles.dart';
 import 'package:flutter_grocery/features/auth/widgets/media_button_view.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:provider/provider.dart';
-import 'package:sign_in_with_apple/sign_in_with_apple.dart';
+//import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
 class SocialLoginWidget extends StatefulWidget {
   final String? countryCode;
@@ -109,30 +109,30 @@ class _SocialLoginWidgetState extends State<SocialLoginWidget> {
             ),
 
 
-            if(!kIsWeb && defaultTargetPlatform == TargetPlatform.iOS && (configModel?.appleLogin?.status ?? false)) Padding(
-              padding: const EdgeInsets.symmetric(horizontal: Dimensions.paddingSizeSmall),
-              child: MediaButtonView(
-                image: Images.appleLogo,
-                onTap: () async {
+            // if(!kIsWeb && defaultTargetPlatform == TargetPlatform.iOS && (configModel?.appleLogin?.status ?? false)) Padding(
+            //   padding: const EdgeInsets.symmetric(horizontal: Dimensions.paddingSizeSmall),
+            //   child: MediaButtonView(
+            //     image: Images.appleLogo,
+            //     onTap: () async {
 
-                  final credential = await SignInWithApple.getAppleIDCredential(scopes: [
-                    AppleIDAuthorizationScopes.email,
-                    AppleIDAuthorizationScopes.fullName,
-                  ],
-                    webAuthenticationOptions: WebAuthenticationOptions(
-                      clientId: '${configModel?.appleLogin?.clientId}',
-                      redirectUri: Uri.parse(AppConstants.baseUrl),
-                    ),
-                  );
+            //       final credential = await SignInWithApple.getAppleIDCredential(scopes: [
+            //         AppleIDAuthorizationScopes.email,
+            //         AppleIDAuthorizationScopes.fullName,
+            //       ],
+            //         webAuthenticationOptions: WebAuthenticationOptions(
+            //           clientId: '${configModel?.appleLogin?.clientId}',
+            //           redirectUri: Uri.parse(AppConstants.baseUrl),
+            //         ),
+            //       );
 
                   
 
-                  authProvider.socialLogin(SocialLoginModel(
-                    email: credential.email, token: credential.authorizationCode, uniqueId: credential.authorizationCode, medium: 'apple',
-                  ), route);
-                },
-              ),
-            ),
+            //       authProvider.socialLogin(SocialLoginModel(
+            //         email: credential.email, token: credential.authorizationCode, uniqueId: credential.authorizationCode, medium: 'apple',
+            //       ), route);
+            //     },
+            //   ),
+            // ),
 
 
 

@@ -407,10 +407,10 @@ class AuthProvider with ChangeNotifier {
         token = map['token'];
       } catch (_) {}
 
-      if (token != null) {
-        authRepo!.saveUserToken(token);
-        await updateFirebaseToken();
-      }
+      // if (token != null) {
+      //   authRepo!.saveUserToken(token);
+      //   await updateFirebaseToken();
+      // }
 
       callback(true, token, message);
       notifyListeners();
@@ -431,25 +431,25 @@ class AuthProvider with ChangeNotifier {
     } catch (_) {}
   }
 
-  Future updateFirebaseToken() async {
-    if (await authRepo!.getDeviceToken() != '@') {
-      await authRepo!.updateToken();
-    }
-  }
+  // Future updateFirebaseToken() async {
+  //   if (await authRepo!.getDeviceToken() != '@') {
+  //     await authRepo!.updateToken();
+  //   }
+  // }
 
-  Future<void> addOrUpdateGuest() async {
-    String? fcmToken = await authRepo?.getDeviceToken();
-    ApiResponseModel apiResponse = await authRepo!.addOrUpdateGuest(fcmToken);
+  // Future<void> addOrUpdateGuest() async {
+  //   String? fcmToken = await authRepo?.getDeviceToken();
+  //   ApiResponseModel apiResponse = await authRepo!.addOrUpdateGuest(fcmToken);
 
-    if (apiResponse.response != null &&
-        apiResponse.response!.statusCode == 200 &&
-        apiResponse.response?.data != null &&
-        apiResponse.response?.data.isNotEmpty &&
-        apiResponse.response?.data['guest']['id'] != null) {
-      authRepo?.saveGuestId(
-          '${apiResponse.response?.data['guest']['id'].toString()}');
-    }
-  }
+  //   if (apiResponse.response != null &&
+  //       apiResponse.response!.statusCode == 200 &&
+  //       apiResponse.response?.data != null &&
+  //       apiResponse.response?.data.isNotEmpty &&
+  //       apiResponse.response?.data['guest']['id'] != null) {
+  //     authRepo?.saveGuestId(
+  //         '${apiResponse.response?.data['guest']['id'].toString()}');
+  //   }
+  // }
 
   String? getGuestId() => isLoggedIn() ? null : authRepo?.getGuestId();
 
@@ -523,31 +523,79 @@ class AuthProvider with ChangeNotifier {
       splashProvider.setPageIndex(0);
       socialLogout();
       wishListProvider.clearWishList();
-      addOrUpdateGuest();
+      //  addOrUpdateGuest();
     });
     _isLoading = false;
     notifyListeners();
   }
 
-  Future<void> deleteAccount(String token) async {
-    _isLoading = true;
-    notifyListeners();
-    final SplashProvider splashProvider =
-        Provider.of<SplashProvider>(Get.context!, listen: false);
-    final WishListProvider wishListProvider =
-        Provider.of<WishListProvider>(Get.context!, listen: false);
-    final CartProvider cartProvider =
-        Provider.of<CartProvider>(Get.context!, listen: false);
-    deleteAccountApi(token);
-    clearSharedData().then((value) {
-      authRepo?.clearToken();
+  Future<bool> deleteAccount(String token) async {
+    try {
+      _isLoading = true;
+      notifyListeners();
+
+      final bool deleted = await deleteAccountApi(token);
+      if (!deleted) {
+        return deleted;
+      }
+      // Get providers
+      final splashProvider =
+          Provider.of<SplashProvider>(Get.context!, listen: false);
+      final wishListProvider =
+          Provider.of<WishListProvider>(Get.context!, listen: false);
+      final cartProvider =
+          Provider.of<CartProvider>(Get.context!, listen: false);
+
+      // Clear data
+      await clearSharedData();
+      await authRepo?.clearToken();
+      await socialLogout();
+
+      // Update UI state
       cartProvider.getCartData(isUpdate: true);
       splashProvider.setPageIndex(0);
-      socialLogout();
       wishListProvider.clearWishList();
-      addOrUpdateGuest();
-    });
-    _isLoading = false;
-    notifyListeners();
+      return deleted;
+    } catch (e) {
+      // Handle errors
+      showCustomSnackBarHelper('Error deleting account: $e', isError: true);
+      return false;
+    } finally {
+      _isLoading = false;
+
+      notifyListeners();
+    }
   }
+  // Future<void> deleteAccount(String token) async {
+  //   _isLoading = true;
+  //   notifyListeners();
+  //   bool deleted = await deleteAccountApi(token);
+  //   print('-----------deleted acc----$deleted');
+  //   if (deleted == false) {
+  //     return showCustomSnackBarHelper('Complete your ruuning Orders'.tr,
+  //         isError: false);
+  //   }
+  //   final SplashProvider splashProvider =
+  //       Provider.of<SplashProvider>(Get.context!, listen: false);
+  //   final WishListProvider wishListProvider =
+  //       Provider.of<WishListProvider>(Get.context!, listen: false);
+  //   final CartProvider cartProvider =
+  //       Provider.of<CartProvider>(Get.context!, listen: false);
+  //   // bool deleted = await deleteAccountApi(token);
+  //   // print('-----------deleted acc----$deleted');
+  //   // if (deleted == false) {
+  //   //   return showCustomSnackBarHelper('Complete your ruuning Orders'.tr,
+  //   //       isError: false);
+  //   // }
+  //   clearSharedData().then((value) {
+  //     authRepo?.clearToken();
+  //     cartProvider.getCartData(isUpdate: true);
+  //     splashProvider.setPageIndex(0);
+  //     socialLogout();
+  //     wishListProvider.clearWishList();
+  //     //   addOrUpdateGuest();
+  //   });
+  //   _isLoading = false;
+  //   notifyListeners();
+  // }
 }

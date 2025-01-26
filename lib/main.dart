@@ -2,8 +2,8 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:ui';
 
-import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
+// import 'package:firebase_core/firebase_core.dart';
+// import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart'
     show defaultTargetPlatform, kDebugMode, kIsWeb;
 import 'package:flutter/material.dart';
@@ -67,31 +67,31 @@ Future<void> main() async {
   setPathUrlStrategy();
   WidgetsFlutterBinding.ensureInitialized();
   sharedPreferences1 = await SharedPreferences.getInstance();
-  if (!kIsWeb) {
-    await Firebase.initializeApp();
-    if (defaultTargetPlatform == TargetPlatform.android) {
-      FirebaseMessaging.instance.requestPermission();
+  // if (!kIsWeb) {
+  //   await Firebase.initializeApp();
+  //   if (defaultTargetPlatform == TargetPlatform.android) {
+  //     FirebaseMessaging.instance.requestPermission();
 
-      /// firebase crashlytics
-    }
-  } else {
-    await Firebase.initializeApp(
-        options: const FirebaseOptions(
-            apiKey: "AIzaSyDuBlqmsh9xw17osLOuEn7iqHtDlpkulcM",
-            authDomain: "grofresh-3986f.firebaseapp.com",
-            projectId: "grofresh-3986f",
-            storageBucket: "grofresh-3986f.appspot.com",
-            messagingSenderId: "250728969979",
-            appId: "1:250728969979:web:b79642a7b2d2400b75a25e",
-            measurementId: "G-X1HCG4K8HJ"));
+  //     /// firebase crashlytics
+  //   }
+  // } else {
+  //   await Firebase.initializeApp(
+  //       options: const FirebaseOptions(
+  //           apiKey: "AIzaSyDuBlqmsh9xw17osLOuEn7iqHtDlpkulcM",
+  //           authDomain: "grofresh-3986f.firebaseapp.com",
+  //           projectId: "grofresh-3986f",
+  //           storageBucket: "grofresh-3986f.appspot.com",
+  //           messagingSenderId: "250728969979",
+  //           appId: "1:250728969979:web:b79642a7b2d2400b75a25e",
+  //           measurementId: "G-X1HCG4K8HJ"));
 
-    await FacebookAuth.instance.webAndDesktopInitialize(
-      appId: "YOUR_FACEBOOK_KEY_HERE",
-      cookie: true,
-      xfbml: true,
-      version: "v13.0",
-    );
-  }
+  //   await FacebookAuth.instance.webAndDesktopInitialize(
+  //     appId: "YOUR_FACEBOOK_KEY_HERE",
+  //     cookie: true,
+  //     xfbml: true,
+  //     version: "v13.0",
+  //   );
+  // }
 
   await di.init();
   int? orderID;
@@ -103,15 +103,15 @@ Future<void> main() async {
         importance: Importance.high,
       );
     }
-    final RemoteMessage? remoteMessage =
-        await FirebaseMessaging.instance.getInitialMessage();
-    if (remoteMessage != null) {
-      orderID = remoteMessage.notification!.titleLocKey != null
-          ? int.parse(remoteMessage.notification!.titleLocKey!)
-          : null;
-    }
+    // final RemoteMessage? remoteMessage =
+    //     await FirebaseMessaging.instance.getInitialMessage();
+    // if (remoteMessage != null) {
+    //   orderID = remoteMessage.notification!.titleLocKey != null
+    //       ? int.parse(remoteMessage.notification!.titleLocKey!)
+    //       : null;
+    // }
     await NotificationHelper.initialize(flutterLocalNotificationsPlugin);
-    FirebaseMessaging.onBackgroundMessage(myBackgroundMessageHandler);
+   // FirebaseMessaging.onBackgroundMessage(myBackgroundMessageHandler);
   } catch (e) {
     if (kDebugMode) {
       print('error---> ${e.toString()}');
@@ -153,7 +153,7 @@ Future<void> main() async {
       ChangeNotifierProvider(create: (context) => OfferProvider()),
       ChangeNotifierProvider(create: (context) => RatingProvider()),
       ChangeNotifierProvider(create: (context) => ExpressDeliveryProvider()),
-      ChangeNotifierProvider(create: (context) => ReturnStatusProvider()),
+          ChangeNotifierProvider(create: (context) => ReturnStatusProvider()),
     ],
     child: MyApp(orderID: orderID, isWeb: !kIsWeb),
   ));

@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:firebase_auth/firebase_auth.dart';
+//import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_grocery/common/models/api_response_model.dart';
 import 'package:flutter_grocery/common/models/config_model.dart';
@@ -104,26 +104,26 @@ class VerificationProvider with ChangeNotifier {
     _isLoading = true;
     notifyListeners();
 
-    FirebaseAuth.instance.verifyPhoneNumber(
-      phoneNumber: phoneNumber,
-      verificationCompleted: (PhoneAuthCredential credential) {},
-      verificationFailed: (FirebaseAuthException e) {
-        _isLoading = false;
-        notifyListeners();
+    // FirebaseAuth.instance.verifyPhoneNumber(
+    //   phoneNumber: phoneNumber,
+    //   verificationCompleted: (PhoneAuthCredential credential) {},
+    //   verificationFailed: (FirebaseAuthException e) {
+    //     _isLoading = false;
+    //     notifyListeners();
 
-        Navigator.pop(Get.context!);
-        showCustomSnackBarHelper(getTranslated('${e.message}', Get.context!));
-      },
-      codeSent: (String vId, int? resendToken) {
-        _isLoading = false;
-        notifyListeners();
+    //     Navigator.pop(Get.context!);
+    //     showCustomSnackBarHelper(getTranslated('${e.message}', Get.context!));
+    //   },
+    //   codeSent: (String vId, int? resendToken) {
+    //     _isLoading = false;
+    //     notifyListeners();
 
-        Navigator.of(Get.context!).pushNamed(RouteHelper.getVerifyRoute(
-          isForgetPassword ? 'forget-password' : 'sign-up', phoneNumber, session: vId,
-        ));
-      },
-      codeAutoRetrievalTimeout: (String verificationId) {},
-    );
+    //     Navigator.of(Get.context!).pushNamed(RouteHelper.getVerifyRoute(
+    //       isForgetPassword ? 'forget-password' : 'sign-up', phoneNumber, session: vId,
+    //     ));
+    //   },
+    //   codeAutoRetrievalTimeout: (String verificationId) {},
+    // );
 
   }
 

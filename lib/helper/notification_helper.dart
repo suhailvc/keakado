@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:dio/dio.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
+//import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_grocery/main.dart';
@@ -53,74 +53,74 @@ class NotificationHelper {
         return;
       },);
 
-    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-      if (kDebugMode) {
-        print("onMessage: ${message.notification?.title}/${message.notification?.body}/${message.notification?.titleLocKey}");
-        print('id ${message.data}');
-      }
-      showNotification(message, flutterLocalNotificationsPlugin, kIsWeb);
+    // FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+    //   if (kDebugMode) {
+    //     print("onMessage: ${message.notification?.title}/${message.notification?.body}/${message.notification?.titleLocKey}");
+    //     print('id ${message.data}');
+    //   }
+    //   showNotification(message, flutterLocalNotificationsPlugin, kIsWeb);
 
-    });
-    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
-      if (kDebugMode) {
-        print("onOpenApp: ${message.notification?.title}/${message.notification?.body}/${message.notification?.titleLocKey}");
-      }
-      showNotification(message, flutterLocalNotificationsPlugin, kIsWeb);
+    // });
+  //  FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+  //     if (kDebugMode) {
+  //       print("onOpenApp: ${message.notification?.title}/${message.notification?.body}/${message.notification?.titleLocKey}");
+  //     }
+  //     showNotification(message, flutterLocalNotificationsPlugin, kIsWeb);
 
-    });
+  //   });
   }
 
-  static Future<void> showNotification(RemoteMessage message, FlutterLocalNotificationsPlugin? fln, bool data) async {
-    String? title;
-    String? body;
-    String? orderID;
-    String? image;
-    String? type;
+  // static Future<void> showNotification(RemoteMessage message, FlutterLocalNotificationsPlugin? fln, bool data) async {
+  //   String? title;
+  //   String? body;
+  //   String? orderID;
+  //   String? image;
+  //   String? type;
 
-    title = message.data['title'];
-    body = message.data['body'];
-    orderID = message.data['order_id'];
-    image = (message.data['image'] != null && message.data['image'].isNotEmpty)
-        ? message.data['image'].startsWith('http') ? message.data['image']
-        : '${AppConstants.baseUrl}/storage/app/public/notification/${message.data['image']}' : null;
-
-
-    type = message.data['type'];
-
-    Map<String, String> payloadData = {
-      'title' : '$title',
-      'body' : '$body',
-      'order_id' : '$orderID',
-      'image' : '$image',
-      'type' : '$type',
-    };
+  //   title = message.data['title'];
+  //   body = message.data['body'];
+  //   orderID = message.data['order_id'];
+  //   image = (message.data['image'] != null && message.data['image'].isNotEmpty)
+  //       ? message.data['image'].startsWith('http') ? message.data['image']
+  //       : '${AppConstants.baseUrl}/storage/app/public/notification/${message.data['image']}' : null;
 
 
-    if(kIsWeb) {
-      showDialog(
-          context: Get.context!,
-          builder: (context) => Center(
-            child: NotificationDialogWebWidget(
-              orderId: int.tryParse(orderID!),
-              title: title,
-              body: body,
-              image: image,
-              type: type,
-            ),
-          )
-      );
-    }
+  //   type = message.data['type'];
 
-    else if(image != null && image.isNotEmpty) {
-      try{
-        await showBigPictureNotificationHiddenLargeIcon(payloadData, fln!);
-      }catch(e) {
-        await showBigTextNotification(payloadData, fln!);
-      }
-    }else {
-      await showBigTextNotification(payloadData, fln!);
-    }
-  }
+  //   Map<String, String> payloadData = {
+  //     'title' : '$title',
+  //     'body' : '$body',
+  //     'order_id' : '$orderID',
+  //     'image' : '$image',
+  //     'type' : '$type',
+  //   };
+
+
+  //   if(kIsWeb) {
+  //     showDialog(
+  //         context: Get.context!,
+  //         builder: (context) => Center(
+  //           child: NotificationDialogWebWidget(
+  //             orderId: int.tryParse(orderID!),
+  //             title: title,
+  //             body: body,
+  //             image: image,
+  //             type: type,
+  //           ),
+  //         )
+  //     );
+  //   }
+
+  //   else if(image != null && image.isNotEmpty) {
+  //     try{
+  //       await showBigPictureNotificationHiddenLargeIcon(payloadData, fln!);
+  //     }catch(e) {
+  //       await showBigTextNotification(payloadData, fln!);
+  //     }
+  //   }else {
+  //     await showBigTextNotification(payloadData, fln!);
+  //   }
+  // }
 
 
   static Future<void> showBigTextNotification(Map<String, String> data, FlutterLocalNotificationsPlugin fln) async {
@@ -172,8 +172,8 @@ class NotificationHelper {
 
 }
 
-Future<dynamic> myBackgroundMessageHandler(RemoteMessage message) async {
-  if (kDebugMode) {
-    print("onBackground: ${message.notification!.title}/${message.notification!.body}/${message.notification!.titleLocKey}");
-  }
-}
+// Future<dynamic> myBackgroundMessageHandler(RemoteMessage message) async {
+//   if (kDebugMode) {
+//     print("onBackground: ${message.notification!.title}/${message.notification!.body}/${message.notification!.titleLocKey}");
+//   }
+// }

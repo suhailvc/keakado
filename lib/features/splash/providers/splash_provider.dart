@@ -354,16 +354,16 @@ class SplashProvider extends ChangeNotifier {
         final AuthProvider authProvider =
             Provider.of<AuthProvider>(Get.context!, listen: false);
 
-        if (authProvider.getGuestId() == null && !authProvider.isLoggedIn()) {
-          authProvider.addOrUpdateGuest();
-        }
+        // if (authProvider.getGuestId() == null && !authProvider.isLoggedIn()) {
+        //   authProvider.addOrUpdateGuest();
+        // }
       }
 
       if (!kIsWeb) {
         if (!Provider.of<AuthProvider>(Get.context!, listen: false)
             .isLoggedIn()) {
-          await Provider.of<AuthProvider>(Get.context!, listen: false)
-              .updateFirebaseToken();
+       //   await Provider.of<AuthProvider>(Get.context!, listen: false)
+              // .updateFirebaseToken();
         }
       }
 

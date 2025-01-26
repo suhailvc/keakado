@@ -159,7 +159,7 @@ class WalletHistory extends StatelessWidget {
                 Text(
                   '#${getTranslated(transaction!.orderId!, context)}',
                   style: poppinsRegular.copyWith(
-                      fontSize: Dimensions.fontSizeSmall,
+                      fontSize:MediaQuery.of(context).size.width*0.025,
                       color: Theme.of(context).disabledColor),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,

@@ -405,7 +405,7 @@ class _AllCategoriesScreenState extends State<AllCategoriesScreen>
                                 itemCount:
                                     categoryProvider.categoryList?.length ??
                                         0, // Ensure safe access
-                                cacheExtent: 350,
+                                cacheExtent: 400,
                                 itemBuilder: (context, index) {
                                   if (index >=
                                       categoryProvider.categoryList!.length) {
@@ -672,6 +672,7 @@ class _AllCategoriesScreenState extends State<AllCategoriesScreen>
         SizedBox(
           height: 200,
           child: ListView.builder(
+            cacheExtent: 400,
             scrollDirection: Axis.horizontal,
             itemCount: subCategories.length,
             // categoryProvider.getSubCategories(categoryID)?.length ?? 0,

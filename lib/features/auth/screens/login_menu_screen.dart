@@ -46,7 +46,9 @@ class _LoginMenuScreenState extends State<LoginMenuScreen> {
             ),
             GestureDetector(
               onTap: () {
-                Navigator.pushReplacementNamed(context, RouteHelper.menu);
+                Navigator.pushNamedAndRemoveUntil(
+                    context, RouteHelper.menu, (route) => false);
+                // Navigator.pushReplacementNamed(context, RouteHelper.menu);
               },
               child: Container(
                 decoration: BoxDecoration(

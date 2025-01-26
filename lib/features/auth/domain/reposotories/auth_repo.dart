@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'package:dio/dio.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
+//import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_grocery/data/datasource/remote/dio/dio_client.dart';
 import 'package:flutter_grocery/data/datasource/remote/exception/api_error_handler.dart';
@@ -202,29 +202,29 @@ class AuthRepo {
     try {
       String? deviceToken = '@';
 
-      if (defaultTargetPlatform == TargetPlatform.iOS) {
-        FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(
-            alert: true, badge: true, sound: true);
-        NotificationSettings settings =
-            await FirebaseMessaging.instance.requestPermission(
-          alert: true,
-          announcement: false,
-          badge: true,
-          carPlay: false,
-          criticalAlert: false,
-          provisional: false,
-          sound: true,
-        );
-        if (settings.authorizationStatus == AuthorizationStatus.authorized) {
-          deviceToken = (await getDeviceToken())!;
-        }
-      } else {
-        deviceToken = (await getDeviceToken())!;
-      }
+      // if (defaultTargetPlatform == TargetPlatform.iOS) {
+      //   FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(
+      //       alert: true, badge: true, sound: true);
+      //   NotificationSettings settings =
+      //       await FirebaseMessaging.instance.requestPermission(
+      //     alert: true,
+      //     announcement: false,
+      //     badge: true,
+      //     carPlay: false,
+      //     criticalAlert: false,
+      //     provisional: false,
+      //     sound: true,
+      //   );
+      //   if (settings.authorizationStatus == AuthorizationStatus.authorized) {
+      //     deviceToken = (await getDeviceToken())!;
+      //   }
+      // } else {
+      //   deviceToken = (await getDeviceToken())!;
+      // }
 
-      if (!kIsWeb) {
-        FirebaseMessaging.instance.subscribeToTopic(AppConstants.topic);
-      }
+      // if (!kIsWeb) {
+      //   FirebaseMessaging.instance.subscribeToTopic(AppConstants.topic);
+      // }
 
       Response response = await dioClient!.post(
         AppConstants.tokenUri,
@@ -237,23 +237,23 @@ class AuthRepo {
     }
   }
 
-  Future<String?> getDeviceToken() async {
-    String? deviceToken = '@';
-    try {
-      deviceToken = (await FirebaseMessaging.instance.getToken())!;
-    } catch (error) {
-      if (kDebugMode) {
-        print('error is: $error');
-      }
-    }
-    if (deviceToken != null) {
-      if (kDebugMode) {
-        print('--------Device Token---------- $deviceToken');
-      }
-    }
+  // Future<String?> getDeviceToken() async {
+  //   String? deviceToken = '@';
+  //   try {
+  //     deviceToken = (await FirebaseMessaging.instance.getToken())!;
+  //   } catch (error) {
+  //     if (kDebugMode) {
+  //       print('error is: $error');
+  //     }
+  //   }
+  //   if (deviceToken != null) {
+  //     if (kDebugMode) {
+  //       print('--------Device Token---------- $deviceToken');
+  //     }
+  //   }
 
-    return deviceToken;
-  }
+  //   return deviceToken;
+  // }
 
   String getUserToken() {
     return sharedPreferences!.getString(AppConstants.token) ?? "";
@@ -266,9 +266,9 @@ class AuthRepo {
   Future<bool> clearSharedData() async {
     await sharedPreferences!.remove(AppConstants.token);
 
-    if (!kIsWeb) {
-      await FirebaseMessaging.instance.unsubscribeFromTopic(AppConstants.topic);
-    }
+    // if (!kIsWeb) {
+    //   await FirebaseMessaging.instance.unsubscribeFromTopic(AppConstants.topic);
+    // }
 
     try {
       await dioClient!.post(

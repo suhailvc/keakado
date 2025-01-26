@@ -33,6 +33,7 @@ class _OrderWidgetState extends State<OrderWidget> {
 
   @override
   Widget build(BuildContext context) {
+  print('order_widget');
     return Scaffold(
       backgroundColor: ColorResources.scaffoldGrey,
       body: Consumer<OrderProvider>(

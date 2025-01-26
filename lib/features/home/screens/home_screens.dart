@@ -74,10 +74,10 @@ class HomeScreen extends StatefulWidget {
       await bannerProvider.getBannerList(context, reload);
     }
 
-    if (productProvider.dailyProductModel == null) {
-      productProvider.getItemList(1,
-          isUpdate: false, productType: ProductType.dailyItem);
-    }
+    //if (productProvider.dailyProductModel == null) {
+    productProvider.getItemList(1,
+        isUpdate: false, productType: ProductType.dailyItem);
+    //}
 
     if (productProvider.featuredProductModel == null) {
       productProvider.getItemList(1,
@@ -116,7 +116,9 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     _loadInitialData();
-    Provider.of<ProfileProvider>(context, listen: false).getUserInfo();
+    if (Provider.of<AuthProvider>(context, listen: false).isLoggedIn()) {
+      Provider.of<ProfileProvider>(context, listen: false).getUserInfo();
+    }
     Provider.of<CategoryProvider>(context, listen: false)
         .getCategoryList(context, true);
     // final CategoryProvider categoryProvider =

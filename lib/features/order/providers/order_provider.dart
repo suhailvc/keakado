@@ -572,8 +572,7 @@ class OrderProvider extends ChangeNotifier {
       notifyListeners();
     }
   }
-
-  Future<void> getReturnStatus() async {
+  Future<void> getCancelStatus() async {
     try {
       _isLoading = true;
       _error = null;
@@ -590,7 +589,6 @@ class OrderProvider extends ChangeNotifier {
       debugPrint('Error in provider: $e');
     }
   }
-
   void cancelOrder(
     String orderID,
     bool fromOrder,

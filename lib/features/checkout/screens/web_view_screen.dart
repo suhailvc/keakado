@@ -7,7 +7,7 @@ import 'package:webview_flutter/webview_flutter.dart';
 
 import 'dart:io';
 
-import 'package:flutter_inappwebview/flutter_inappwebview.dart';
+//import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 
 class WebViewScreen extends StatefulWidget {
   final String url;
@@ -216,7 +216,7 @@ class _WebViewScreenState extends State<WebViewScreen> {
   // Function to handle retrying payment, like reloading WebView
   void _retryPayment() {
     // You can implement reloading the WebView or any retry mechanism
-    _controller.loadRequest(Uri.parse(widget.url)); // Reload the payment page
+   // _controller.loadRequest(Uri.parse(widget.url)); // Reload the payment page
   }
 }
 // class WebViewScreen extends StatefulWidget {
@@ -394,7 +394,7 @@ class _WebViewScreenState extends State<WebViewScreen> {
 //     },
 //   );
 // }
-//}
+// }
 
 // class WebViewScreen extends StatefulWidget {
 //   final String url;

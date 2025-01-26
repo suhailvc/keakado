@@ -67,7 +67,12 @@ class DeleteDialogWidget extends StatelessWidget {
                                           listen: false)
                                       .getUserToken())
                                   .then((value) {
-                                if (context.mounted) {
+                                if (value == false) {
+                                  showCustomSnackBarHelper(
+                                      'Complete your pending orders',
+                                      isError: true);
+                                  Navigator.pop(context);
+                                } else if (context.mounted) {
                                   showCustomSnackBarHelper(
                                       getTranslated('Account Deleted', context),
                                       isError: false);

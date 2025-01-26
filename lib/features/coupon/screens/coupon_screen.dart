@@ -185,7 +185,7 @@ class _CouponScreenState extends State<CouponScreen> {
                                                             style: poppinsBold
                                                                 .copyWith(
                                                               fontSize: Dimensions
-                                                                  .fontSizeOverLarge,
+                                                                  .fontSizeLarge,
                                                             ),
                                                             textAlign: TextAlign
                                                                 .center,

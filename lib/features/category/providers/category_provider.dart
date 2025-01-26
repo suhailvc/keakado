@@ -305,99 +305,100 @@ class CategoryProvider extends ChangeNotifier {
     return subCategoryMap[categoryID] ?? [];
   }
 
-  Future<void> getSubCategoryList(
-      BuildContext context, String categoryID) async {
-    // Check if data is already available for this categoryID
-    if (subCategoryMap[categoryID]?.isNotEmpty ?? false) {
-      return; // Skip fetching if already loaded
-    }
-
-    subCategoryMap[categoryID] = []; // Reset the list
-
-    try {
-      ApiResponseModel apiResponse =
-          await categoryRepo.getSubCategoryList(categoryID);
-      if (apiResponse.response != null &&
-          apiResponse.response!.statusCode == 200) {
-        subCategoryMap[categoryID] = [];
-
-        var data = apiResponse.response!.data;
-
-        if (data is Map<String, dynamic>) {
-          // Handle Map response
-          data.forEach((key, value) {
-            subCategoryMap[categoryID]!.add(CategoryModel.fromJson(value));
-          });
-        } else if (data is List<dynamic>) {
-          // Handle List response
-          data.forEach((item) {
-            subCategoryMap[categoryID]!.add(CategoryModel.fromJson(item));
-          });
-        } else {
-          debugPrint("Unexpected data type: ${data.runtimeType}");
-        }
-      }
-      // if (apiResponse.response != null &&
-      //     apiResponse.response!.statusCode == 200) {
-      //   subCategoryMap[categoryID] = [];
-
-      //   // Check if the response data is a Map
-      //   (apiResponse.response!.data as Map<String, dynamic>)
-      //       .forEach((key, value) {
-      //     subCategoryMap[categoryID]!.add(CategoryModel.fromJson(value));
-      //   });
-      // }
-      // if (apiResponse.response != null &&
-      //     apiResponse.response!.statusCode == 200) {
-      //   subCategoryMap[categoryID] = [];
-      //   apiResponse.response!.data.forEach((category) {
-      //     subCategoryMap[categoryID]!.add(CategoryModel.fromJson(category));
-      //   });
-      //}
-      else if (apiResponse.response!.statusCode == 429) {
-        await Future.delayed(Duration(seconds: 2)); // Retry after delay
-        await getSubCategoryList(context, categoryID); // Retry
-      } else {
-        ApiCheckerHelper.checkApi(apiResponse);
-      }
-    } catch (e) {
-      if (e is DioError && e.response?.statusCode == 429) {
-        await Future.delayed(Duration(seconds: 2)); // Retry after delay
-        await getSubCategoryList(context, categoryID); // Retry
-      } else {
-        debugPrint("Error fetching subcategories: $e");
-      }
-    }
-
-    notifyListeners(); // Notify listeners about updates
-  }
-
   // Future<void> getSubCategoryList(
   //     BuildContext context, String categoryID) async {
-  //   subCategoryMap[categoryID] =
-  //       []; // Reset the specific subcategory list before fetching
-
-  //   ApiResponseModel apiResponse =
-  //       await categoryRepo.getSubCategoryList(categoryID);
-  //   if (apiResponse.response != null &&
-  //       apiResponse.response!.statusCode == 200) {
-  //     subCategoryMap[categoryID] =
-  //         []; // Initialize the list for this categoryID
-  //     apiResponse.response!.data.forEach((category) {
-  //       log(category.toString(), name: "Sub-Cat");
-  //       subCategoryMap[categoryID]!.add(CategoryModel.fromJson(category));
-  //     });
-
-  //     getCategoryProductList(
-  //         categoryID); // Optional: Call additional functions if needed
-  //     log(subCategoryMap[categoryID]
-  //         .toString()); // Log the specific subcategory list
-  //   } else {
-  //     ApiCheckerHelper.checkApi(apiResponse);
+  //   // Check if data is already available for this categoryID
+  //   if (subCategoryMap[categoryID]?.isNotEmpty ?? false) {
+  //     return; // Skip fetching if already loaded
   //   }
 
-  //   notifyListeners();
+  //   subCategoryMap[categoryID] = []; // Reset the list
+
+  //   try {
+  //     ApiResponseModel apiResponse =
+  //         await categoryRepo.getSubCategoryList(categoryID);
+  //     if (apiResponse.response != null &&
+  //         apiResponse.response!.statusCode == 200) {
+  //       subCategoryMap[categoryID] = [];
+
+  //       var data = apiResponse.response!.data;
+
+  //       if (data is Map<String, dynamic>) {
+  //         // Handle Map response
+  //         data.forEach((key, value) {
+  //           subCategoryMap[categoryID]!.add(CategoryModel.fromJson(value));
+  //         });
+  //       } else if (data is List<dynamic>) {
+  //         // Handle List response
+  //         data.forEach((item) {
+  //           subCategoryMap[categoryID]!.add(CategoryModel.fromJson(item));
+  //         });
+  //       } else {
+  //         debugPrint("Unexpected data type: ${data.runtimeType}");
+  //       }
+  //     }
+  //     // if (apiResponse.response != null &&
+  //     //     apiResponse.response!.statusCode == 200) {
+  //     //   subCategoryMap[categoryID] = [];
+
+  //     //   // Check if the response data is a Map
+  //     //   (apiResponse.response!.data as Map<String, dynamic>)
+  //     //       .forEach((key, value) {
+  //     //     subCategoryMap[categoryID]!.add(CategoryModel.fromJson(value));
+  //     //   });
+  //     // }
+  //     // if (apiResponse.response != null &&
+  //     //     apiResponse.response!.statusCode == 200) {
+  //     //   subCategoryMap[categoryID] = [];
+  //     //   apiResponse.response!.data.forEach((category) {
+  //     //     subCategoryMap[categoryID]!.add(CategoryModel.fromJson(category));
+  //     //   });
+  //     //}
+  //     else if (apiResponse.response!.statusCode == 429) {
+  //       await Future.delayed(Duration(seconds: 2)); // Retry after delay
+  //       await getSubCategoryList(context, categoryID); // Retry
+  //     } else {
+  //       ApiCheckerHelper.checkApi(apiResponse);
+  //     }
+  //   } catch (e) {
+  //     if (e is DioError && e.response?.statusCode == 429) {
+  //       await Future.delayed(Duration(seconds: 2)); // Retry after delay
+  //       await getSubCategoryList(context, categoryID); // Retry
+  //     } else {
+  //       debugPrint("Error fetching subcategories: $e");
+  //     }
+  //   }
+
+  //   notifyListeners(); // Notify listeners about updates
   // }
+
+  Future<void> getSubCategoryList(
+      BuildContext context, String categoryID) async {
+    subCategoryMap[categoryID] =
+        []; // Reset the specific subcategory list before fetching
+
+    ApiResponseModel apiResponse =
+        await categoryRepo.getSubCategoryList(categoryID);
+    if (apiResponse.response != null &&
+        apiResponse.response!.statusCode == 200) {
+      subCategoryMap[categoryID] =
+          []; // Initialize the list for this categoryID
+      apiResponse.response!.data.forEach((category) {
+        log(category.toString(), name: "Sub-Cat");
+        subCategoryMap[categoryID]!.add(CategoryModel.fromJson(category));
+      });
+
+      getCategoryProductList(
+          categoryID); // Optional: Call additional functions if needed
+      log(subCategoryMap[categoryID]
+          .toString()); // Log the specific subcategory list
+    } else {
+      ApiCheckerHelper.checkApi(apiResponse);
+    }
+
+    notifyListeners();
+  }
+
   void getCategoryProductList(String categoryID) async {
     _categoryProductList = [];
     const maxRetries = 3;

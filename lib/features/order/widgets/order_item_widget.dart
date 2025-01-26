@@ -7,6 +7,7 @@ import 'package:flutter_grocery/features/order/widgets/rating_widget.dart';
 import 'package:flutter_grocery/features/splash/providers/splash_provider.dart';
 import 'package:flutter_grocery/helper/date_converter_helper.dart';
 import 'package:flutter_grocery/helper/order_helper.dart';
+import 'package:flutter_grocery/helper/price_converter_helper.dart';
 import 'package:flutter_grocery/helper/responsive_helper.dart';
 import 'package:flutter_grocery/helper/route_helper.dart';
 import 'package:flutter_grocery/localization/app_localization.dart';
@@ -39,13 +40,13 @@ class _OrderItemWidgetState extends State<OrderItemWidget> {
   void initState() {
     // TODO: implement initState
     Provider.of<OrderProvider>(context, listen: false).getOrderList(context);
-    Provider.of<OrderProvider>(context, listen: false).getReturnStatus();
+    Provider.of<OrderProvider>(context, listen: false).getCancelStatus();
   }
 
   @override
   Widget build(BuildContext context) {
-    // print(
-    //     'status order ${widget.orderList![widget.index].id} ${widget.orderList![widget.index].orderStatus}');
+    print(
+        'status order ${widget.orderList![widget.index].id} ${widget.orderList![widget.index].orderStatus}');
     String _getOrderStatusText(int status) {
       switch (status) {
         case 1:
@@ -251,7 +252,9 @@ class _OrderItemWidgetState extends State<OrderItemWidget> {
                           Provider.of<SplashProvider>(context, listen: false)
                               .configModel!;
                       return Text(
-                        '${widget.orderList![widget.index].orderAmount!.toStringAsFixed(2)} ${config.currencySymbol}',
+                        PriceConverterHelper.convertPrice(context,
+                            widget.orderList![widget.index].orderAmount!),
+                        // '${widget.orderList![widget.index].orderAmount!.toStringAsFixed(2)} ${config.currencySymbol}',
                         style: poppinsBold.copyWith(
                           fontSize: Dimensions.fontSizeExtraLarge,
                         ),
@@ -639,6 +642,75 @@ class _OrderItemWidgetState extends State<OrderItemWidget> {
                                         ),
                                       );
                               }),
+                              // Consumer<OrderProvider>(
+                              //     builder: (context, orderProvider, _) {
+                              //   return GestureDetector(
+                              //     onTap: () {
+                              //       orderProvider.isActiveOrder
+                              //           ? showDialog(
+                              //               context: context,
+                              //               builder: (BuildContext context) {
+                              //                 return Dialog(
+                              //                   shape: RoundedRectangleBorder(
+                              //                     borderRadius:
+                              //                         BorderRadius.circular(
+                              //                             10.0),
+                              //                   ),
+                              //                   child: ReturnScreen(
+                              //                     orderId: widget
+                              //                         .orderList![widget.index]
+                              //                         .id!,
+                              //                   ),
+                              //                 );
+                              //               },
+                              //             )
+                              //           : showDialog(
+                              //               context: context,
+                              //               builder: (BuildContext context) {
+                              //                 return Dialog(
+                              //                   shape: RoundedRectangleBorder(
+                              //                     borderRadius:
+                              //                         BorderRadius.circular(
+                              //                             10.0),
+                              //                   ),
+                              //                   child: RatingScreen(
+                              //                     orderId: widget
+                              //                         .orderList![widget.index]
+                              //                         .id!,
+                              //                   ),
+                              //                 );
+                              //               },
+                              //             );
+                              //     },
+                              //     child: Container(
+                              //       height: 40,
+                              //       width:
+                              //           MediaQuery.of(context).size.width / 4,
+                              //       decoration: BoxDecoration(
+                              //         color: Theme.of(context).primaryColor,
+                              //         borderRadius: BorderRadius.circular(8),
+                              //       ),
+                              //       alignment: Alignment.center,
+                              //       child: Text(
+                              //         getTranslated(
+                              //             orderProvider.isActiveOrder &&
+                              //                     widget
+                              //                             .orderList![
+                              //                                 widget.index]
+                              //                             .orderStatus !=
+                              //                         'canceled'
+                              //                 ? "Cancel"
+                              //                 : 'Rate Us',
+                              //             context),
+                              //         style: poppinsSemiBold.copyWith(
+                              //           color: Colors.white,
+                              //           letterSpacing: 1.2,
+                              //           wordSpacing: 1.6,
+                              //         ),
+                              //       ),
+                              //     ),
+                              //   );
+                              // }),
                               // Padding(
                               //   padding: const EdgeInsets.only(bottom: 3),
                               //   child: _OrderStatusCard(

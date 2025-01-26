@@ -32,12 +32,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
     {"icon": "location", "label": "address"},
     // {"icon": "message_icon", "label": "Message"},
     {"icon": "wallet_icon", "label": "wallet"},
-    {"icon": "language", "label": "language"},
+    //  {"icon": "language", "label": "language"},
     {"icon": "privacy", "label": "privacy_policy"},
-    {"icon": "terms", "label": "terms_and_condition"},
+    // {"icon": "terms", "label": "terms_and_condition"},
     {"icon": "help", "label": "Help & Support"},
     {"icon": "logout", "label": "log_out"},
-    // {"icon": "delete", "label": "delete"}
+    {"icon": "delete", "label": "delete"}
   ];
 
   @override

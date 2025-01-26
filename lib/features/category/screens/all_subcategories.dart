@@ -27,27 +27,47 @@ class _AllSubCategoriesState extends State<AllSubCategories> {
   List<CategoryModel> allCategories = [];
   // @override
   // void initState() {
-  //   final categoryProvider = Provider.of<CategoryProvider>(context);
+  //   final categoryProvider =
+  //       Provider.of<CategoryProvider>(context, listen: false);
   //   // categoryProvider.initializeAllSortBy(context);
 
   //   categories = categoryProvider.getSubCategories(widget.categoryId) ?? [];
   //   allCategories = categoryProvider.getSubCategories(widget.categoryId) ?? [];
   //   super.initState();
   // }
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Provider.of<CategoryProvider>(context, listen: false)
+          .getSubCategoryList(context, widget.categoryId);
+    });
+  }
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-
-    final categoryProvider = Provider.of<CategoryProvider>(context);
-    // categoryProvider.initializeAllSortBy(context);
-
-    categories = categoryProvider.getSubCategories(widget.categoryId) ?? [];
-    allCategories = categoryProvider.getSubCategories(widget.categoryId) ?? [];
+    final provider = Provider.of<CategoryProvider>(context);
+    setState(() {
+      categories = provider.getSubCategories(widget.categoryId) ?? [];
+      allCategories = categories;
+    });
   }
+  // @override
+  // void didChangeDependencies() {
+  //   super.didChangeDependencies();
+
+  //   final categoryProvider = Provider.of<CategoryProvider>(context);
+  //   // categoryProvider.initializeAllSortBy(context);
+
+  //   categories = categoryProvider.getSubCategories(widget.categoryId) ?? [];
+  //   allCategories = categoryProvider.getSubCategories(widget.categoryId) ?? [];
+  // }
 
   @override
   Widget build(BuildContext context) {
+    print('---------length${widget.categoryId}');
+    print('---------length${categories.length}');
     // final categoryProvider =
     //     Provider.of<CategoryProvider>(context); // Removed listen: false
     var querySize = MediaQuery.of(context).size;

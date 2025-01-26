@@ -45,7 +45,6 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
   bool returned = false;
   void _loadData(BuildContext context) async {
     Provider.of<ReturnStatusProvider>(context, listen: false).getReturnStatus();
-
     final splashProvider = Provider.of<SplashProvider>(context, listen: false);
     final orderProvider = Provider.of<OrderProvider>(context, listen: false);
 
@@ -314,11 +313,12 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                                                 Row(
                                                   children: [
                                                     Text(
-                                                      "${orderProvider.orderDetails![index].price ?? ""} ${config?.currencySymbol ?? ""}",
+                                                  PriceConverterHelper.convertPrice(context, total),
+                                                      //"${orderProvider.orderDetails![index].price ?? ""} ${config?.currencySymbol ?? ""}",
                                                       style:
                                                           poppinsBold.copyWith(
                                                         fontSize: Dimensions
-                                                            .fontSizeExtraLarge,
+                                                            .fontSizeLarge,
                                                       ),
                                                     ),
                                                     const Spacer(),
@@ -539,18 +539,20 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                                       Text('Sub Total',
                                           style: poppinsBold.copyWith(
                                               fontSize: Dimensions
-                                                  .fontSizeExtraLarge)),
-                                      Text(
-                                          "${total.toStringAsFixed(2)} ${config!.currencySymbol ?? ""}",
-                                          style: poppinsBold.copyWith(
-                                              fontSize: Dimensions
-                                                  .fontSizeExtraLarge)),
+                                                  .fontSizeExtraLarge)),Text(PriceConverterHelper.convertPrice(context, total),     style: poppinsBold.copyWith(
+                                            fontSize: Dimensions
+                                                 .fontSizeExtraLarge))
+                                      // Text(
+                                      //     "${total.toStringAsFixed(2)} ${config!.currencySymbol ?? ""}",
+                                      //     style: poppinsBold.copyWith(
+                                      //         fontSize: Dimensions
+                                      //             .fontSizeExtraLarge)),
                                     ],
                                   ),
                                 ),
                                 if (orderProvider.trackModel!.orderStatus ==
                                         'delivered' &&
-                                    widget.orderModel!.isReturnRequested == 0 &&
+                                    widget.orderModel!.isReturnRequested == 0&&
                                     Provider.of<ReturnStatusProvider>(context,
                                                 listen: false)
                                             .status ==
@@ -595,6 +597,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(title, style: poppinsSemiBold),
+         isPrice ? Text(  PriceConverterHelper.convertPrice(context, double.parse(data)), style: poppinsSemiBold.copyWith(color: isRed ? Colors.red : null)):
           Text(
             data + (!isPrice ? "" : " ${config!.currencySymbol ?? ""}"),
             style: poppinsSemiBold.copyWith(color: isRed ? Colors.red : null),

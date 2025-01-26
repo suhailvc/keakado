@@ -249,15 +249,76 @@ class _OrderReturnScreenState extends State<OrderReturnScreen> {
                                                                   MainAxisSize
                                                                       .min,
                                                               children: [
-                                                                Text(
-                                                                  'Return Notes',
-                                                                  style: poppinsSemiBold
-                                                                      .copyWith(
-                                                                    fontSize:
-                                                                        Dimensions
-                                                                            .fontSizeLarge,
-                                                                  ),
+                                                                Row(
+                                                                  // mainAxisAlignment:
+                                                                  //     MainAxisAlignment
+                                                                  //         .center, // This spreads out the children
+                                                                  children: [
+                                                                    SizedBox(
+                                                                      width: MediaQuery.of(context)
+                                                                              .size
+                                                                              .width *
+                                                                          0.3,
+                                                                    ),
+                                                                    Text(
+                                                                      'Return Notes',
+                                                                      style: poppinsSemiBold
+                                                                          .copyWith(
+                                                                        fontSize:
+                                                                            Dimensions.fontSizeLarge,
+                                                                      ),
+                                                                    ),
+                                                                    SizedBox(
+                                                                      width: MediaQuery.of(context)
+                                                                              .size
+                                                                              .width *
+                                                                          0.27,
+                                                                    ),
+                                                                    InkWell(
+                                                                      onTap:
+                                                                          () {
+                                                                        Navigator.pop(
+                                                                            context); // This will close the current screen/dialog
+                                                                      },
+                                                                      child:
+                                                                          Container(
+                                                                        padding: const EdgeInsets
+                                                                            .all(
+                                                                            4),
+                                                                        decoration:
+                                                                            BoxDecoration(
+                                                                          shape:
+                                                                              BoxShape.circle,
+                                                                          color: Colors
+                                                                              .red
+                                                                              .shade50, // Light red background
+                                                                        ),
+                                                                        child:
+                                                                            Icon(
+                                                                          Icons
+                                                                              .close,
+                                                                          color: Colors
+                                                                              .red
+                                                                              .shade600, // Darker red for the X icon
+                                                                          size:
+                                                                              20,
+                                                                        ),
+                                                                      ),
+                                                                    ),
+                                                                  ],
                                                                 ),
+                                                                // Row(
+                                                                //   children: [
+                                                                //     Text(
+                                                                //       'Return Notes',
+                                                                //       style: poppinsSemiBold
+                                                                //           .copyWith(
+                                                                //         fontSize:
+                                                                //             Dimensions.fontSizeLarge,
+                                                                //       ),
+                                                                //     ),
+                                                                //   ],
+                                                                // ),
                                                                 const SizedBox(
                                                                     height: 16),
                                                                 Container(
@@ -343,39 +404,91 @@ class _OrderReturnScreenState extends State<OrderReturnScreen> {
                                                                               16),
                                                                     ],
                                                                   ),
-                                                                ElevatedButton(
-                                                                  onPressed:
-                                                                      () async {
-                                                                    await showImagePickerOptions(
-                                                                        context,
-                                                                        index);
-                                                                  },
-                                                                  style: ElevatedButton
-                                                                      .styleFrom(
-                                                                    backgroundColor:
-                                                                        Theme.of(context)
-                                                                            .primaryColor,
-                                                                    padding: const EdgeInsets
-                                                                        .symmetric(
-                                                                        horizontal:
-                                                                            16.0,
-                                                                        vertical:
-                                                                            12.0),
-                                                                    shape:
-                                                                        RoundedRectangleBorder(
-                                                                      borderRadius:
-                                                                          BorderRadius.circular(
-                                                                              10),
+                                                                Row(
+                                                                  mainAxisAlignment:
+                                                                      MainAxisAlignment
+                                                                          .center,
+                                                                  children: [
+                                                                    ElevatedButton(
+                                                                      onPressed:
+                                                                          () async {
+                                                                        await showImagePickerOptions(
+                                                                            context,
+                                                                            index);
+                                                                      },
+                                                                      style: ElevatedButton
+                                                                          .styleFrom(
+                                                                        backgroundColor:
+                                                                            Theme.of(context).primaryColor,
+                                                                        padding: const EdgeInsets
+                                                                            .symmetric(
+                                                                            horizontal:
+                                                                                16.0,
+                                                                            vertical:
+                                                                                12.0),
+                                                                        shape:
+                                                                            RoundedRectangleBorder(
+                                                                          borderRadius:
+                                                                              BorderRadius.circular(10),
+                                                                        ),
+                                                                      ),
+                                                                      child:
+                                                                          Text(
+                                                                        getTranslated(
+                                                                            "Add Image",
+                                                                            context),
+                                                                        style: TextStyle(
+                                                                            color:
+                                                                                Colors.white),
+                                                                      ),
                                                                     ),
-                                                                  ),
-                                                                  child: Text(
-                                                                    getTranslated(
-                                                                        "Add Image",
-                                                                        context),
-                                                                    style: TextStyle(
-                                                                        color: Colors
-                                                                            .white),
-                                                                  ),
+                                                                    SizedBox(
+                                                                      width: MediaQuery.of(context)
+                                                                              .size
+                                                                              .width *
+                                                                          0.04,
+                                                                    ),
+                                                                    SizedBox(
+                                                                      height: MediaQuery.of(context)
+                                                                              .size
+                                                                              .width *
+                                                                          0.114,
+                                                                      width: MediaQuery.of(context)
+                                                                              .size
+                                                                              .width *
+                                                                          0.25,
+                                                                      child:
+                                                                          ElevatedButton(
+                                                                        onPressed:
+                                                                            () async {
+                                                                          Navigator.pop(
+                                                                              context);
+                                                                        },
+                                                                        style: ElevatedButton
+                                                                            .styleFrom(
+                                                                          backgroundColor:
+                                                                              Theme.of(context).primaryColor,
+                                                                          padding: const EdgeInsets
+                                                                              .symmetric(
+                                                                              horizontal: 16.0,
+                                                                              vertical: 12.0),
+                                                                          shape:
+                                                                              RoundedRectangleBorder(
+                                                                            borderRadius:
+                                                                                BorderRadius.circular(10),
+                                                                          ),
+                                                                        ),
+                                                                        child:
+                                                                            Text(
+                                                                          getTranslated(
+                                                                              "Save",
+                                                                              context),
+                                                                          style:
+                                                                              TextStyle(color: Colors.white),
+                                                                        ),
+                                                                      ),
+                                                                    ),
+                                                                  ],
                                                                 ),
                                                                 // const SizedBox(
                                                                 //     height: 16),
@@ -735,6 +848,7 @@ class _OrderReturnScreenState extends State<OrderReturnScreen> {
                         Padding(
                           padding: const EdgeInsets.symmetric(vertical: 16.0),
                           child: CustomButtonWidget(
+                            isLoading: orderReturnProvider.isLoading,
                             buttonText: 'Return',
                             onPressed: orderReturnProvider.isLoading
                                 ? null
@@ -748,9 +862,12 @@ class _OrderReturnScreenState extends State<OrderReturnScreen> {
                                         if (remarksControllers[i]
                                             .text
                                             .isEmpty) {
-                                          showCustomSnackBarHelper(
+                                          return showCustomSnackBarHelper(
                                               'Need Return Reason');
                                         } else {
+                                          print(
+                                              '${remarksControllers[i].text}-----------');
+                                          print('${i}------id-----');
                                           selectedProductIds.add({
                                             'product_id': orderProvider
                                                 .orderDetails![i]
@@ -779,46 +896,47 @@ class _OrderReturnScreenState extends State<OrderReturnScreen> {
                                             //     ? ""
                                             //     : returnImages[i][0]!
                                           });
-                                          if (selectedProductIds.isNotEmpty) {
-                                            await orderReturnProvider
-                                                .returnProducts(
-                                                    widget.orderId.toString(),
-                                                    selectedProductIds,
-                                                    // 'eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIzIiwianRpIjoiMTA1MGZhMzgzNWRmZWQ0ZmQ4YTVhOTllMzIxNTE5NjUyMTczNDgzZWQxZTFmM2FiMzZhOTkyOGY1Y2UzYzM2ZjYyNDRkYTgwNjg5Mjc3NTMiLCJpYXQiOjE3MzM0MDA1NDUuNTgzNTg3LCJuYmYiOjE3MzM0MDA1NDUuNTgzNTg4LCJleHAiOjE3NjQ5MzY1NDUuNTc3MzkxLCJzdWIiOiIxMCIsInNjb3BlcyI6W119.FA4LJSLVFNe0x4iUQLJ27dOYbfoe3Vta2Q_txneV2qbQovP45bNarPw0nJCHKGLsaYa4R7hsc0Kam-KC8ua4V5ZNxrsKmCWO5ubHgKpHmFBY1UKPVyJI6iHuHLXNjB6BUPlrjFUDvqbiqf0JzjFJSyWuPU4VkYEdZfOWy5AwCWr1muDdNENU4HPCGbegHo3Hk4ZhqKsqg1waXPoOLse8jVpEMObHHndqJ1j4YrTtrzLsM9gmn-5nWLIo_MlD8W_PDAYTb4SLJ9Y9ybpo0BhLxRYtjWafwx_dZsWuyf33kJ2K2exF7qhpQ4oL8HQUCoaGP2lPicKM94XntP0P_aImjFfiWZgIoet56NCluDgEN7wPPnruBaBMq13I2sPRXSAn1JwBcyR-fGypuN1Ja2VyMtlAMHSvmp9zVbbAoEUfzkWeZAzvUg8Ei8c9x19TQe8BB33IpVDuW1tQOlVelDwBWVGARYqGht3Dr8kQk-nhOibnSyeiUuEY-p6KKKzdTQNQsc93_DrStyaqwH_BIvaqLplkoeZWyn7BRNqfB1hoBQVlLUX4YTr61oN2VXBtsrxopXpxWoepyMP0dKhRcQQsK6zFKR4KSbb2a4slL5z9GLDp_J3TidAYWZhBg8s-xcPS0n_2dG'
-                                                    Provider.of<AuthProvider>(
-                                                            context,
-                                                            listen: false)
-                                                        .getUserToken());
-
-                                            if (orderReturnProvider
-                                                    .responseMessage !=
-                                                null) {
-                                              ScaffoldMessenger.of(context)
-                                                  .showSnackBar(
-                                                SnackBar(
-                                                    content: Text(
-                                                        orderReturnProvider
-                                                            .responseMessage!)),
-                                              );
-                                              orderProvider.getOrderDetails(
-                                                orderID:
-                                                    widget.orderId.toString(),
-                                                phoneNumber: widget.phoneNumber,
-                                              );
-                                              Navigator.pop(context);
-                                              Navigator.pop(context);
-                                            }
-                                          } else {
-                                            ScaffoldMessenger.of(context)
-                                                .showSnackBar(
-                                              const SnackBar(
-                                                  content: Text(
-                                                      "Please select at least one product to return.")),
-                                            );
-                                          }
                                         }
                                       }
                                     }
+                                    if (selectedProductIds.isNotEmpty) {
+                                      await orderReturnProvider.returnProducts(
+                                          widget.orderId.toString(),
+                                          selectedProductIds,
+                                          // 'eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIzIiwianRpIjoiMTA1MGZhMzgzNWRmZWQ0ZmQ4YTVhOTllMzIxNTE5NjUyMTczNDgzZWQxZTFmM2FiMzZhOTkyOGY1Y2UzYzM2ZjYyNDRkYTgwNjg5Mjc3NTMiLCJpYXQiOjE3MzM0MDA1NDUuNTgzNTg3LCJuYmYiOjE3MzM0MDA1NDUuNTgzNTg4LCJleHAiOjE3NjQ5MzY1NDUuNTc3MzkxLCJzdWIiOiIxMCIsInNjb3BlcyI6W119.FA4LJSLVFNe0x4iUQLJ27dOYbfoe3Vta2Q_txneV2qbQovP45bNarPw0nJCHKGLsaYa4R7hsc0Kam-KC8ua4V5ZNxrsKmCWO5ubHgKpHmFBY1UKPVyJI6iHuHLXNjB6BUPlrjFUDvqbiqf0JzjFJSyWuPU4VkYEdZfOWy5AwCWr1muDdNENU4HPCGbegHo3Hk4ZhqKsqg1waXPoOLse8jVpEMObHHndqJ1j4YrTtrzLsM9gmn-5nWLIo_MlD8W_PDAYTb4SLJ9Y9ybpo0BhLxRYtjWafwx_dZsWuyf33kJ2K2exF7qhpQ4oL8HQUCoaGP2lPicKM94XntP0P_aImjFfiWZgIoet56NCluDgEN7wPPnruBaBMq13I2sPRXSAn1JwBcyR-fGypuN1Ja2VyMtlAMHSvmp9zVbbAoEUfzkWeZAzvUg8Ei8c9x19TQe8BB33IpVDuW1tQOlVelDwBWVGARYqGht3Dr8kQk-nhOibnSyeiUuEY-p6KKKzdTQNQsc93_DrStyaqwH_BIvaqLplkoeZWyn7BRNqfB1hoBQVlLUX4YTr61oN2VXBtsrxopXpxWoepyMP0dKhRcQQsK6zFKR4KSbb2a4slL5z9GLDp_J3TidAYWZhBg8s-xcPS0n_2dG'
+                                          Provider.of<AuthProvider>(context,
+                                                  listen: false)
+                                              .getUserToken());
+
+                                      if (orderReturnProvider.responseMessage !=
+                                          null) {
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(
+                                          SnackBar(
+                                              content: Text(orderReturnProvider
+                                                  .responseMessage!)),
+                                        );
+                                        orderProvider.getOrderDetails(
+                                          orderID: widget.orderId.toString(),
+                                          phoneNumber: widget.phoneNumber,
+                                        );
+                                        print(
+                                            "${selectedProductIds.length}---------------------");
+                                        Navigator.pop(context);
+                                        Navigator.pop(context);
+                                      }
+                                    } else {
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(
+                                        const SnackBar(
+                                            content: Text(
+                                                "Please select at least one product to return.")),
+                                      );
+                                    }
+                                    //  }
+                                    // }
+                                    // }
+                                    // }
                                   },
                           ),
                         ),
