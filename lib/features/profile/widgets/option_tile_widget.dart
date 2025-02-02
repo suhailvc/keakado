@@ -4,6 +4,7 @@ import 'package:flutter_grocery/features/menu/widgets/currency_dialog_widget.dar
 import 'package:flutter_grocery/features/menu/widgets/delete_dialog_widget.dart';
 import 'package:flutter_grocery/features/menu/widgets/sign_out_dialog_widget.dart';
 import 'package:flutter_grocery/features/privacy_policy/privacy_policy_screen.dart';
+import 'package:flutter_grocery/features/refer_and_earn/screens/refer_and_earn_screen.dart';
 import 'package:flutter_grocery/helper/dialog_helper.dart';
 import 'package:flutter_grocery/helper/route_helper.dart';
 import 'package:flutter_grocery/localization/language_constraints.dart';
@@ -64,6 +65,14 @@ class OptionTileWidget extends StatelessWidget {
                     builder: (context) => PrivacyPolicyScreen(),
                   ));
               //  Navigator.pushNamed(context, RouteHelper.getPolicyRoute());
+              return;
+            case "Refferandearn":
+              // Navigator.push(
+              //     context,
+              //     MaterialPageRoute(
+              //       builder: (context) => ReferAndEarnScreen(),
+              //     ));
+              Navigator.pushNamed(context, RouteHelper.referAndEarn);
               return;
             case "terms":
               Navigator.pushNamed(context, RouteHelper.getTermsRoute());

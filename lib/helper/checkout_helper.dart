@@ -99,17 +99,28 @@ class CheckOutHelper {
     required AddressModel? selectedAddress,
     required AddressModel? lastOrderAddress,
   }) {
-    AddressModel? deliveryAddress;
+    // Only return explicitly selected address
     if (selectedAddress != null) {
-      deliveryAddress = selectedAddress;
-    } else if (lastOrderAddress != null) {
-      deliveryAddress = lastOrderAddress;
-    } else if (addressList != null && addressList.isNotEmpty) {
-      deliveryAddress = addressList.first;
+      return selectedAddress;
     }
-
-    return deliveryAddress;
+    return null;
   }
+  // static AddressModel? getDeliveryAddress({
+  //   required List<AddressModel?>? addressList,
+  //   required AddressModel? selectedAddress,
+  //   required AddressModel? lastOrderAddress,
+  // }) {
+  //   AddressModel? deliveryAddress;
+  //   if (selectedAddress != null) {
+  //     deliveryAddress = selectedAddress;
+  //   } else if (lastOrderAddress != null) {
+  //     deliveryAddress = lastOrderAddress;
+  //   } else if (addressList != null && addressList.isNotEmpty) {
+  //     deliveryAddress = addressList.first;
+  //   }
+
+  //   return deliveryAddress;
+  // }
 
   static bool isKmWiseCharge({required ConfigModel? configModel}) =>
       configModel != null && configModel.deliveryManagement!.status!;
@@ -119,7 +130,6 @@ class CheckOutHelper {
 
   static bool isSelfPickup({required String? orderType}) =>
       orderType == 'self_pickup';
-
   static Future<void> selectDeliveryAddress({
     required bool isAvailable,
     required int index,
@@ -142,20 +152,6 @@ class CheckOutHelper {
           orderProvider.savePaymentMethod(index: null, method: null);
           orderProvider.changePartialPayment();
         }
-        showDialog(
-            context: Get.context!,
-            builder: (context) => Center(
-                    child: Container(
-                  height: 100,
-                  width: 100,
-                  alignment: Alignment.center,
-                  decoration: BoxDecoration(
-                      color: Theme.of(context).cardColor,
-                      borderRadius: BorderRadius.circular(10)),
-                  child:
-                      CustomLoaderWidget(color: Theme.of(context).primaryColor),
-                )),
-            barrierDismissible: false);
 
         bool isSuccess = await orderProvider.getDistanceInMeter(
           LatLng(
@@ -170,46 +166,106 @@ class CheckOutHelper {
           ),
         );
 
-        Navigator.pop(Get.context!);
-
-        if (fromAddressList) {
-          // await showDialog(
-          //     context: Get.context!,
-          //     builder: (context) => DeliveryFeeDialogWidget(
-          //           freeDelivery:
-          //               orderProvider.getCheckOutData?.freeDeliveryType ==
-          //                   'free_delivery',
-          //           amount: orderProvider.getCheckOutData?.amount ?? 0,
-          //           distance: orderProvider.distance,
-          //           callBack: (deliveryCharge) {
-          //             orderProvider.getCheckOutData
-          //                 ?.copyWith(deliveryCharge: deliveryCharge);
-          //           },
-          //         ));
-        } else {
-          orderProvider.getCheckOutData?.copyWith(
-              deliveryCharge: CheckOutHelper.getDeliveryCharge(
-            freeDeliveryType: orderProvider.getCheckOutData?.freeDeliveryType,
-            orderAmount: orderProvider.getCheckOutData?.amount ?? 0,
-            distance: orderProvider.distance,
-            discount: orderProvider.getCheckOutData?.placeOrderDiscount ?? 0,
-            configModel: configModel,
-          ));
-        }
-
         if (!isSuccess) {
           showCustomSnackBarHelper(
               getTranslated('failed_to_fetch_distance', Get.context!));
         }
       }
-
-      orderProvider.savePaymentMethod(index: null, method: null);
-      orderProvider.changePartialPayment();
     } else {
       showCustomSnackBarHelper(
           getTranslated('out_of_coverage_for_this_branch', Get.context!));
     }
   }
+  // static Future<void> selectDeliveryAddress({
+  //   required bool isAvailable,
+  //   required int index,
+  //   required ConfigModel configModel,
+  //   required LocationProvider locationProvider,
+  //   required OrderProvider orderProvider,
+  //   required bool fromAddressList,
+  // }) async {
+  //   if (isAvailable) {
+  //     locationProvider.updateAddressIndex(index, fromAddressList);
+  //     orderProvider.setAddressIndex(index, notify: true);
+
+  //     if (CheckOutHelper.isKmWiseCharge(configModel: configModel)) {
+  //       if (fromAddressList) {
+  //         if (orderProvider.selectedPaymentMethod != null) {
+  //           showCustomSnackBarHelper(
+  //               getTranslated('your_payment_method_has_been', Get.context!),
+  //               isError: false);
+  //         }
+  //         orderProvider.savePaymentMethod(index: null, method: null);
+  //         orderProvider.changePartialPayment();
+  //       }
+  //       showDialog(
+  //           context: Get.context!,
+  //           builder: (context) => Center(
+  //                   child: Container(
+  //                 height: 100,
+  //                 width: 100,
+  //                 alignment: Alignment.center,
+  //                 decoration: BoxDecoration(
+  //                     color: Theme.of(context).cardColor,
+  //                     borderRadius: BorderRadius.circular(10)),
+  //                 child:
+  //                     CustomLoaderWidget(color: Theme.of(context).primaryColor),
+  //               )),
+  //           barrierDismissible: false);
+
+  //       bool isSuccess = await orderProvider.getDistanceInMeter(
+  //         LatLng(
+  //           double.parse(
+  //               configModel.branches![orderProvider.branchIndex].latitude!),
+  //           double.parse(
+  //               configModel.branches![orderProvider.branchIndex].longitude!),
+  //         ),
+  //         LatLng(
+  //           double.parse(locationProvider.addressList![index].latitude!),
+  //           double.parse(locationProvider.addressList![index].longitude!),
+  //         ),
+  //       );
+
+  //       Navigator.pop(Get.context!);
+
+  //       if (fromAddressList) {
+  //         // await showDialog(
+  //         //     context: Get.context!,
+  //         //     builder: (context) => DeliveryFeeDialogWidget(
+  //         //           freeDelivery:
+  //         //               orderProvider.getCheckOutData?.freeDeliveryType ==
+  //         //                   'free_delivery',
+  //         //           amount: orderProvider.getCheckOutData?.amount ?? 0,
+  //         //           distance: orderProvider.distance,
+  //         //           callBack: (deliveryCharge) {
+  //         //             orderProvider.getCheckOutData
+  //         //                 ?.copyWith(deliveryCharge: deliveryCharge);
+  //         //           },
+  //         //         ));
+  //       } else {
+  //         orderProvider.getCheckOutData?.copyWith(
+  //             deliveryCharge: CheckOutHelper.getDeliveryCharge(
+  //           freeDeliveryType: orderProvider.getCheckOutData?.freeDeliveryType,
+  //           orderAmount: orderProvider.getCheckOutData?.amount ?? 0,
+  //           distance: orderProvider.distance,
+  //           discount: orderProvider.getCheckOutData?.placeOrderDiscount ?? 0,
+  //           configModel: configModel,
+  //         ));
+  //       }
+
+  //       if (!isSuccess) {
+  //         showCustomSnackBarHelper(
+  //             getTranslated('failed_to_fetch_distance', Get.context!));
+  //       }
+  //     }
+
+  //     orderProvider.savePaymentMethod(index: null, method: null);
+  //     orderProvider.changePartialPayment();
+  //   } else {
+  //     showCustomSnackBarHelper(
+  //         getTranslated('out_of_coverage_for_this_branch', Get.context!));
+  //   }
+  // }
 
   static bool isWalletPayment(
       {required ConfigModel configModel,
@@ -260,33 +316,48 @@ class CheckOutHelper {
       {AddressModel? lastAddress,
       required bool isLoggedIn,
       required String? orderType}) async {
+    // Initialize providers but don't auto-select address
     final LocationProvider locationProvider =
         Provider.of<LocationProvider>(Get.context!, listen: false);
     final OrderProvider orderProvider =
         Provider.of<OrderProvider>(Get.context!, listen: false);
-    final SplashProvider splashProvider =
-        Provider.of<SplashProvider>(Get.context!, listen: false);
 
-    AddressModel? deliveryAddress = CheckOutHelper.getDeliveryAddress(
-      addressList: locationProvider.addressList,
-      selectedAddress: orderProvider.addressIndex == -1
-          ? null
-          : locationProvider.addressList?[orderProvider.addressIndex],
-      lastOrderAddress: lastAddress,
-    );
-
-    if (isLoggedIn &&
-        deliveryAddress != null &&
-        orderType == 'delivery' &&
-        locationProvider.getAddressIndex(deliveryAddress) != null) {
-      await CheckOutHelper.selectDeliveryAddress(
-        isAvailable: true,
-        index: locationProvider.getAddressIndex(deliveryAddress)!,
-        configModel: splashProvider.configModel!,
-        locationProvider: locationProvider,
-        orderProvider: orderProvider,
-        fromAddressList: false,
-      );
+    // Just ensure the address list is initialized
+    if (locationProvider.addressList == null) {
+      await locationProvider.initAddressList();
     }
   }
+  // static selectDeliveryAddressAuto(
+  //     {AddressModel? lastAddress,
+  //     required bool isLoggedIn,
+  //     required String? orderType}) async {
+  //   final LocationProvider locationProvider =
+  //       Provider.of<LocationProvider>(Get.context!, listen: false);
+  //   final OrderProvider orderProvider =
+  //       Provider.of<OrderProvider>(Get.context!, listen: false);
+  //   final SplashProvider splashProvider =
+  //       Provider.of<SplashProvider>(Get.context!, listen: false);
+
+  //   AddressModel? deliveryAddress = CheckOutHelper.getDeliveryAddress(
+  //     addressList: locationProvider.addressList,
+  //     selectedAddress: orderProvider.addressIndex == -1
+  //         ? null
+  //         : locationProvider.addressList?[orderProvider.addressIndex],
+  //     lastOrderAddress: lastAddress,
+  //   );
+
+  //   if (isLoggedIn &&
+  //       deliveryAddress != null &&
+  //       orderType == 'delivery' &&
+  //       locationProvider.getAddressIndex(deliveryAddress) != null) {
+  //     await CheckOutHelper.selectDeliveryAddress(
+  //       isAvailable: true,
+  //       index: locationProvider.getAddressIndex(deliveryAddress)!,
+  //       configModel: splashProvider.configModel!,
+  //       locationProvider: locationProvider,
+  //       orderProvider: orderProvider,
+  //       fromAddressList: false,
+  //     );
+  //   }
+  // }
 }

@@ -121,6 +121,15 @@ class PlaceOrderButtonWidget extends StatelessWidget {
                                       getTranslated(
                                           'input_your_data_properly', context),
                                       isError: true);
+                                } else if (Provider.of<LocationProvider>(
+                                            context,
+                                            listen: false)
+                                        .selectAddressIndex ==
+                                    -1) {
+                                  showCustomSnackBarHelper(
+                                      getTranslated(
+                                          'select_delivery_address', context),
+                                      isError: true);
                                 } else if ((orderProvider.selectedPaymentMethod ==
                                         null
                                     ? (orderProvider.selectedOfflineValue ==
@@ -179,6 +188,7 @@ class PlaceOrderButtonWidget extends StatelessWidget {
 
                                   PlaceOrderModel placeOrderBody =
                                       PlaceOrderModel(
+                                    deliverycharge: AppConstants.deliveryCagrge,
                                     productDiscount: checkOutData?.itemDiscount,
                                     paymentNote: checkOutData?.orderNote,
                                     cart: carts,

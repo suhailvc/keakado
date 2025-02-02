@@ -159,7 +159,7 @@ class _AddressDetailsWidgetState extends State<AddressDetailsWidget> {
                   fillColor: const Color(0xFFF5F5F5),
                   hintText: getTranslated('ex_2b', context),
                   isShowBorder: true,
-                  inputType: TextInputType.streetAddress,
+                  inputType: TextInputType.phone,
                   inputAction: TextInputAction.next,
                   focusNode: widget.florNode,
                   nextFocus: widget.nameNode,

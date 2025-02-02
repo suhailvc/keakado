@@ -21,9 +21,11 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
   final FocusNode firstNameFocus = FocusNode();
   final FocusNode lastNameFocus = FocusNode();
   final FocusNode emailFocus = FocusNode();
+  final FocusNode referralFocus = FocusNode();
   TextEditingController firstNameController = TextEditingController();
   TextEditingController lastNameController = TextEditingController();
   TextEditingController emailController = TextEditingController();
+  TextEditingController referralController = TextEditingController();
   late AuthProvider authProvider;
 
   @override
@@ -75,8 +77,15 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
                           firstNameController, firstNameFocus, lastNameFocus),
                       fieldWidget(context, "enter_last_name", "last_name",
                           lastNameController, lastNameFocus, emailFocus),
-                      fieldWidget(context, "enter_email_address", "",
-                          emailController, emailFocus, null),
+                      fieldWidget(context, "enter_email_address", "Email",
+                          emailController, emailFocus, referralFocus),
+                      fieldWidget(
+                          context,
+                          "enter referral",
+                          "Referral Code (optional)",
+                          referralController,
+                          referralFocus,
+                          null),
                     ],
                   ),
                   Column(
@@ -108,11 +117,11 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
                           }
                           authProvider
                               .createProfile(
-                            phone: widget.phone,
-                            firstName: firstNameController.text.trim(),
-                            lastName: lastNameController.text.trim(),
-                            email: emailController.text.trim(),
-                          )
+                                  phone: widget.phone,
+                                  firstName: firstNameController.text.trim(),
+                                  lastName: lastNameController.text.trim(),
+                                  email: emailController.text.trim(),
+                                  referral: referralController.text.trim())
                               .then(
                             (value) {
                               if (value.isSuccess) {

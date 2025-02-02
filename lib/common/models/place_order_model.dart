@@ -18,7 +18,7 @@ class PlaceOrderModel {
   OfflinePaymentInfo? _paymentInfo;
   String? _isPartial;
   double? _productDiscount; // Added
-
+  double? _deliveryCharge;
   PlaceOrderModel copyWith(
       {String? paymentMethod, String? transactionReference}) {
     _paymentMethod = paymentMethod;
@@ -57,6 +57,7 @@ class PlaceOrderModel {
     OfflinePaymentInfo? paymentInfo,
     String? isPartial,
     double? productDiscount, // Added
+    double? deliverycharge,
   }) {
     _cart = cart;
     _couponDiscountAmount = couponDiscountAmount;
@@ -77,6 +78,7 @@ class PlaceOrderModel {
     _paymentInfo = paymentInfo;
     _isPartial = isPartial;
     _productDiscount = productDiscount; // Set
+    _deliveryCharge = deliverycharge;
   }
 
   List<Cart>? get cart => _cart;
@@ -98,7 +100,7 @@ class PlaceOrderModel {
   OfflinePaymentInfo? get paymentInfo => _paymentInfo;
   String? get isPartial => _isPartial;
   double? get productDiscount => _productDiscount; // Getter
-
+  double? get deliveryCharge => _deliveryCharge;
   PlaceOrderModel.fromJson(Map<String, dynamic> json) {
     if (json['cart'] != null) {
       _cart = [];
@@ -123,6 +125,11 @@ class PlaceOrderModel {
     }
     _isPartial = json['is_partial'];
     _productDiscount = json['product_discount']?.toDouble(); // Parse
+    if (_deliveryCharge != null) {
+      _deliveryCharge = json['delivery_charge'];
+    } else {
+      _deliveryCharge = 0;
+    }
   }
 
   Map<String, dynamic> toJson() {
@@ -157,6 +164,9 @@ class PlaceOrderModel {
     data['is_partial'] = _isPartial;
     if (_productDiscount != null) {
       data['product_discount'] = _productDiscount; // Serialize
+    }
+    if (_productDiscount != null) {
+      data['delivery_charge'] = _deliveryCharge; // Serialize
     }
     return data;
   }

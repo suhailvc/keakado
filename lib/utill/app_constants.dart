@@ -10,7 +10,7 @@ class AppConstants {
   //static const String baseUrl = 'https://interfuel.qa/kekedoadmin';
   // static const String baseUrl = 'https://project.artisans.qa/kekedo';
   static const String baseUrl =
-      'http://tamweenfoods.com'; //'https://interfuel.qa/kekedo';
+      'https://tamweenfoods.com'; //'https://interfuel.qa/kekedo';
   static const String configUri = '/api/v1/config';
   static const String bannerUri = '/api/v1/banners';
   static const String categoryUri = '/api/v1/categories';

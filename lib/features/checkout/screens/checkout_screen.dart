@@ -16,6 +16,7 @@ import 'package:flutter_grocery/features/address/providers/location_provider.dar
 import 'package:flutter_grocery/features/auth/providers/auth_provider.dart';
 import 'package:flutter_grocery/features/checkout/domain/models/check_out_model.dart';
 import 'package:flutter_grocery/features/checkout/provider/exprees_deliver_provider.dart';
+import 'package:flutter_grocery/features/checkout/widgets/constants.dart';
 import 'package:flutter_grocery/features/checkout/widgets/delivery_address_widget.dart';
 import 'package:flutter_grocery/features/checkout/widgets/details_widget.dart';
 import 'package:flutter_grocery/features/checkout/widgets/place_order_button_widget.dart';
@@ -84,6 +85,9 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
     //     .userInfoModel
     //     ?.walletBalance;
     // print("---------------------$walletBalance");
+    Provider.of<OrderProvider>(context, listen: false).resetTimeSelections();
+    Provider.of<LocationProvider>(context, listen: false)
+        .resetAddressSelection();
     final walletProvide =
         Provider.of<WalletAndLoyaltyProvider>(context, listen: false);
     Provider.of<ExpressDeliveryProvider>(context, listen: false)
@@ -236,17 +240,24 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                                 ),
 
                                                 // // Time Slot
-                                                preferenceTimeWidget(
-                                                    context, orderProvider),
-
-                                                if (!ResponsiveHelper.isDesktop(
-                                                    context))
-                                                  DetailsWidget(
-                                                    paymentList:
-                                                        _activePaymentList,
-                                                    noteController:
-                                                        _noteController,
-                                                  ),
+                                                if (address
+                                                        .selectAddressIndex !=
+                                                    -1)
+                                                  Column(
+                                                    children: [
+                                                      preferenceTimeWidget(
+                                                          context,
+                                                          orderProvider),
+                                                      if (!ResponsiveHelper
+                                                          .isDesktop(context))
+                                                        DetailsWidget(
+                                                          paymentList:
+                                                              _activePaymentList,
+                                                          noteController:
+                                                              _noteController,
+                                                        ),
+                                                    ],
+                                                  )
                                               ],
                                             ),
                                           ),
@@ -388,56 +399,533 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
     );
   }
 
+  preferenceTimeWidget(BuildContext context, OrderProvider orderProvider) {
+    return Consumer<ExpressDeliveryProvider>(
+      builder: (context, expressProvider, child) {
+        bool isExpressAvailable = expressProvider.status == '1' &&
+            expressProvider.deliveryCharge?.status == 'success';
+
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const SizedBox(height: 8),
+            Padding(
+              padding: const EdgeInsets.only(left: 16.0),
+              child: Row(
+                children: [
+                  Text(
+                    getTranslated('preference_time', context),
+                    style: poppinsBold.copyWith(
+                        fontSize: Dimensions.fontSizeLarge),
+                  ),
+                  const SizedBox(width: Dimensions.paddingSizeExtraSmall),
+                  Tooltip(
+                    triggerMode: ResponsiveHelper.isDesktop(context)
+                        ? null
+                        : TooltipTriggerMode.tap,
+                    message:
+                        getTranslated('select_your_preference_time', context),
+                    child: Icon(
+                      Icons.info_outline,
+                      color: Theme.of(context).disabledColor,
+                      size: Dimensions.paddingSizeLarge,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 8),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(16),
+                  color: Colors.white,
+                ),
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Date Selection
+                    CustomSingleChildListWidget(
+                      scrollDirection: Axis.horizontal,
+                      itemCount: isExpressAvailable ? 3 : 2,
+                      itemBuilder: (index) {
+                        if (!isExpressAvailable) {
+                          return Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 2),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Radio(
+                                  activeColor: Theme.of(context).primaryColor,
+                                  value: index + 1,
+                                  groupValue: orderProvider.selectDateSlot,
+                                  onChanged: (value) => orderProvider
+                                      .updateDateSlot(value as int),
+                                ),
+                                const SizedBox(
+                                    width: Dimensions.paddingSizeExtraSmall),
+                                Text(
+                                  DateConverterHelper.estimatedDate(
+                                      DateTime.now()
+                                          .add(Duration(days: index + 1))),
+                                  style: poppinsRegular.copyWith(
+                                    color: Theme.of(context)
+                                        .textTheme
+                                        .bodyLarge
+                                        ?.color,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          );
+                        } else {
+                          return Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 2),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Radio(
+                                  activeColor: Theme.of(context).primaryColor,
+                                  value: index,
+                                  groupValue: orderProvider.selectDateSlot,
+                                  onChanged: (value) => orderProvider
+                                      .updateDateSlot(value as int),
+                                ),
+                                const SizedBox(
+                                    width: Dimensions.paddingSizeExtraSmall),
+                                Text(
+                                  index == 0
+                                      ? getTranslated(
+                                          'Express Delivery', context)
+                                      : DateConverterHelper.estimatedDate(
+                                          DateTime.now()
+                                              .add(Duration(days: index))),
+                                  style: poppinsRegular.copyWith(
+                                    color: Theme.of(context)
+                                        .textTheme
+                                        .bodyLarge
+                                        ?.color,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          );
+                        }
+                      },
+                    ),
+
+                    // Show time slots only if a date is selected
+                    if (orderProvider.selectDateSlot != -1) ...[
+                      const SizedBox(height: 10),
+
+                      // Express Time Slots
+                      if (isExpressAvailable &&
+                          orderProvider.selectDateSlot == 0)
+                        CustomSingleChildListWidget(
+                          scrollDirection: Axis.horizontal,
+                          itemCount: orderProvider.expressDeliverySlots.length,
+                          itemBuilder: (index) {
+                            var slot =
+                                orderProvider.expressDeliverySlots[index];
+                            return _buildTimeSlot(
+                              context: context,
+                              orderProvider: orderProvider,
+                              index: index,
+                              startTime: slot.startTime!,
+                              endTime: slot.endTime!,
+                            );
+                          },
+                        ),
+
+                      // Normal Time Slots
+                      if (orderProvider.selectDateSlot > 0)
+                        CustomSingleChildListWidget(
+                          scrollDirection: Axis.horizontal,
+                          itemCount: orderProvider.timeSlots?.length ?? 0,
+                          itemBuilder: (index) => _buildTimeSlot(
+                            context: context,
+                            orderProvider: orderProvider,
+                            index: index,
+                            startTime:
+                                orderProvider.timeSlots![index].startTime!,
+                            endTime: orderProvider.timeSlots![index].endTime!,
+                          ),
+                        ),
+                    ],
+
+                    const SizedBox(height: 20),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
   // preferenceTimeWidget(BuildContext context, OrderProvider orderProvider) {
-  //   return Column(
-  //     crossAxisAlignment: CrossAxisAlignment.start,
-  //     children: [
-  //       const SizedBox(height: 8),
-  //       Padding(
-  //         padding: const EdgeInsets.only(left: 16.0),
-  //         child: Row(
-  //           children: [
-  //             Text(
-  //               getTranslated('preference_time', context),
-  //               style: poppinsBold.copyWith(
-  //                 fontSize: Dimensions.fontSizeLarge,
+  //   return Consumer<ExpressDeliveryProvider>(
+  //     builder: (context, expressProvider, child) {
+  //       bool isExpressAvailable = expressProvider.status == '1' &&
+  //           expressProvider.deliveryCharge?.status == 'success';
+
+  //       return Column(
+  //         crossAxisAlignment: CrossAxisAlignment.start,
+  //         children: [
+  //           const SizedBox(height: 8),
+  //           Padding(
+  //             padding: const EdgeInsets.only(left: 16.0),
+  //             child: Row(
+  //               children: [
+  //                 Text(
+  //                   getTranslated('preference_time', context),
+  //                   style: poppinsBold.copyWith(
+  //                       fontSize: Dimensions.fontSizeLarge),
+  //                 ),
+  //                 const SizedBox(width: Dimensions.paddingSizeExtraSmall),
+  //                 Tooltip(
+  //                   triggerMode: ResponsiveHelper.isDesktop(context)
+  //                       ? null
+  //                       : TooltipTriggerMode.tap,
+  //                   message:
+  //                       getTranslated('select_your_preference_time', context),
+  //                   child: Icon(
+  //                     Icons.info_outline,
+  //                     color: Theme.of(context).disabledColor,
+  //                     size: Dimensions.paddingSizeLarge,
+  //                   ),
+  //                 ),
+  //               ],
+  //             ),
+  //           ),
+  //           const SizedBox(height: 8),
+  //           Padding(
+  //             padding: const EdgeInsets.symmetric(horizontal: 16.0),
+  //             child: Container(
+  //               decoration: BoxDecoration(
+  //                 borderRadius: BorderRadius.circular(16),
+  //                 color: Colors.white,
+  //               ),
+  //               padding: const EdgeInsets.all(8.0),
+  //               child: Align(
+  //                 alignment:
+  //                     Provider.of<LocalizationProvider>(context, listen: false)
+  //                             .isLtr
+  //                         ? Alignment.topLeft
+  //                         : Alignment.topRight,
+  //                 child: Column(
+  //                   crossAxisAlignment: CrossAxisAlignment.start,
+  //                   children: [
+  //                     CustomSingleChildListWidget(
+  //                       scrollDirection: Axis.horizontal,
+  //                       // Show only 2 options if express not available
+  //                       itemCount: isExpressAvailable ? 3 : 2,
+  //                       itemBuilder: (index) {
+  //                         if (!isExpressAvailable) {
+  //                           // If express not available, show only tomorrow and day after
+  //                           return Padding(
+  //                             padding:
+  //                                 const EdgeInsets.symmetric(horizontal: 2),
+  //                             child: Row(
+  //                               mainAxisAlignment: MainAxisAlignment.start,
+  //                               children: [
+  //                                 Radio(
+  //                                   activeColor: Theme.of(context).primaryColor,
+  //                                   value: index +
+  //                                       1, // Adjust index to skip express option
+  //                                   groupValue: orderProvider.selectDateSlot,
+  //                                   onChanged: (value) {
+  //                                     walletPaid = 0;
+  //                                     orderProvider.changePartialPayment();
+  //                                     orderProvider.savePaymentMethod(
+  //                                         index: null, method: null);
+  //                                     AppConstants.deliveryCagrge =
+  //                                         Provider.of<SplashProvider>(context,
+  //                                                 listen: false)
+  //                                             .configModel!
+  //                                             .deliveryCharge!;
+  //                                     print('--touched');
+  //                                     orderProvider.updateDateSlot(index + 1);
+  //                                   },
+  //                                 ),
+  //                                 const SizedBox(
+  //                                     width: Dimensions.paddingSizeExtraSmall),
+  //                                 Text(
+  //                                   DateConverterHelper.estimatedDate(
+  //                                       DateTime.now()
+  //                                           .add(Duration(days: index + 1))),
+  //                                   style: poppinsRegular.copyWith(
+  //                                     color: Theme.of(context)
+  //                                         .textTheme
+  //                                         .bodyLarge
+  //                                         ?.color,
+  //                                   ),
+  //                                 ),
+  //                               ],
+  //                             ),
+  //                           );
+  //                         } else {
+  //                           // If express available, show all options
+  //                           return Padding(
+  //                             padding:
+  //                                 const EdgeInsets.symmetric(horizontal: 2),
+  //                             child: Row(
+  //                               mainAxisAlignment: MainAxisAlignment.start,
+  //                               children: [
+  //                                 Radio(
+  //                                     activeColor:
+  //                                         Theme.of(context).primaryColor,
+  //                                     value: index,
+  //                                     groupValue: orderProvider.selectDateSlot,
+  //                                     onChanged: (value) {
+  //                                       print('---touched');
+  //                                       walletPaid = 0;
+  //                                       orderProvider.changePartialPayment();
+  //                                       orderProvider.savePaymentMethod(
+  //                                           index: null, method: null);
+  //                                       if (index == 0) {
+  //                                         AppConstants.deliveryCagrge =
+  //                                             expressProvider.deliveryCharge!
+  //                                                 .deliveryCharge!;
+  //                                       } else {
+  //                                         AppConstants.deliveryCagrge =
+  //                                             Provider.of<SplashProvider>(
+  //                                                     context,
+  //                                                     listen: false)
+  //                                                 .configModel!
+  //                                                 .deliveryCharge!;
+  //                                       }
+  //                                       orderProvider.updateDateSlot(index);
+  //                                     }),
+  //                                 const SizedBox(
+  //                                     width: Dimensions.paddingSizeExtraSmall),
+  //                                 Text(
+  //                                   index == 0
+  //                                       ? getTranslated(
+  //                                           'Express Delivery', context)
+  //                                       : DateConverterHelper.estimatedDate(
+  //                                           DateTime.now()
+  //                                               .add(Duration(days: index))),
+  //                                   style: poppinsRegular.copyWith(
+  //                                     color: Theme.of(context)
+  //                                         .textTheme
+  //                                         .bodyLarge
+  //                                         ?.color,
+  //                                   ),
+  //                                 ),
+  //                               ],
+  //                             ),
+  //                           );
+  //                         }
+  //                       },
+  //                     ),
+
+  //                     // Show Express Time Slots if applicable
+  //                     if (isExpressAvailable &&
+  //                         orderProvider.selectDateSlot == 0)
+  //                       CustomSingleChildListWidget(
+  //                         scrollDirection: Axis.horizontal,
+  //                         itemCount: orderProvider.expressDeliverySlots.length,
+  //                         itemBuilder: (index) {
+  //                           var slot =
+  //                               orderProvider.expressDeliverySlots[index];
+  //                           return _buildTimeSlot(
+  //                             context: context,
+  //                             orderProvider: orderProvider,
+  //                             index: index,
+  //                             startTime: slot.startTime!,
+  //                             endTime: slot.endTime!,
+  //                           );
+  //                         },
+  //                       ),
+
+  //                     // Show Normal Time Slots
+  //                     if (orderProvider.selectDateSlot != 0)
+  //                       CustomSingleChildListWidget(
+  //                         scrollDirection: Axis.horizontal,
+  //                         itemCount: orderProvider.timeSlots?.length ?? 0,
+  //                         itemBuilder: (index) => _buildTimeSlot(
+  //                           context: context,
+  //                           orderProvider: orderProvider,
+  //                           index: index,
+  //                           startTime:
+  //                               orderProvider.timeSlots![index].startTime!,
+  //                           endTime: orderProvider.timeSlots![index].endTime!,
+  //                         ),
+  //                       ),
+
+  //                     const SizedBox(height: 20),
+  //                   ],
+  //                 ),
   //               ),
   //             ),
-  //             const SizedBox(width: Dimensions.paddingSizeExtraSmall),
-  //             Tooltip(
-  //               triggerMode: ResponsiveHelper.isDesktop(context)
-  //                   ? null
-  //                   : TooltipTriggerMode.tap,
-  //               message: getTranslated('select_your_preference_time', context),
-  //               child: Icon(Icons.info_outline,
-  //                   color: Theme.of(context).disabledColor,
-  //                   size: Dimensions.paddingSizeLarge),
-  //             ),
-  //           ],
-  //         ),
-  //       ),
-  //       const SizedBox(height: 8),
-  //       Padding(
-  //         padding: const EdgeInsets.symmetric(horizontal: 16.0),
-  //         child: Container(
-  //           decoration: BoxDecoration(
-  //             borderRadius: BorderRadius.circular(16),
-  //             color: Colors.white,
   //           ),
-  //           padding: const EdgeInsets.all(8.0),
-  //           child: Align(
-  //             alignment:
-  //                 Provider.of<LocalizationProvider>(context, listen: false)
-  //                         .isLtr
-  //                     ? Alignment.topLeft
-  //                     : Alignment.topRight,
-  //             child: Column(
+  //         ],
+  //       );
+  //     },
+  //   );
+  // }
+
+  Widget _buildTimeSlot({
+    required BuildContext context,
+    required OrderProvider orderProvider,
+    required int index,
+    required String startTime,
+    required String endTime,
+  }) {
+    return Padding(
+      padding:
+          const EdgeInsets.symmetric(horizontal: Dimensions.paddingSizeSmall),
+      child: InkWell(
+        onTap: () => orderProvider.updateTimeSlot(index),
+        child: Container(
+          padding: const EdgeInsets.symmetric(
+            vertical: Dimensions.paddingSizeSmall,
+            horizontal: Dimensions.paddingSizeSmall,
+          ),
+          alignment: Alignment.center,
+          decoration: BoxDecoration(
+            color: orderProvider.selectTimeSlot == index
+                ? Theme.of(context).primaryColor
+                : Theme.of(context).cardColor,
+            borderRadius: BorderRadius.circular(Dimensions.radiusSizeDefault),
+            boxShadow: [
+              BoxShadow(
+                color: Theme.of(context).shadowColor,
+                spreadRadius: .5,
+                blurRadius: .5,
+              )
+            ],
+            border: Border.all(
+              color: orderProvider.selectTimeSlot == index
+                  ? Theme.of(context).primaryColor
+                  : Theme.of(context).textTheme.bodyLarge!.color!,
+            ),
+          ),
+          child: Row(
+            children: [
+              Icon(
+                Icons.history,
+                color: orderProvider.selectTimeSlot == index
+                    ? Theme.of(context).cardColor
+                    : Theme.of(context).textTheme.bodyLarge!.color!,
+                size: 20,
+              ),
+              const SizedBox(width: Dimensions.paddingSizeExtraSmall),
+              Text(
+                '${DateConverterHelper.stringToStringTime(startTime, context)} - ${DateConverterHelper.stringToStringTime(endTime, context)}',
+                style: poppinsRegular.copyWith(
+                  fontSize: Dimensions.fontSizeLarge,
+                  color: orderProvider.selectTimeSlot == index
+                      ? Theme.of(context).cardColor
+                      : Theme.of(context).textTheme.bodyLarge!.color!,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+  // preferenceTimeWidget(BuildContext context, OrderProvider orderProvider) {
+  //   return Consumer<ExpressDeliveryProvider>(
+  //       builder: (context, expressProvider, child) {
+  //     int? num = 0;
+
+  //     return Column(
+  //       crossAxisAlignment: CrossAxisAlignment.start,
+  //       children: [
+  //         const SizedBox(height: 8),
+  //         Padding(
+  //           padding: const EdgeInsets.only(left: 16.0),
+  //           child: Row(
+  //             children: [
+  //               Text(
+  //                 getTranslated('preference_time', context),
+  //                 style: poppinsBold.copyWith(
+  //                   fontSize: Dimensions.fontSizeLarge,
+  //                 ),
+  //               ),
+  //               const SizedBox(width: Dimensions.paddingSizeExtraSmall),
+  //               Tooltip(
+  //                 triggerMode: ResponsiveHelper.isDesktop(context)
+  //                     ? null
+  //                     : TooltipTriggerMode.tap,
+  //                 message:
+  //                     getTranslated('select_your_preference_time', context),
+  //                 child: Icon(
+  //                   Icons.info_outline,
+  //                   color: Theme.of(context).disabledColor,
+  //                   size: Dimensions.paddingSizeLarge,
+  //                 ),
+  //               ),
+  //             ],
+  //           ),
+  //         ),
+  //         const SizedBox(height: 8),
+  //         Padding(
+  //           padding: const EdgeInsets.symmetric(horizontal: 16.0),
+  //           child: Container(
+  //             decoration: BoxDecoration(
+  //               borderRadius: BorderRadius.circular(16),
+  //               color: Colors.white,
+  //             ),
+  //             padding: const EdgeInsets.all(8.0),
+  //             child: Align(
+  //               alignment:
+  //                   Provider.of<LocalizationProvider>(context, listen: false)
+  //                           .isLtr
+  //                       ? Alignment.topLeft
+  //                       : Alignment.topRight,
+  //               child: Column(
   //                 crossAxisAlignment: CrossAxisAlignment.start,
   //                 children: [
   //                   CustomSingleChildListWidget(
   //                     scrollDirection: Axis.horizontal,
-  //                     itemCount: 3,
+  //                     itemCount: 3, // Max options (Express, Normal, Estimated)
   //                     itemBuilder: (index) {
+  //                       // Express Delivery Slot Handling
+  //                       if (expressProvider.status != '1' && index == 0) {
+  //                         // If express delivery is not available, skip
+  //                         return const SizedBox.shrink();
+  //                       }
+
+  //                       // Show Express Delivery Slot
+  //                       if (expressProvider.status == '1' &&
+  //                           index == 0 &&
+  //                           expressProvider.deliveryCharge!.status ==
+  //                               'success') {
+  //                         return Padding(
+  //                           padding: const EdgeInsets.symmetric(horizontal: 2),
+  //                           child: Row(
+  //                             children: [
+  //                               Radio(
+  //                                 activeColor: Theme.of(context).primaryColor,
+  //                                 value: index,
+  //                                 groupValue: orderProvider.selectDateSlot,
+  //                                 onChanged: (value) async {
+  //                                   orderProvider.updateDateSlot(index);
+  //                                 },
+  //                               ),
+  //                               const SizedBox(
+  //                                   width: Dimensions.paddingSizeExtraSmall),
+  //                               Text(
+  //                                 getTranslated('Express Delivery', context),
+  //                                 style: poppinsRegular.copyWith(
+  //                                   color: Theme.of(context)
+  //                                       .textTheme
+  //                                       .bodyLarge
+  //                                       ?.color,
+  //                                 ),
+  //                               ),
+  //                             ],
+  //                           ),
+  //                         );
+  //                       }
+
+  //                       // Handle Normal and Estimated Delivery
   //                       return Padding(
   //                         padding: const EdgeInsets.symmetric(horizontal: 2),
   //                         child: Row(
@@ -453,14 +941,18 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
   //                             const SizedBox(
   //                                 width: Dimensions.paddingSizeExtraSmall),
   //                             Text(
-  //                               index == 0
+  //                               index == 0 &&
+  //                                       expressProvider
+  //                                               .deliveryCharge!.status ==
+  //                                           'success'
   //                                   ? getTranslated('Express Delivery', context)
   //                                   : index == 1
-  //                                       ? getTranslated(
-  //                                           'Normal Delivery', context)
+  //                                       ? DateConverterHelper.estimatedDate(
+  //                                           DateTime.now()
+  //                                               .add(const Duration(days: 1)))
   //                                       : DateConverterHelper.estimatedDate(
   //                                           DateTime.now()
-  //                                               .add(const Duration(days: 1))),
+  //                                               .add(const Duration(days: 2))),
   //                               style: poppinsRegular.copyWith(
   //                                 color: Theme.of(context)
   //                                     .textTheme
@@ -468,403 +960,174 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
   //                                     ?.color,
   //                               ),
   //                             ),
-  //                             const SizedBox(
-  //                                 width: Dimensions.paddingSizeExtraSmall),
   //                           ],
   //                         ),
   //                       );
   //                     },
   //                   ),
-  //                   // const SizedBox(height: Dimensions.paddingSizeDefault),
-  //                   orderProvider.timeSlots == null
-  //                       ? CustomLoaderWidget(
-  //                           color: Theme.of(context).primaryColor)
-  //                       : CustomSingleChildListWidget(
-  //                           scrollDirection: Axis.horizontal,
-  //                           itemCount: orderProvider.timeSlots?.length ?? 0,
-  //                           itemBuilder: (index) {
-  //                             return Padding(
+  //                   // Display Express Delivery Time Slots if available
+  //                   if (expressProvider.status == '1' &&
+  //                       orderProvider.selectDateSlot == 0 &&
+  //                       orderProvider.expressDeliverySlots.isNotEmpty)
+  //                     CustomSingleChildListWidget(
+  //                       scrollDirection: Axis.horizontal,
+  //                       itemCount: orderProvider.expressDeliverySlots.length,
+  //                       itemBuilder: (index) {
+  //                         print('new num---------$num');
+  //                         var slot = orderProvider.expressDeliverySlots[index];
+  //                         return Padding(
+  //                           padding: const EdgeInsets.symmetric(
+  //                               horizontal: Dimensions.paddingSizeSmall),
+  //                           child: InkWell(
+  //                             onTap: () => orderProvider.updateTimeSlot(index),
+  //                             child: Container(
   //                               padding: const EdgeInsets.symmetric(
-  //                                   horizontal: Dimensions.paddingSizeSmall),
-  //                               child: InkWell(
-  //                                 hoverColor: Colors.transparent,
-  //                                 onTap: () =>
-  //                                     orderProvider.updateTimeSlot(index),
-  //                                 child: Container(
-  //                                   padding: const EdgeInsets.symmetric(
-  //                                       vertical: Dimensions.paddingSizeSmall,
-  //                                       horizontal:
-  //                                           Dimensions.paddingSizeSmall),
-  //                                   alignment: Alignment.center,
-  //                                   decoration: BoxDecoration(
-  //                                     color:
-  //                                         orderProvider.selectTimeSlot == index
-  //                                             ? Theme.of(context).primaryColor
-  //                                             : Theme.of(context).cardColor,
-  //                                     borderRadius: BorderRadius.circular(
-  //                                         Dimensions.radiusSizeDefault),
-  //                                     boxShadow: [
-  //                                       BoxShadow(
-  //                                         color: Theme.of(context).shadowColor,
-  //                                         spreadRadius: .5,
-  //                                         blurRadius: .5,
-  //                                       )
-  //                                     ],
-  //                                     border: Border.all(
+  //                                 vertical: Dimensions.paddingSizeSmall,
+  //                                 horizontal: Dimensions.paddingSizeSmall,
+  //                               ),
+  //                               alignment: Alignment.center,
+  //                               decoration: BoxDecoration(
+  //                                 color: orderProvider.selectTimeSlot == index
+  //                                     ? Theme.of(context).primaryColor
+  //                                     : Theme.of(context).cardColor,
+  //                                 borderRadius: BorderRadius.circular(
+  //                                     Dimensions.radiusSizeDefault),
+  //                                 boxShadow: [
+  //                                   BoxShadow(
+  //                                     color: Theme.of(context).shadowColor,
+  //                                     spreadRadius: .5,
+  //                                     blurRadius: .5,
+  //                                   )
+  //                                 ],
+  //                                 border: Border.all(
+  //                                   color: orderProvider.selectTimeSlot == index
+  //                                       ? Theme.of(context).primaryColor
+  //                                       : Theme.of(context)
+  //                                           .textTheme
+  //                                           .bodyLarge!
+  //                                           .color!,
+  //                                 ),
+  //                               ),
+  //                               child: Row(
+  //                                 children: [
+  //                                   Icon(Icons.history,
   //                                       color: orderProvider.selectTimeSlot ==
   //                                               index
-  //                                           ? Theme.of(context).primaryColor
+  //                                           ? Theme.of(context).cardColor
+  //                                           : Theme.of(context)
+  //                                               .textTheme
+  //                                               .bodyLarge!
+  //                                               .color!,
+  //                                       size: 20),
+  //                                   const SizedBox(
+  //                                       width:
+  //                                           Dimensions.paddingSizeExtraSmall),
+  //                                   Text(
+  //                                     '${DateConverterHelper.stringToStringTime(slot.startTime!, context)} - ${DateConverterHelper.stringToStringTime(slot.endTime!, context)}',
+  //                                     style: poppinsRegular.copyWith(
+  //                                       fontSize: Dimensions.fontSizeLarge,
+  //                                       color: orderProvider.selectTimeSlot ==
+  //                                               index
+  //                                           ? Theme.of(context).cardColor
   //                                           : Theme.of(context)
   //                                               .textTheme
   //                                               .bodyLarge!
   //                                               .color!,
   //                                     ),
   //                                   ),
-  //                                   child: Row(
-  //                                     children: [
-  //                                       Icon(Icons.history,
-  //                                           color: orderProvider
-  //                                                       .selectTimeSlot ==
-  //                                                   index
-  //                                               ? Theme.of(context).cardColor
-  //                                               : Theme.of(context)
-  //                                                   .textTheme
-  //                                                   .bodyLarge!
-  //                                                   .color!,
-  //                                           size: 20),
-  //                                       const SizedBox(
-  //                                           width: Dimensions
-  //                                               .paddingSizeExtraSmall),
-  //                                       Text(
-  //                                         '${DateConverterHelper.stringToStringTime(orderProvider.timeSlots![index].startTime!, context)} '
-  //                                         '- ${DateConverterHelper.stringToStringTime(orderProvider.timeSlots![index].endTime!, context)}',
-  //                                         style: poppinsRegular.copyWith(
-  //                                           fontSize: Dimensions.fontSizeLarge,
-  //                                           color: orderProvider
-  //                                                       .selectTimeSlot ==
-  //                                                   index
-  //                                               ? Theme.of(context).cardColor
-  //                                               : Theme.of(context)
-  //                                                   .textTheme
-  //                                                   .bodyLarge!
-  //                                                   .color!,
-  //                                         ),
-  //                                       ),
-  //                                     ],
+  //                                 ],
+  //                               ),
+  //                             ),
+  //                           ),
+  //                         );
+  //                       },
+  //                     ),
+  //                   // Handle Other Time Slots for Normal and Estimated Delivery
+  //                   CustomSingleChildListWidget(
+  //                     scrollDirection: Axis.horizontal,
+  //                     itemCount: orderProvider.timeSlots?.length ?? 0,
+  //                     itemBuilder: (index) {
+  //                       if (orderProvider.selectDateSlot == 0) {
+  //                         // Skip rendering for Express Delivery
+  //                         return const SizedBox.shrink();
+  //                       }
+  //                       num = num! + 1;
+  //                       print('new num1----------$num');
+  //                       return Padding(
+  //                         padding: const EdgeInsets.symmetric(
+  //                             horizontal: Dimensions.paddingSizeSmall),
+  //                         child: InkWell(
+  //                           onTap: () => orderProvider.updateTimeSlot(index),
+  //                           child: Container(
+  //                             padding: const EdgeInsets.symmetric(
+  //                                 vertical: Dimensions.paddingSizeSmall,
+  //                                 horizontal: Dimensions.paddingSizeSmall),
+  //                             alignment: Alignment.center,
+  //                             decoration: BoxDecoration(
+  //                               color: orderProvider.selectTimeSlot == index
+  //                                   ? Theme.of(context).primaryColor
+  //                                   : Theme.of(context).cardColor,
+  //                               borderRadius: BorderRadius.circular(
+  //                                   Dimensions.radiusSizeDefault),
+  //                               boxShadow: [
+  //                                 BoxShadow(
+  //                                   color: Theme.of(context).shadowColor,
+  //                                   spreadRadius: .5,
+  //                                   blurRadius: .5,
+  //                                 )
+  //                               ],
+  //                               border: Border.all(
+  //                                 color: orderProvider.selectTimeSlot == index
+  //                                     ? Theme.of(context).primaryColor
+  //                                     : Theme.of(context)
+  //                                         .textTheme
+  //                                         .bodyLarge!
+  //                                         .color!,
+  //                               ),
+  //                             ),
+  //                             child: Row(
+  //                               children: [
+  //                                 Icon(Icons.history,
+  //                                     color:
+  //                                         orderProvider.selectTimeSlot == index
+  //                                             ? Theme.of(context).cardColor
+  //                                             : Theme.of(context)
+  //                                                 .textTheme
+  //                                                 .bodyLarge!
+  //                                                 .color!,
+  //                                     size: 20),
+  //                                 const SizedBox(
+  //                                     width: Dimensions.paddingSizeExtraSmall),
+  //                                 Text(
+  //                                   '${DateConverterHelper.stringToStringTime(orderProvider.timeSlots![index].startTime!, context)} - ${DateConverterHelper.stringToStringTime(orderProvider.timeSlots![index].endTime!, context)}',
+  //                                   style: poppinsRegular.copyWith(
+  //                                     fontSize: Dimensions.fontSizeLarge,
+  //                                     color:
+  //                                         orderProvider.selectTimeSlot == index
+  //                                             ? Theme.of(context).cardColor
+  //                                             : Theme.of(context)
+  //                                                 .textTheme
+  //                                                 .bodyLarge!
+  //                                                 .color!,
   //                                   ),
   //                                 ),
-  //                               ),
-  //                             );
-  //                           },
+  //                               ],
+  //                             ),
+  //                           ),
   //                         ),
+  //                       );
+  //                     },
+  //                   ),
   //                   const SizedBox(height: 20),
-  //                 ]),
+  //                 ],
+  //               ),
+  //             ),
   //           ),
   //         ),
-  //       ),
-  //     ],
-  //   );
+  //       ],
+  //     );
+  //   });
   // }
-  preferenceTimeWidget(BuildContext context, OrderProvider orderProvider) {
-    return Consumer<ExpressDeliveryProvider>(
-        builder: (context, expressProvider, child) {
-      int? num = 0;
-
-      // Fetch express delivery slots if needed (but ensure it is only called once)
-      //if (expressProvider.status == '0' && !orderProvider.isFetching) {
-      // orderProvider
-      //     .fetchExpressDeliverySlots(); // Fetch express delivery slots when needed
-      // }
-
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const SizedBox(height: 8),
-          Padding(
-            padding: const EdgeInsets.only(left: 16.0),
-            child: Row(
-              children: [
-                Text(
-                  getTranslated('preference_time', context),
-                  style: poppinsBold.copyWith(
-                    fontSize: Dimensions.fontSizeLarge,
-                  ),
-                ),
-                const SizedBox(width: Dimensions.paddingSizeExtraSmall),
-                Tooltip(
-                  triggerMode: ResponsiveHelper.isDesktop(context)
-                      ? null
-                      : TooltipTriggerMode.tap,
-                  message:
-                      getTranslated('select_your_preference_time', context),
-                  child: Icon(
-                    Icons.info_outline,
-                    color: Theme.of(context).disabledColor,
-                    size: Dimensions.paddingSizeLarge,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(height: 8),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0),
-            child: Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(16),
-                color: Colors.white,
-              ),
-              padding: const EdgeInsets.all(8.0),
-              child: Align(
-                alignment:
-                    Provider.of<LocalizationProvider>(context, listen: false)
-                            .isLtr
-                        ? Alignment.topLeft
-                        : Alignment.topRight,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    CustomSingleChildListWidget(
-                      scrollDirection: Axis.horizontal,
-                      itemCount: 3, // Max options (Express, Normal, Estimated)
-                      itemBuilder: (index) {
-                        //   num = index;
-                        //  print('---------------num $num');
-                        // Express Delivery Slot Handling
-                        if (expressProvider.status != '1' && index == 0) {
-                          // If express delivery is not available, skip
-                          return const SizedBox.shrink();
-                        }
-
-                        // Show Express Delivery Slot
-                        if (expressProvider.status == '1' && index == 0) {
-                          return Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 2),
-                            child: Row(
-                              children: [
-                                Radio(
-                                  activeColor: Theme.of(context).primaryColor,
-                                  value: index,
-                                  groupValue: orderProvider.selectDateSlot,
-                                  onChanged: (value) =>
-                                      orderProvider.updateDateSlot(index),
-                                ),
-                                const SizedBox(
-                                    width: Dimensions.paddingSizeExtraSmall),
-                                Text(
-                                  getTranslated('Express Delivery', context),
-                                  style: poppinsRegular.copyWith(
-                                    color: Theme.of(context)
-                                        .textTheme
-                                        .bodyLarge
-                                        ?.color,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          );
-                        }
-
-                        // Handle Normal and Estimated Delivery
-                        return Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 2),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              Radio(
-                                activeColor: Theme.of(context).primaryColor,
-                                value: index,
-                                groupValue: orderProvider.selectDateSlot,
-                                onChanged: (value) =>
-                                    orderProvider.updateDateSlot(index),
-                              ),
-                              const SizedBox(
-                                  width: Dimensions.paddingSizeExtraSmall),
-                              Text(
-                                index == 0
-                                    ? getTranslated('Express Delivery', context)
-                                    : index == 1
-                                        ? DateConverterHelper.estimatedDate(
-                                            DateTime.now()
-                                                .add(const Duration(days: 1)))
-                                        : DateConverterHelper.estimatedDate(
-                                            DateTime.now()
-                                                .add(const Duration(days: 2))),
-                                style: poppinsRegular.copyWith(
-                                  color: Theme.of(context)
-                                      .textTheme
-                                      .bodyLarge
-                                      ?.color,
-                                ),
-                              ),
-                            ],
-                          ),
-                        );
-                      },
-                    ),
-                    // Display Express Delivery Time Slots if available
-                    if (expressProvider.status == '1' &&
-                        orderProvider.selectDateSlot == 0 &&
-                        orderProvider.expressDeliverySlots.isNotEmpty)
-                      CustomSingleChildListWidget(
-                        scrollDirection: Axis.horizontal,
-                        itemCount: orderProvider.expressDeliverySlots.length,
-                        itemBuilder: (index) {
-                          print('new num---------$num');
-                          var slot = orderProvider.expressDeliverySlots[index];
-                          return Padding(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: Dimensions.paddingSizeSmall),
-                            child: InkWell(
-                              onTap: () => orderProvider.updateTimeSlot(index),
-                              child: Container(
-                                padding: const EdgeInsets.symmetric(
-                                  vertical: Dimensions.paddingSizeSmall,
-                                  horizontal: Dimensions.paddingSizeSmall,
-                                ),
-                                alignment: Alignment.center,
-                                decoration: BoxDecoration(
-                                  color: orderProvider.selectTimeSlot == index
-                                      ? Theme.of(context).primaryColor
-                                      : Theme.of(context).cardColor,
-                                  borderRadius: BorderRadius.circular(
-                                      Dimensions.radiusSizeDefault),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Theme.of(context).shadowColor,
-                                      spreadRadius: .5,
-                                      blurRadius: .5,
-                                    )
-                                  ],
-                                  border: Border.all(
-                                    color: orderProvider.selectTimeSlot == index
-                                        ? Theme.of(context).primaryColor
-                                        : Theme.of(context)
-                                            .textTheme
-                                            .bodyLarge!
-                                            .color!,
-                                  ),
-                                ),
-                                child: Row(
-                                  children: [
-                                    Icon(Icons.history,
-                                        color: orderProvider.selectTimeSlot ==
-                                                index
-                                            ? Theme.of(context).cardColor
-                                            : Theme.of(context)
-                                                .textTheme
-                                                .bodyLarge!
-                                                .color!,
-                                        size: 20),
-                                    const SizedBox(
-                                        width:
-                                            Dimensions.paddingSizeExtraSmall),
-                                    Text(
-                                      '${DateConverterHelper.stringToStringTime(slot.startTime!, context)} - ${DateConverterHelper.stringToStringTime(slot.endTime!, context)}',
-                                      style: poppinsRegular.copyWith(
-                                        fontSize: Dimensions.fontSizeLarge,
-                                        color: orderProvider.selectTimeSlot ==
-                                                index
-                                            ? Theme.of(context).cardColor
-                                            : Theme.of(context)
-                                                .textTheme
-                                                .bodyLarge!
-                                                .color!,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          );
-                        },
-                      ),
-                    // Handle Other Time Slots for Normal and Estimated Delivery
-                    CustomSingleChildListWidget(
-                      scrollDirection: Axis.horizontal,
-                      itemCount: orderProvider.timeSlots?.length ?? 0,
-                      itemBuilder: (index) {
-                        if (orderProvider.selectDateSlot == 0) {
-                          // Skip rendering for Express Delivery
-                          return const SizedBox.shrink();
-                        }
-                        num = num! + 1;
-                        print('new num1----------$num');
-                        return Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: Dimensions.paddingSizeSmall),
-                          child: InkWell(
-                            onTap: () => orderProvider.updateTimeSlot(index),
-                            child: Container(
-                              padding: const EdgeInsets.symmetric(
-                                  vertical: Dimensions.paddingSizeSmall,
-                                  horizontal: Dimensions.paddingSizeSmall),
-                              alignment: Alignment.center,
-                              decoration: BoxDecoration(
-                                color: orderProvider.selectTimeSlot == index
-                                    ? Theme.of(context).primaryColor
-                                    : Theme.of(context).cardColor,
-                                borderRadius: BorderRadius.circular(
-                                    Dimensions.radiusSizeDefault),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Theme.of(context).shadowColor,
-                                    spreadRadius: .5,
-                                    blurRadius: .5,
-                                  )
-                                ],
-                                border: Border.all(
-                                  color: orderProvider.selectTimeSlot == index
-                                      ? Theme.of(context).primaryColor
-                                      : Theme.of(context)
-                                          .textTheme
-                                          .bodyLarge!
-                                          .color!,
-                                ),
-                              ),
-                              child: Row(
-                                children: [
-                                  Icon(Icons.history,
-                                      color:
-                                          orderProvider.selectTimeSlot == index
-                                              ? Theme.of(context).cardColor
-                                              : Theme.of(context)
-                                                  .textTheme
-                                                  .bodyLarge!
-                                                  .color!,
-                                      size: 20),
-                                  const SizedBox(
-                                      width: Dimensions.paddingSizeExtraSmall),
-                                  Text(
-                                    '${DateConverterHelper.stringToStringTime(orderProvider.timeSlots![index].startTime!, context)} - ${DateConverterHelper.stringToStringTime(orderProvider.timeSlots![index].endTime!, context)}',
-                                    style: poppinsRegular.copyWith(
-                                      fontSize: Dimensions.fontSizeLarge,
-                                      color:
-                                          orderProvider.selectTimeSlot == index
-                                              ? Theme.of(context).cardColor
-                                              : Theme.of(context)
-                                                  .textTheme
-                                                  .bodyLarge!
-                                                  .color!,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        );
-                      },
-                    ),
-                    const SizedBox(height: 20),
-                  ],
-                ),
-              ),
-            ),
-          ),
-        ],
-      );
-    });
-  }
 
   // preferenceTimeWidget(BuildContext context, OrderProvider orderProvider) {
   //   return Consumer<ExpressDeliveryProvider>(

@@ -59,7 +59,7 @@ class LocationProvider with ChangeNotifier {
   bool _updateAddAddressData = true;
   List<AddressModel>? _addressList;
   List<String> _getAllAddressType = [];
-  int _selectAddressIndex = 0;
+  int _selectAddressIndex = -1;
 
   bool get loading => _loading;
   Position get position => _position;
@@ -78,6 +78,11 @@ class LocationProvider with ChangeNotifier {
   GoogleMapController? mapController;
   CameraPosition? cameraPosition;
   bool isUpdateAddress = true;
+
+  void resetAddressSelection() {
+    _selectAddressIndex = -1;
+    notifyListeners();
+  }
 
   // for get current location
   void getCurrentLocation(BuildContext context, bool fromAddress,

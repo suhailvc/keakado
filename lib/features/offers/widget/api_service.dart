@@ -1,13 +1,14 @@
 import 'dart:convert';
 import 'package:flutter_grocery/common/models/offer_model.dart';
 import 'package:flutter_grocery/common/models/product_model.dart';
+import 'package:flutter_grocery/utill/app_constants.dart';
 import 'package:http/http.dart' as http;
 
 class ApiService {
-  static const String baseUrl = "http://tamweenfoods.com/api/v1";
+  //static const String baseUrl = "http://tamweenfoods.com/api/v1";
 
   Future<ProductModel> offerApiService() async {
-    final url = Uri.parse("$baseUrl/products/discounted");
+    final url = Uri.parse("${AppConstants.baseUrl}/api/v1/products/discounted");
     try {
       final response = await http.get(url);
 

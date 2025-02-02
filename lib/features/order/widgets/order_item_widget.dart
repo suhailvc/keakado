@@ -262,22 +262,62 @@ class _OrderItemWidgetState extends State<OrderItemWidget> {
                     }),
                     const SizedBox(height: Dimensions.paddingSizeSmall),
                     widget.orderList![widget.index].orderStatus == 'canceled'
-                        ? Container(
-                            height: 40,
-                            width: MediaQuery.of(context).size.width / 4,
-                            decoration: BoxDecoration(
-                              color: Colors.red,
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            alignment: Alignment.center,
-                            child: Text(
-                              getTranslated('Cancelled', context),
-                              style: poppinsSemiBold.copyWith(
-                                color: Colors.white,
-                                letterSpacing: 1.2,
-                                wordSpacing: 1.6,
+                        ? Row(
+                            children: [
+                              GestureDetector(
+                                onTap: () {
+                                  Navigator.of(context).pushNamed(
+                                    RouteHelper.getOrderDetailsRoute(
+                                        '${widget.orderList?[widget.index].id}'),
+                                    arguments: OrderDetailsScreen(
+                                        orderId:
+                                            widget.orderList![widget.index].id,
+                                        orderModel:
+                                            widget.orderList![widget.index]),
+                                  );
+                                },
+                                child: Container(
+                                  height: 40,
+                                  width:
+                                      MediaQuery.of(context).size.width / 3.5,
+                                  decoration: BoxDecoration(
+                                    color: Theme.of(context)
+                                        .primaryColor
+                                        .withOpacity(0.2),
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                  alignment: Alignment.center,
+                                  child: Text(
+                                    getTranslated("order_details", context),
+                                    style: poppinsSemiBold.copyWith(
+                                      color: Theme.of(context).primaryColor,
+                                      letterSpacing: 1.2,
+                                      wordSpacing: 1.6,
+                                    ),
+                                  ),
+                                ),
                               ),
-                            ),
+                              SizedBox(
+                                width: 20,
+                              ),
+                              Container(
+                                height: 40,
+                                width: MediaQuery.of(context).size.width / 4,
+                                decoration: BoxDecoration(
+                                  color: Colors.red,
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                alignment: Alignment.center,
+                                child: Text(
+                                  getTranslated('Cancelled', context),
+                                  style: poppinsSemiBold.copyWith(
+                                    color: Colors.white,
+                                    letterSpacing: 1.2,
+                                    wordSpacing: 1.6,
+                                  ),
+                                ),
+                              ),
+                            ],
                           )
                         : Row(
                             crossAxisAlignment: CrossAxisAlignment.end,

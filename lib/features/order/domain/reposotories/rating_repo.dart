@@ -1,3 +1,4 @@
+import 'package:flutter_grocery/utill/app_constants.dart';
 import 'package:http/http.dart' as http;
 // // Define the API service method
 
@@ -11,7 +12,7 @@ Future<void> ratingService({
   print('----------rating---$rating');
   // Example API call implementation
   final String url =
-      'http://tamweenfoods.com/api/v1/customer/order/submit-review?order_id=$orderId&rating=$rating&comment=$comment';
+      '${AppConstants.baseUrl}/api/v1/customer/order/submit-review?order_id=$orderId&rating=$rating&comment=$comment';
   final response = await http.post(
     Uri.parse(url),
     headers: {

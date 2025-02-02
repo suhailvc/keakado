@@ -29,7 +29,7 @@ if (keystorePropertiesFile.exists()) {
 }
 
 android {
-    namespace "com.sixamtech.grofresh"
+    namespace "com.keakado"
     compileSdk 34
     ndkVersion flutter.ndkVersion
 

@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_grocery/common/widgets/custom_loader_widget.dart';
 import 'package:flutter_grocery/features/address/domain/models/address_model.dart';
 import 'package:flutter_grocery/common/models/config_model.dart';
+import 'package:flutter_grocery/features/checkout/provider/exprees_deliver_provider.dart';
+import 'package:flutter_grocery/features/checkout/widgets/constants.dart';
 import 'package:flutter_grocery/localization/language_constraints.dart';
 import 'package:flutter_grocery/features/address/providers/location_provider.dart';
 import 'package:flutter_grocery/features/order/providers/order_provider.dart';
@@ -93,7 +95,12 @@ class AddAddressWidget extends StatelessWidget {
                     : getTranslated('add_new_address', context),
                 onPressed: locationProvider.loading
                     ? null
-                    : () {
+                    : () async {
+                        if (floorNumberController.text.isEmpty) {
+                          showCustomSnackBarHelper(
+                              getTranslated('Add Zone Number', context));
+                          return;
+                        }
                         List<Branches> branches =
                             Provider.of<SplashProvider>(context, listen: false)
                                 .configModel!
@@ -150,6 +157,17 @@ class AddAddressWidget extends StatelessWidget {
                                     addressModel: addressModel,
                                     addressId: addressModel.id)
                                 .then((value) {});
+                            await Provider.of<ExpressDeliveryProvider>(context,
+                                    listen: false)
+                                .checkDeliveryCharge(
+                              floorNumberController.text!,
+                              true,
+                            );
+                            //   walletPaid = 0;
+                            //  // AppConstants.deliveryCagrge =
+                            //       Provider.of<ExpressDeliveryProvider>(context, listen: false)
+                            //           .deliveryCharge!
+                            //           .deliveryCharge!;
                           } else {
                             locationProvider
                                 .addAddress(addressModel, context)

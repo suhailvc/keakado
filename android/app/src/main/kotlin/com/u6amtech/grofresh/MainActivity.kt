@@ -1,4 +1,4 @@
-package com.sixamtech.grofresh
+package com.keakado
 
 import io.flutter.embedding.android.FlutterActivity
 

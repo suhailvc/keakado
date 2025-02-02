@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_grocery/features/checkout/widgets/constants.dart';
 import 'package:flutter_grocery/features/checkout/widgets/partial_alert_message_widget.dart';
 import 'package:flutter_grocery/features/checkout/widgets/payment_method_bottom_sheet_widget.dart';
 import 'package:flutter_grocery/helper/custom_snackbar_helper.dart';
@@ -124,6 +125,12 @@ class PartialPayDialogWidget extends StatelessWidget {
                   child: CustomButtonWidget(
                       buttonText: getTranslated('yes_pay', context),
                       onPressed: () {
+                        walletPaid = 0;
+                        profileProvider.userInfoModel!.walletBalance! >
+                                totalPrice
+                            ? walletPaid = totalPrice
+                            : walletPaid =
+                                profileProvider.userInfoModel!.walletBalance!;
                         if (isPartialPay) {
                           orderProvider.changePartialPayment(
                               amount: totalPrice -

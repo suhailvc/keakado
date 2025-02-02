@@ -69,11 +69,13 @@ class AuthRepo {
     required String firstName,
     required String lastName,
     required String email,
+    String? referral,
   }) async {
     try {
       print('--------------------------------api---------${phone}');
+      print('--------------------------------referee---------${referral}');
       Response response = await dioClient!.post(
-        "${AppConstants.baseUrl}/api/v1/auth/register?f_name=$firstName&l_name=$lastName&email=$email&phone=$phone",
+        "${AppConstants.baseUrl}/api/v1/auth/register?f_name=$firstName&l_name=$lastName&email=$email&phone=$phone&referral_code=$referral",
       );
       // Response response = await dioClient!.post(
       //   "${AppConstants.createProfileUri}?f_name=$firstName&l_name=$lastName&email=$email&phone=$phone",

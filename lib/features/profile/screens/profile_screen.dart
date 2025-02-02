@@ -27,6 +27,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     {"icon": "profile", "label": "profile"},
     {"icon": "order", "label": "my_orders"},
     {"icon": "notification", "label": "notifications"},
+    {"icon": "Refferandearn", "label": "Refer and Earn"},
     {"icon": "whishlist", "label": "Wishlist"},
     {"icon": "coupon_icon", "label": "coupon"},
     {"icon": "location", "label": "address"},

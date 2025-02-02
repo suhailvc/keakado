@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_grocery/features/checkout/widgets/constants.dart';
+import 'package:flutter_grocery/features/coupon/providers/coupon_provider.dart';
 import 'package:flutter_grocery/helper/checkout_helper.dart';
 import 'package:flutter_grocery/helper/price_converter_helper.dart';
 import 'package:flutter_grocery/helper/responsive_helper.dart';
@@ -25,9 +26,15 @@ class PartialPayWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     print('---------pric-----$totalPrice');
-    double amountNeedToPay = AppConstants.mimimumOrderValue > totalPrice
-        ? (totalPrice + AppConstants.deliveryCagrge)
-        : totalPrice;
+    double amountNeedToPay =
+        Provider.of<CouponProvider>(context, listen: false).freeDeliveryCoupon
+            ? totalPrice
+            : (AppConstants.mimimumOrderValue > totalPrice
+                ? (totalPrice + AppConstants.deliveryCagrge)
+                : totalPrice);
+    // double amountNeedToPay = AppConstants.mimimumOrderValue > totalPrice
+    //     ? (totalPrice + AppConstants.deliveryCagrge)
+    //     : totalPrice;
     print('---------anp-----$amountNeedToPay');
     final SplashProvider splashProvider =
         Provider.of<SplashProvider>(context, listen: false);
@@ -178,13 +185,13 @@ class PartialPayWidget extends StatelessWidget {
                                     } else {
                                       print(
                                           '-------partialwal1----${orderProvider.partialAmount}');
-                                      walletPaid = 0;
-                                      profileProvider.userInfoModel!
-                                                  .walletBalance! >
-                                              amountNeedToPay
-                                          ? walletPaid = amountNeedToPay
-                                          : walletPaid = profileProvider
-                                              .userInfoModel!.walletBalance!;
+                                      // walletPaid = 0;
+                                      // profileProvider.userInfoModel!
+                                      //             .walletBalance! >
+                                      //         amountNeedToPay
+                                      //     ? walletPaid = amountNeedToPay
+                                      //     : walletPaid = profileProvider
+                                      //         .userInfoModel!.walletBalance!;
                                       showDialog(
                                           context: context,
                                           builder: (ctx) =>

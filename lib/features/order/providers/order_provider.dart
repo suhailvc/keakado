@@ -115,7 +115,7 @@ class OrderProvider extends ChangeNotifier {
 
     try {
       final response = await http.get(Uri.parse(
-          "http://tamweenfoods.com/api/v1/customer/order/express-delivery-slots"));
+          "${AppConstants.baseUrl}/api/v1/customer/order/express-delivery-slots"));
 
       print(
           '------------exp time after API call: ${expressDeliverySlots.length}');
@@ -157,58 +157,6 @@ class OrderProvider extends ChangeNotifier {
       notifyListeners();
     }
   }
-
-  // Future<void> fetchExpressDeliverySlots() async {
-  //   // if (isFetching) return; // Prevent multiple API calls
-  //   // isFetching = true;
-  //   print('------------exp time${expressDeliverySlots.length}');
-  //   try {
-  //     final response = await http.get(Uri.parse(
-  //         "http://tamweenfoods.com/api/v1/customer/order/express-delivery-slots"));
-  //     print('------------exp time0 ${expressDeliverySlots.length}');
-  //     if (response.statusCode == 200) {
-  //       print('------------exp time1.1 ${expressDeliverySlots.length}');
-  //       final data = jsonDecode(response.body);
-  //       print('------------exp time1.2 ${expressDeliverySlots.length}');
-  //       expressDeliverySlots = List<TimeSlotModel>.from(
-  //           data.map((slot) => TimeSlotModel.fromJson(slot)));
-  //       print('------------exp time1 ${expressDeliverySlots.length}');
-  //       status = '1'; // Mark status as available
-  //     } else {
-  //       print('------------exp time2 ${expressDeliverySlots.length}');
-  //       status = '0'; // Mark status as unavailable
-  //     }
-  //   } catch (e) {
-  //     print('------------exp time3 ${expressDeliverySlots.length}');
-  //     status = '0'; // Mark status as unavailable on error
-  //   } finally {
-  //     print('------------exp time4 ${expressDeliverySlots.length}');
-  //     isFetching = false;
-  //     notifyListeners();
-  //   }
-  // }
-  // String status = '0'; // Default status (0 = not available, 1 = available)
-  // List<TimeSlotModel> expressDeliverySlots =
-  //     []; // List of express delivery slots
-
-  // // Fetch express delivery slots from API
-  // Future<void> fetchExpressDeliverySlots() async {
-  //   try {
-  //     final response = await http.get(Uri.parse(
-  //         "http://tamweenfoods.com/api/v1/customer/order/express-delivery-slots"));
-  //     if (response.statusCode == 200) {
-  //       final data = jsonDecode(response.body);
-  //       expressDeliverySlots = List<TimeSlotModel>.from(
-  //           data.map((slot) => TimeSlotModel.fromJson(slot)));
-  //       status = '1'; // Mark status as available
-  //     } else {
-  //       status = '0'; // Mark status as unavailable
-  //     }
-  //   } catch (e) {
-  //     status = '0'; // Mark status as unavailable on error
-  //   }
-  //   notifyListeners();
-  // }
 
   set setCheckOutData(CheckOutModel value) {
     _checkOutData = value;
@@ -266,47 +214,30 @@ class OrderProvider extends ChangeNotifier {
     return orderRepo!.getDateList();
   }
 
-  int _selectDateSlot = 0;
-  int _selectTimeSlot = 0;
+  int _selectDateSlot = -1;
+  int _selectTimeSlot = -1;
 
   int get selectDateSlot => _selectDateSlot;
   int get selectTimeSlot => _selectTimeSlot;
+
+  void resetTimeSelections() {
+    _selectDateSlot = -1;
+    _selectTimeSlot = -1;
+    notifyListeners();
+  }
 
   void updateTimeSlot(int index) {
     _selectTimeSlot = index;
     notifyListeners();
   }
 
-  // void updateDateSlot(int index) {
-  //   if (index == 0) {
-  //     // If "Tomorrow" is selected, set the date to tomorrow
-  //     _selectedDate = DateTime.now().add(Duration(days: 1));
-  //   } else {
-  //     // Calculate future dates based on the selected slot (after 5 pm logic)
-  //     final DateTime now = DateTime.now();
-  //     final bool isBeforeFivePm = now.hour < 17;
-  //     DateTime firstDate = isBeforeFivePm
-  //         ? now.add(Duration(days: 2))
-  //         : now.add(Duration(days: 1));
-  //     DateTime secondDate = firstDate.add(Duration(days: 1));
-
-  //     // If index 1 is selected, set the date to the first future date
-  //     // If index 2 is selected, set it to the second future date
-  //     _selectedDate = index == 1 ? firstDate : secondDate;
-  //   }
-
-  //   // Make sure the selected time slot is reset or updated appropriately
-  //   validateSlot(_allTimeSlots, index);
-
-  //   _selectDateSlot = index;
-  //   notifyListeners();
-  // }
   void updateDateSlot(int index) {
     _selectDateSlot = index;
     if (_allTimeSlots != null) {
       validateSlot(_allTimeSlots, index);
     }
-    _selectTimeSlot = index;
+    _selectTimeSlot = -1;
+    //_selectTimeSlot = index;
     notifyListeners();
   }
 
@@ -446,7 +377,7 @@ class OrderProvider extends ChangeNotifier {
     ApiResponseModel apiResponse = await orderRepo!.placeOrder(placeOrderBody,
         imageNote: imageNoteProvider.imageFiles ?? []);
     _isLoading = false;
-    print('-----------api response ${apiResponse.response!.statusCode}');
+    //   print('-----------api response ${apiResponse.response!.statusCode}');
     if (apiResponse.response != null &&
         apiResponse.response!.statusCode == 200) {
       String? message = apiResponse.response!.data['message'];
@@ -572,6 +503,7 @@ class OrderProvider extends ChangeNotifier {
       notifyListeners();
     }
   }
+
   Future<void> getCancelStatus() async {
     try {
       _isLoading = true;
@@ -589,6 +521,7 @@ class OrderProvider extends ChangeNotifier {
       debugPrint('Error in provider: $e');
     }
   }
+
   void cancelOrder(
     String orderID,
     bool fromOrder,

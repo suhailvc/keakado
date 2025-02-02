@@ -233,7 +233,8 @@ class AuthProvider with ChangeNotifier {
       {required String phone,
       required String firstName,
       required String lastName,
-      required String email}) async {
+      required String email,
+      String? referral}) async {
     final SplashProvider splashProvider =
         Provider.of<SplashProvider>(Get.context!, listen: false);
     final VerificationProvider verificationProvider =
@@ -242,6 +243,7 @@ class AuthProvider with ChangeNotifier {
     _loginErrorMessage = '';
     notifyListeners();
     ApiResponseModel apiResponse = await authRepo!.createProfile(
+      referral: referral,
       phone: phone,
       email: email,
       firstName: firstName,

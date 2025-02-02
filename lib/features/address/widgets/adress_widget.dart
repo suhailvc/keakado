@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_grocery/features/address/domain/models/address_model.dart';
 import 'package:flutter_grocery/common/models/config_model.dart';
+import 'package:flutter_grocery/features/checkout/provider/exprees_deliver_provider.dart';
+import 'package:flutter_grocery/features/checkout/widgets/constants.dart';
 import 'package:flutter_grocery/helper/checkout_helper.dart';
 import 'package:flutter_grocery/helper/route_helper.dart';
 import 'package:flutter_grocery/features/address/providers/location_provider.dart';
 import 'package:flutter_grocery/features/order/providers/order_provider.dart';
 import 'package:flutter_grocery/features/splash/providers/splash_provider.dart';
+import 'package:flutter_grocery/utill/app_constants.dart';
 import 'package:flutter_grocery/utill/dimensions.dart';
 import 'package:flutter_grocery/utill/styles.dart';
 import 'package:flutter_grocery/helper/custom_snackbar_helper.dart';
@@ -16,10 +19,12 @@ class AddressWidget extends StatelessWidget {
   final AddressModel addressModel;
   final int index;
   final bool fromSelectAddress;
+  final Function()? onTap;
   const AddressWidget(
       {Key? key,
       required this.addressModel,
       required this.index,
+      this.onTap,
       this.fromSelectAddress = false})
       : super(key: key);
 
@@ -51,6 +56,27 @@ class AddressWidget extends StatelessWidget {
               orderProvider: orderProvider,
               fromAddressList: true,
             );
+            print(
+                'address widget---zone-honusno---${addressModel.houseNumber}');
+            if (addressModel.houseNumber != null) {
+              print(
+                  'address widget---zone-honusno---${addressModel.houseNumber}');
+              await Provider.of<ExpressDeliveryProvider>(context, listen: false)
+                  .checkDeliveryCharge(
+                addressModel.zone!,
+                true,
+              );
+              walletPaid = 0;
+              //  AppConstants.deliveryCagrge =
+              Provider.of<ExpressDeliveryProvider>(context, listen: false)
+                  .deliveryCharge!
+                  .deliveryCharge!;
+              // print('-------index $index');
+              // print(
+              //     '--------------express add charge${AppConstants.deliveryCagrge}');
+              // print(
+              //     '--------------express add status ${Provider.of<ExpressDeliveryProvider>(context, listen: false).deliveryCharge!.status}');
+            }
           }
         },
         child: Container(
@@ -87,12 +113,13 @@ class AddressWidget extends StatelessWidget {
                               fromAddressList: true,
                             );
                           }
+                          print('-------index $index');
                         },
                         child: Radio(
                           activeColor: Theme.of(context).primaryColor,
                           value: index,
                           groupValue: locationProvider.selectAddressIndex,
-                          onChanged: (_) {
+                          onChanged: (_) async {
                             // Trigger the same logic when the Radio is clicked
                             if (fromSelectAddress) {
                               bool isAvailable =
@@ -112,6 +139,27 @@ class AddressWidget extends StatelessWidget {
                                 orderProvider: orderProvider,
                                 fromAddressList: true,
                               );
+                              print(
+                                  '-------zone------${addressModel.floorNumber!}');
+                              if (addressModel.houseNumber != null) {
+                                await Provider.of<ExpressDeliveryProvider>(
+                                        context,
+                                        listen: false)
+                                    .checkDeliveryCharge(
+                                  addressModel.zone!,
+                                  true,
+                                );
+                                walletPaid = 0;
+                                //AppConstants.deliveryCagrge =
+                                Provider.of<ExpressDeliveryProvider>(context,
+                                        listen: false)
+                                    .deliveryCharge!
+                                    .deliveryCharge!;
+                                //  print(
+                                //  '--------------express add charge${AppConstants.deliveryCagrge}');
+                                // print(
+                                //    '--------------express add status ${Provider.of<ExpressDeliveryProvider>(context, listen: false).deliveryCharge!.status}');
+                              }
                             }
                           },
                           materialTapTargetSize:
