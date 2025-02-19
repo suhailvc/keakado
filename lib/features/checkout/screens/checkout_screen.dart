@@ -4,11 +4,13 @@ import 'dart:collection';
 import 'package:flutter/material.dart';
 import 'package:flutter_grocery/common/enums/footer_type_enum.dart';
 import 'package:flutter_grocery/common/models/config_model.dart';
+import 'package:flutter_grocery/common/providers/cart_provider.dart';
 import 'package:flutter_grocery/common/providers/localization_provider.dart';
 import 'package:flutter_grocery/common/widgets/custom_loader_widget.dart';
 import 'package:flutter_grocery/common/widgets/custom_shadow_widget.dart';
 import 'package:flutter_grocery/common/widgets/custom_single_child_list_widget.dart';
 import 'package:flutter_grocery/common/widgets/footer_web_widget.dart';
+import 'package:flutter_grocery/common/widgets/no_data_widget.dart';
 import 'package:flutter_grocery/common/widgets/not_login_widget.dart';
 import 'package:flutter_grocery/common/widgets/web_app_bar_widget.dart';
 import 'package:flutter_grocery/features/address/domain/models/address_model.dart';
@@ -195,106 +197,112 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                     const TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
               ),
             )) as PreferredSizeWidget?,
-      body: isRoute
-          ? Column(
-              children: [
-                Expanded(
-                  child: CustomScrollView(
-                    slivers: [
-                      SliverToBoxAdapter(
-                        child: Consumer<OrderProvider>(
-                          builder: (context, orderProvider, child) {
-                            double deliveryCharge =
-                                CheckOutHelper.getDeliveryCharge(
-                              freeDeliveryType: widget.freeDeliveryType,
-                              orderAmount: widget.amount,
-                              distance: orderProvider.distance,
-                              discount: widget.discount ?? 0,
-                              configModel: configModel,
-                            );
+      body: Provider.of<CartProvider>(context).cartList.isNotEmpty
+          ? isRoute
+              ? Column(
+                  children: [
+                    Expanded(
+                      child: CustomScrollView(
+                        slivers: [
+                          SliverToBoxAdapter(
+                            child: Consumer<OrderProvider>(
+                              builder: (context, orderProvider, child) {
+                                double deliveryCharge =
+                                    CheckOutHelper.getDeliveryCharge(
+                                  freeDeliveryType: widget.freeDeliveryType,
+                                  orderAmount: widget.amount,
+                                  distance: orderProvider.distance,
+                                  discount: widget.discount ?? 0,
+                                  configModel: configModel,
+                                );
 
-                            orderProvider.getCheckOutData?.copyWith(
-                                deliveryCharge: deliveryCharge,
-                                orderNote: _noteController.text);
+                                orderProvider.getCheckOutData?.copyWith(
+                                    deliveryCharge: deliveryCharge,
+                                    orderNote: _noteController.text);
 
-                            return Consumer<LocationProvider>(
-                              builder: (context, address, child) => Column(
-                                children: [
-                                  Center(
-                                    child: SizedBox(
-                                      width: Dimensions.webScreenWidth,
-                                      child: Row(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Expanded(
-                                            flex: 6,
-                                            child: Column(
-                                              children: [
-                                                // if (_branches!.isNotEmpty)
-                                                // selectBranchWidget(context, orderProvider),
+                                return Consumer<LocationProvider>(
+                                  builder: (context, address, child) => Column(
+                                    children: [
+                                      Center(
+                                        child: SizedBox(
+                                          width: Dimensions.webScreenWidth,
+                                          child: Row(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Expanded(
+                                                flex: 6,
+                                                child: Column(
+                                                  children: [
+                                                    // if (_branches!.isNotEmpty)
+                                                    // selectBranchWidget(context, orderProvider),
 
-                                                // Address
-                                                DeliveryAddressWidget(
-                                                  selfPickup: selfPickup,
+                                                    // Address
+                                                    DeliveryAddressWidget(
+                                                      selfPickup: selfPickup,
+                                                    ),
+
+                                                    // // Time Slot
+                                                    if (address
+                                                            .selectAddressIndex !=
+                                                        -1)
+                                                      Column(
+                                                        children: [
+                                                          preferenceTimeWidget(
+                                                              context,
+                                                              orderProvider,
+                                                              widget.amount),
+                                                          if (!ResponsiveHelper
+                                                              .isDesktop(
+                                                                  context))
+                                                            DetailsWidget(
+                                                              paymentList:
+                                                                  _activePaymentList,
+                                                              noteController:
+                                                                  _noteController,
+                                                            ),
+                                                        ],
+                                                      )
+                                                  ],
                                                 ),
-
-                                                // // Time Slot
-                                                if (address
-                                                        .selectAddressIndex !=
-                                                    -1)
-                                                  Column(
-                                                    children: [
-                                                      preferenceTimeWidget(
-                                                          context,
-                                                          orderProvider),
-                                                      if (!ResponsiveHelper
-                                                          .isDesktop(context))
-                                                        DetailsWidget(
-                                                          paymentList:
-                                                              _activePaymentList,
-                                                          noteController:
-                                                              _noteController,
-                                                        ),
-                                                    ],
-                                                  )
-                                              ],
-                                            ),
+                                              ),
+                                              if (ResponsiveHelper.isDesktop(
+                                                  context))
+                                                Expanded(
+                                                  flex: 4,
+                                                  child: Column(children: [
+                                                    DetailsWidget(
+                                                        paymentList:
+                                                            _activePaymentList,
+                                                        noteController:
+                                                            _noteController),
+                                                    const PlaceOrderButtonWidget(),
+                                                  ]),
+                                                ),
+                                            ],
                                           ),
-                                          if (ResponsiveHelper.isDesktop(
-                                              context))
-                                            Expanded(
-                                              flex: 4,
-                                              child: Column(children: [
-                                                DetailsWidget(
-                                                    paymentList:
-                                                        _activePaymentList,
-                                                    noteController:
-                                                        _noteController),
-                                                const PlaceOrderButtonWidget(),
-                                              ]),
-                                            ),
-                                        ],
+                                        ),
                                       ),
-                                    ),
+                                    ],
                                   ),
-                                ],
-                              ),
-                            );
-                          },
-                        ),
+                                );
+                              },
+                            ),
+                          ),
+                          const FooterWebWidget(footerType: FooterType.sliver),
+                        ],
                       ),
-                      const FooterWebWidget(footerType: FooterType.sliver),
-                    ],
-                  ),
-                ),
-                if (!ResponsiveHelper.isDesktop(context))
-                  const Center(
-                    child: PlaceOrderButtonWidget(),
-                  ),
-              ],
-            )
-          : const NotLoggedInWidget(),
+                    ),
+                    if (!ResponsiveHelper.isDesktop(context))
+                      const Center(
+                        child: PlaceOrderButtonWidget(),
+                      ),
+                  ],
+                )
+              : const NotLoggedInWidget()
+          : NoDataWidget(
+              image: Images.favouriteNoDataImage,
+              title: getTranslated('empty_shopping_bag', context)),
     );
   }
 
@@ -399,12 +407,13 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
     );
   }
 
-  preferenceTimeWidget(BuildContext context, OrderProvider orderProvider) {
+  preferenceTimeWidget(
+      BuildContext context, OrderProvider orderProvider, double amount) {
     return Consumer<ExpressDeliveryProvider>(
       builder: (context, expressProvider, child) {
         bool isExpressAvailable = expressProvider.status == '1' &&
             expressProvider.deliveryCharge?.status == 'success';
-
+        print('-----expre status ${expressProvider.deliveryCharge?.status}');
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -446,7 +455,6 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // Date Selection
                     CustomSingleChildListWidget(
                       scrollDirection: Axis.horizontal,
                       itemCount: isExpressAvailable ? 3 : 2,
@@ -458,12 +466,32 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                               mainAxisAlignment: MainAxisAlignment.start,
                               children: [
                                 Radio(
-                                  activeColor: Theme.of(context).primaryColor,
-                                  value: index + 1,
-                                  groupValue: orderProvider.selectDateSlot,
-                                  onChanged: (value) => orderProvider
-                                      .updateDateSlot(value as int),
-                                ),
+                                    activeColor: Theme.of(context).primaryColor,
+                                    value: index + 1,
+                                    groupValue: orderProvider.selectDateSlot,
+                                    onChanged: (value) {
+                                      orderProvider
+                                          .updateDateSlot(value as int);
+                                      walletPaid = 0;
+                                      orderProvider.changePartialPayment();
+                                      orderProvider.savePaymentMethod(
+                                          index: null, method: null);
+                                      // Set normal delivery charge'
+                                      if (amount >
+                                              AppConstants.mimimumOrderValue ||
+                                          Provider.of<CouponProvider>(context,
+                                                      listen: false)
+                                                  .freeDeliveryCoupon ==
+                                              true) {
+                                        AppConstants.deliveryCagrge = 0;
+                                      } else {
+                                        AppConstants.deliveryCagrge =
+                                            Provider.of<SplashProvider>(context,
+                                                    listen: false)
+                                                .configModel!
+                                                .deliveryCharge!;
+                                      }
+                                    }),
                                 const SizedBox(
                                     width: Dimensions.paddingSizeExtraSmall),
                                 Text(
@@ -490,8 +518,60 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                   activeColor: Theme.of(context).primaryColor,
                                   value: index,
                                   groupValue: orderProvider.selectDateSlot,
-                                  onChanged: (value) => orderProvider
-                                      .updateDateSlot(value as int),
+                                  onChanged: (value) {
+                                    orderProvider.updateDateSlot(value as int);
+                                    walletPaid = 0;
+                                    orderProvider.changePartialPayment();
+                                    orderProvider.savePaymentMethod(
+                                        index: null, method: null);
+                                    // Set delivery charge based on selection
+                                    if (value == 0) {
+                                      // Express delivery selected
+                                      print(
+                                          '----------expreess minimum ${Provider.of<SplashProvider>(context, listen: false).configModel!.freeExpressDeliveryOverAmount!}');
+                                      if (amount >
+                                              Provider.of<SplashProvider>(
+                                                      context,
+                                                      listen: false)
+                                                  .configModel!
+                                                  .freeExpressDeliveryOverAmount! ||
+                                          Provider.of<CouponProvider>(context,
+                                                      listen: false)
+                                                  .freeDeliveryCoupon ==
+                                              true) {
+                                        AppConstants.deliveryCagrge = 0;
+                                        print('-touched exp 1 d');
+                                      } else {
+                                        print('-touched exp 2 d');
+                                        AppConstants.deliveryCagrge = Provider
+                                                .of<ExpressDeliveryProvider>(
+                                                    context,
+                                                    listen: false)
+                                            .deliveryCharge!
+                                            .deliveryCharge!;
+                                      }
+                                      print(
+                                          "express delivery charge 1 ----${AppConstants.deliveryCagrge}");
+                                    } else {
+                                      // Normal delivery selected
+                                      if (amount >
+                                              AppConstants.mimimumOrderValue ||
+                                          Provider.of<CouponProvider>(context,
+                                                      listen: false)
+                                                  .freeDeliveryCoupon ==
+                                              true) {
+                                        AppConstants.deliveryCagrge = 0;
+                                      } else {
+                                        AppConstants.deliveryCagrge =
+                                            Provider.of<SplashProvider>(context,
+                                                    listen: false)
+                                                .configModel!
+                                                .deliveryCharge!;
+                                      }
+                                      print(
+                                          "express delivery charge 2 ----${AppConstants.deliveryCagrge}");
+                                    }
+                                  },
                                 ),
                                 const SizedBox(
                                     width: Dimensions.paddingSizeExtraSmall),
@@ -516,11 +596,9 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                       },
                     ),
 
-                    // Show time slots only if a date is selected
+                    // Rest of the widget remains the same...
                     if (orderProvider.selectDateSlot != -1) ...[
                       const SizedBox(height: 10),
-
-                      // Express Time Slots
                       if (isExpressAvailable &&
                           orderProvider.selectDateSlot == 0)
                         CustomSingleChildListWidget(
@@ -538,8 +616,6 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                             );
                           },
                         ),
-
-                      // Normal Time Slots
                       if (orderProvider.selectDateSlot > 0)
                         CustomSingleChildListWidget(
                           scrollDirection: Axis.horizontal,
@@ -554,7 +630,6 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                           ),
                         ),
                     ],
-
                     const SizedBox(height: 20),
                   ],
                 ),
@@ -570,7 +645,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
   //     builder: (context, expressProvider, child) {
   //       bool isExpressAvailable = expressProvider.status == '1' &&
   //           expressProvider.deliveryCharge?.status == 'success';
-
+  //       print('-----expre status ${expressProvider.deliveryCharge?.status}');
   //       return Column(
   //         crossAxisAlignment: CrossAxisAlignment.start,
   //         children: [
@@ -609,120 +684,85 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
   //                 color: Colors.white,
   //               ),
   //               padding: const EdgeInsets.all(8.0),
-  //               child: Align(
-  //                 alignment:
-  //                     Provider.of<LocalizationProvider>(context, listen: false)
-  //                             .isLtr
-  //                         ? Alignment.topLeft
-  //                         : Alignment.topRight,
-  //                 child: Column(
-  //                   crossAxisAlignment: CrossAxisAlignment.start,
-  //                   children: [
-  //                     CustomSingleChildListWidget(
-  //                       scrollDirection: Axis.horizontal,
-  //                       // Show only 2 options if express not available
-  //                       itemCount: isExpressAvailable ? 3 : 2,
-  //                       itemBuilder: (index) {
-  //                         if (!isExpressAvailable) {
-  //                           // If express not available, show only tomorrow and day after
-  //                           return Padding(
-  //                             padding:
-  //                                 const EdgeInsets.symmetric(horizontal: 2),
-  //                             child: Row(
-  //                               mainAxisAlignment: MainAxisAlignment.start,
-  //                               children: [
-  //                                 Radio(
+  //               child: Column(
+  //                 crossAxisAlignment: CrossAxisAlignment.start,
+  //                 children: [
+  //                   // Date Selection
+  //                   CustomSingleChildListWidget(
+  //                     scrollDirection: Axis.horizontal,
+  //                     itemCount: isExpressAvailable ? 3 : 2,
+  //                     itemBuilder: (index) {
+  //                       if (!isExpressAvailable) {
+  //                         return Padding(
+  //                           padding: const EdgeInsets.symmetric(horizontal: 2),
+  //                           child: Row(
+  //                             mainAxisAlignment: MainAxisAlignment.start,
+  //                             children: [
+  //                               Radio(
   //                                   activeColor: Theme.of(context).primaryColor,
-  //                                   value: index +
-  //                                       1, // Adjust index to skip express option
+  //                                   value: index + 1,
   //                                   groupValue: orderProvider.selectDateSlot,
   //                                   onChanged: (value) {
-  //                                     walletPaid = 0;
-  //                                     orderProvider.changePartialPayment();
-  //                                     orderProvider.savePaymentMethod(
-  //                                         index: null, method: null);
-  //                                     AppConstants.deliveryCagrge =
-  //                                         Provider.of<SplashProvider>(context,
-  //                                                 listen: false)
-  //                                             .configModel!
-  //                                             .deliveryCharge!;
-  //                                     print('--touched');
-  //                                     orderProvider.updateDateSlot(index + 1);
-  //                                   },
+  //                                     orderProvider
+  //                                         .updateDateSlot(value as int);
+  //                                   }),
+  //                               const SizedBox(
+  //                                   width: Dimensions.paddingSizeExtraSmall),
+  //                               Text(
+  //                                 DateConverterHelper.estimatedDate(
+  //                                     DateTime.now()
+  //                                         .add(Duration(days: index + 1))),
+  //                                 style: poppinsRegular.copyWith(
+  //                                   color: Theme.of(context)
+  //                                       .textTheme
+  //                                       .bodyLarge
+  //                                       ?.color,
   //                                 ),
-  //                                 const SizedBox(
-  //                                     width: Dimensions.paddingSizeExtraSmall),
-  //                                 Text(
-  //                                   DateConverterHelper.estimatedDate(
-  //                                       DateTime.now()
-  //                                           .add(Duration(days: index + 1))),
-  //                                   style: poppinsRegular.copyWith(
-  //                                     color: Theme.of(context)
-  //                                         .textTheme
-  //                                         .bodyLarge
-  //                                         ?.color,
-  //                                   ),
+  //                               ),
+  //                             ],
+  //                           ),
+  //                         );
+  //                       } else {
+  //                         return Padding(
+  //                           padding: const EdgeInsets.symmetric(horizontal: 2),
+  //                           child: Row(
+  //                             mainAxisAlignment: MainAxisAlignment.start,
+  //                             children: [
+  //                               Radio(
+  //                                 activeColor: Theme.of(context).primaryColor,
+  //                                 value: index,
+  //                                 groupValue: orderProvider.selectDateSlot,
+  //                                 onChanged: (value) => orderProvider
+  //                                     .updateDateSlot(value as int),
+  //                               ),
+  //                               const SizedBox(
+  //                                   width: Dimensions.paddingSizeExtraSmall),
+  //                               Text(
+  //                                 index == 0
+  //                                     ? getTranslated(
+  //                                         'Express Delivery', context)
+  //                                     : DateConverterHelper.estimatedDate(
+  //                                         DateTime.now()
+  //                                             .add(Duration(days: index))),
+  //                                 style: poppinsRegular.copyWith(
+  //                                   color: Theme.of(context)
+  //                                       .textTheme
+  //                                       .bodyLarge
+  //                                       ?.color,
   //                                 ),
-  //                               ],
-  //                             ),
-  //                           );
-  //                         } else {
-  //                           // If express available, show all options
-  //                           return Padding(
-  //                             padding:
-  //                                 const EdgeInsets.symmetric(horizontal: 2),
-  //                             child: Row(
-  //                               mainAxisAlignment: MainAxisAlignment.start,
-  //                               children: [
-  //                                 Radio(
-  //                                     activeColor:
-  //                                         Theme.of(context).primaryColor,
-  //                                     value: index,
-  //                                     groupValue: orderProvider.selectDateSlot,
-  //                                     onChanged: (value) {
-  //                                       print('---touched');
-  //                                       walletPaid = 0;
-  //                                       orderProvider.changePartialPayment();
-  //                                       orderProvider.savePaymentMethod(
-  //                                           index: null, method: null);
-  //                                       if (index == 0) {
-  //                                         AppConstants.deliveryCagrge =
-  //                                             expressProvider.deliveryCharge!
-  //                                                 .deliveryCharge!;
-  //                                       } else {
-  //                                         AppConstants.deliveryCagrge =
-  //                                             Provider.of<SplashProvider>(
-  //                                                     context,
-  //                                                     listen: false)
-  //                                                 .configModel!
-  //                                                 .deliveryCharge!;
-  //                                       }
-  //                                       orderProvider.updateDateSlot(index);
-  //                                     }),
-  //                                 const SizedBox(
-  //                                     width: Dimensions.paddingSizeExtraSmall),
-  //                                 Text(
-  //                                   index == 0
-  //                                       ? getTranslated(
-  //                                           'Express Delivery', context)
-  //                                       : DateConverterHelper.estimatedDate(
-  //                                           DateTime.now()
-  //                                               .add(Duration(days: index))),
-  //                                   style: poppinsRegular.copyWith(
-  //                                     color: Theme.of(context)
-  //                                         .textTheme
-  //                                         .bodyLarge
-  //                                         ?.color,
-  //                                   ),
-  //                                 ),
-  //                               ],
-  //                             ),
-  //                           );
-  //                         }
-  //                       },
-  //                     ),
+  //                               ),
+  //                             ],
+  //                           ),
+  //                         );
+  //                       }
+  //                     },
+  //                   ),
 
-  //                     // Show Express Time Slots if applicable
+  //                   // Show time slots only if a date is selected
+  //                   if (orderProvider.selectDateSlot != -1) ...[
+  //                     const SizedBox(height: 10),
+
+  //                     // Express Time Slots
   //                     if (isExpressAvailable &&
   //                         orderProvider.selectDateSlot == 0)
   //                       CustomSingleChildListWidget(
@@ -741,8 +781,8 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
   //                         },
   //                       ),
 
-  //                     // Show Normal Time Slots
-  //                     if (orderProvider.selectDateSlot != 0)
+  //                     // Normal Time Slots
+  //                     if (orderProvider.selectDateSlot > 0)
   //                       CustomSingleChildListWidget(
   //                         scrollDirection: Axis.horizontal,
   //                         itemCount: orderProvider.timeSlots?.length ?? 0,
@@ -755,10 +795,10 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
   //                           endTime: orderProvider.timeSlots![index].endTime!,
   //                         ),
   //                       ),
-
-  //                     const SizedBox(height: 20),
   //                   ],
-  //                 ),
+
+  //                   const SizedBox(height: 20),
+  //                 ],
   //               ),
   //             ),
   //           ),
@@ -779,7 +819,9 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
       padding:
           const EdgeInsets.symmetric(horizontal: Dimensions.paddingSizeSmall),
       child: InkWell(
-        onTap: () => orderProvider.updateTimeSlot(index),
+        onTap: () {
+          orderProvider.updateTimeSlot(index);
+        },
         child: Container(
           padding: const EdgeInsets.symmetric(
             vertical: Dimensions.paddingSizeSmall,

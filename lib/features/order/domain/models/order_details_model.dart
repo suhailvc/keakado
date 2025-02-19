@@ -259,7 +259,7 @@ class ProductDetails {
         categoryIds!.add(CategoryIds.fromJson(v));
       });
     }
-    capacity = json['capacity'].toDouble();
+    capacity = json['capacity']?.toDouble() ?? 0.0;
     unit = json['unit'];
     tax = json['tax'].toDouble();
     status = json['status'];

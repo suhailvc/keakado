@@ -100,7 +100,7 @@ class OfferModel {
     taxType = json['tax_type'];
     unit = json['unit'];
     totalStock = json['total_stock'];
-    capacity = json['capacity']?.toDouble();
+    capacity = json['capacity']?.toDouble() ?? 0.0;
     dailyNeeds = json['daily_needs'];
     popularityCount = json['popularity_count'];
     isFeatured = json['is_featured'];

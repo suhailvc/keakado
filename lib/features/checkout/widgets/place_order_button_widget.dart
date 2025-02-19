@@ -42,7 +42,7 @@ class PlaceOrderButtonWidget extends StatelessWidget {
 
     return Consumer<OrderProvider>(builder: (context, orderProvider, _) {
       CheckOutModel? checkOutData = orderProvider.getCheckOutData;
-
+      print('--------place order adress index ${orderProvider.addressIndex}');
       final bool isSelfPickup =
           CheckOutHelper.isSelfPickup(orderType: checkOutData?.orderType);
       final bool isKmWiseCharge =
@@ -105,7 +105,8 @@ class PlaceOrderButtonWidget extends StatelessWidget {
                                 if (fromOfflinePayment) {
                                   Navigator.pop(context);
                                 }
-
+                                print(
+                                    '----------delivery Charge  ${AppConstants.deliveryCagrge}');
                                 final AuthProvider authProvider =
                                     Provider.of<AuthProvider>(context,
                                         listen: false);
@@ -130,33 +131,46 @@ class PlaceOrderButtonWidget extends StatelessWidget {
                                       getTranslated(
                                           'select_delivery_address', context),
                                       isError: true);
+                                } else if (orderProvider.timeSlots == null ||
+                                    orderProvider.selectTimeSlot == -1 ||
+                                    orderProvider.timeSlots!.isEmpty) {
+                                  showCustomSnackBarHelper(
+                                      getTranslated('select_a_time', context),
+                                      isError: true);
                                 } else if ((orderProvider.selectedPaymentMethod ==
                                         null
                                     ? (orderProvider.selectedOfflineValue ==
                                         null)
                                     : orderProvider.selectedPaymentMethod ==
                                         null)) {
+                                  print(
+                                      '--------place order payment method ${orderProvider.selectedPaymentMethod}');
                                   showCustomSnackBarHelper(getTranslated(
                                       'add_a_payment_method', context));
                                 } else if (!isSelfPickup &&
                                     orderProvider.addressIndex == -1) {
+                                  print(
+                                      '--------place order adress index ${orderProvider.addressIndex}');
                                   showCustomSnackBarHelper(
                                       getTranslated(
                                           'select_delivery_address', context),
                                       isError: true);
                                 } else if (orderProvider.timeSlots == null ||
+                                    orderProvider.selectTimeSlot == -1 ||
                                     orderProvider.timeSlots!.isEmpty) {
                                   showCustomSnackBarHelper(
                                       getTranslated('select_a_time', context),
                                       isError: true);
-                                } else if (!isSelfPickup &&
-                                    isKmWiseCharge &&
-                                    orderProvider.distance == -1) {
-                                  showCustomSnackBarHelper(
-                                      getTranslated(
-                                          'delivery_fee_not_set_yet', context),
-                                      isError: true);
-                                } else {
+                                }
+                                //else if (!isSelfPickup &&
+                                //   isKmWiseCharge &&
+                                //   orderProvider.distance == -1) {
+                                // showCustomSnackBarHelper(
+                                //     getTranslated(
+                                //         'delivery_fee_not_set_yet', context),
+                                //     isError: true);
+                                //}
+                                else {
                                   List<CartModel> cartList =
                                       Provider.of<CartProvider>(context,
                                               listen: false)
@@ -182,6 +196,8 @@ class PlaceOrderButtonWidget extends StatelessWidget {
                                       ],
                                     );
                                     carts.add(cart);
+                                    // print(
+                                    //     '--------place order payment method ${orderProvider.selectedPaymentMethod!.getWayTitle!}');
                                     print(
                                         "--------------------------------------------------------------${carts}");
                                   }

@@ -5,6 +5,7 @@ import 'package:flutter_grocery/features/menu/widgets/delete_dialog_widget.dart'
 import 'package:flutter_grocery/features/menu/widgets/sign_out_dialog_widget.dart';
 import 'package:flutter_grocery/features/privacy_policy/privacy_policy_screen.dart';
 import 'package:flutter_grocery/features/refer_and_earn/screens/refer_and_earn_screen.dart';
+import 'package:flutter_grocery/features/wallet_and_loyalty/screens/wallet_screen.dart';
 import 'package:flutter_grocery/helper/dialog_helper.dart';
 import 'package:flutter_grocery/helper/route_helper.dart';
 import 'package:flutter_grocery/localization/language_constraints.dart';

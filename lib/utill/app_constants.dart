@@ -132,6 +132,7 @@ class AppConstants {
         languageCode: 'ar'),
   ];
   static double mimimumOrderValue = 0;
+  static double mimimumExpressOrderValue = 0;
   static double deliveryCagrge = 0;
   static final List<Map<String, String>> walletTransactionSortingList = [
     {'title': 'all_transactions', 'value': 'all'},

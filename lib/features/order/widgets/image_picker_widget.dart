@@ -32,14 +32,14 @@ Future<void> showImagePickerOptions(BuildContext context, int index) async {
                   Navigator.pop(context);
                 },
               ),
-              ListTile(
-                leading: const Icon(Icons.photo_library),
-                title: const Text('Choose from Gallery'),
-                onTap: () async {
-                  await provider.pickImage(ImageSource.gallery, index);
-                  Navigator.pop(context);
-                },
-              ),
+              // ListTile(
+              //   leading: const Icon(Icons.photo_library),
+              //   title: const Text('Choose from Gallery'),
+              //   onTap: () async {
+              //     await provider.pickImage(ImageSource.gallery, index);
+              //     Navigator.pop(context);
+              //   },
+              // ),
             ],
           ),
         );

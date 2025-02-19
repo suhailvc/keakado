@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_grocery/features/help_and_support/domain/reposotories/form_api.dart';
+import 'package:flutter_grocery/helper/custom_snackbar_helper.dart';
 
 class ContactScreen extends StatefulWidget {
   const ContactScreen({Key? key}) : super(key: key);
@@ -52,7 +53,7 @@ class _ContactScreenState extends State<ContactScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const Text(
-                    "Fill out the form, and we’ll provide personalized advice for your nutrition goals.",
+                    "Fill out the form.",
                     style: TextStyle(fontSize: 16),
                   ),
                   const SizedBox(height: 20),
@@ -141,6 +142,8 @@ class _ContactScreenState extends State<ContactScreen> {
                                 emailController.clear();
                                 phoneController.clear();
                                 messageController.clear();
+                                showCustomSnackBarHelper('Form Submitted',
+                                    isError: false);
                                 Navigator.pop(context);
                               }
                             },

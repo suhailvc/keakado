@@ -56,18 +56,15 @@ class AddressWidget extends StatelessWidget {
               orderProvider: orderProvider,
               fromAddressList: true,
             );
-            print(
-                'address widget---zone-honusno---${addressModel.houseNumber}');
-            if (addressModel.houseNumber != null) {
-              print(
-                  'address widget---zone-honusno---${addressModel.houseNumber}');
+            Provider.of<OrderProvider>(context, listen: false)
+                .resetTimeSelections();
+            print('address widget---zone-honusno---${addressModel.zone}');
+            if (addressModel.zone != null) {
+              print('address widget---zone-honusno---${addressModel.zone}');
               await Provider.of<ExpressDeliveryProvider>(context, listen: false)
-                  .checkDeliveryCharge(
-                addressModel.zone!,
-                true,
-              );
+                  .checkDeliveryCharge(addressModel.zone!, true);
               walletPaid = 0;
-              //  AppConstants.deliveryCagrge =
+              // AppConstants.deliveryCagrge =
               Provider.of<ExpressDeliveryProvider>(context, listen: false)
                   .deliveryCharge!
                   .deliveryCharge!;
@@ -139,9 +136,10 @@ class AddressWidget extends StatelessWidget {
                                 orderProvider: orderProvider,
                                 fromAddressList: true,
                               );
-                              print(
-                                  '-------zone------${addressModel.floorNumber!}');
-                              if (addressModel.houseNumber != null) {
+                              Provider.of<OrderProvider>(context, listen: false)
+                                  .resetTimeSelections();
+                              print('-------zone------${addressModel.zone!}');
+                              if (addressModel.zone != null) {
                                 await Provider.of<ExpressDeliveryProvider>(
                                         context,
                                         listen: false)
@@ -196,6 +194,52 @@ class AddressWidget extends StatelessWidget {
                   ],
                 ),
               ),
+              if (!fromSelectAddress)
+                GestureDetector(
+                  onTap: () {
+                    Provider.of<LocationProvider>(context, listen: false)
+                        .updateAddressStatusMessage(message: '');
+                    Navigator.of(context).pushNamed(
+                      RouteHelper.getUpdateAddressRoute(addressModel),
+                      // arguments: AddNewAddressScreen(
+                      //     isEnableUpdate: true, address: addressModel),
+                    );
+                  },
+                  child: SvgPicture.asset(
+                    'assets/svg/edit_profile.svg',
+                    height: 20,
+                  ),
+                ),
+              if (!fromSelectAddress) const SizedBox(width: 16),
+              if (!fromSelectAddress)
+                GestureDetector(
+                  onTap: () {
+                    showDialog(
+                        context: context,
+                        barrierDismissible: false,
+                        builder: (context) => Center(
+                              child: CircularProgressIndicator(
+                                valueColor: AlwaysStoppedAnimation<Color>(
+                                    Theme.of(context).primaryColor),
+                              ),
+                            ));
+                    Provider.of<LocationProvider>(context, listen: false)
+                        .deleteUserAddressByID(addressModel.id, index,
+                            (bool isSuccessful, String message) {
+                      Navigator.pop(context);
+                      showCustomSnackBarHelper(message, isError: isSuccessful);
+                    });
+                  },
+                  child: SvgPicture.asset(
+                    'assets/svg/delete.svg',
+                    height: 20,
+                    colorFilter: const ColorFilter.mode(
+                      Colors.red,
+                      BlendMode.srcIn,
+                    ),
+                  ),
+                ),
+              const SizedBox(width: 16),
             ],
           ),
         ),

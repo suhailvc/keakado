@@ -113,11 +113,12 @@ class _CategoryWidgetState extends State<CategoryWidget> {
                                       padding: const EdgeInsets.all(
                                           Dimensions.paddingSizeExtraSmall),
                                       child: Text(
-                                        index != 7
-                                            ? categoryProvider
-                                                .categoryList![index].name!
-                                            : getTranslated(
-                                                'view_all', context),
+                                        // index != 7
+                                        //     ?
+                                        categoryProvider
+                                            .categoryList![index].name!,
+                                        // : getTranslated(
+                                        //     'view_all', context),
                                         style: poppinsBold.copyWith(
                                           fontSize: Dimensions.fontSizeSmall,
                                         ),

@@ -60,9 +60,20 @@ class _HomeItemScreenState extends State<HomeItemScreen> {
           ? const PreferredSize(
               preferredSize: Size.fromHeight(120), child: WebAppBarWidget())
           : CustomAppBarWidget(
-              title: getTranslated(widget.productType, context),
-              // fromCategory: true,
+              title: getTranslated(
+                  widget.productType == 'mostReviewed_items'
+                      ? 'Top Seller'
+                      : widget.productType == 'daily_needs'
+                          ? 'Best Deals'
+                          : widget.productType == 'organic'
+                              ? 'Organic Products'
+                              : widget.productType,
+                  context),
             )) as PreferredSizeWidget?,
+      // : CustomAppBarWidget(
+      //     title: getTranslated(widget.productType, context),
+      //     // fromCategory: true,
+      //   )) as PreferredSizeWidget?,
       body: Center(
           child: CustomScrollView(controller: scrollController, slivers: [
         SliverToBoxAdapter(

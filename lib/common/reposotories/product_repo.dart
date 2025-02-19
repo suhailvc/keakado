@@ -97,7 +97,7 @@ class ProductRepo {
     try {
       final response =
           await dioClient!.get('${AppConstants.categoryProductUri}$id');
-      print('caaattteeeggooorryyy ppprrooodduuucttt eerrooorrr');
+      // print('caaattteeeggooorryyy ppprrooodduuucttt eerrooorrr');
       return ApiResponseModel.withSuccess(response);
     } catch (e) {
       print('caaattteeeggooorryyy ppprrooodduuucttt eerrooorrr');

@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_grocery/common/enums/footer_type_enum.dart';
+import 'package:flutter_grocery/common/providers/cart_provider.dart';
 import 'package:flutter_grocery/common/widgets/footer_web_widget.dart';
 import 'package:flutter_grocery/common/widgets/no_data_widget.dart';
 import 'package:flutter_grocery/common/widgets/product_widget.dart';
 import 'package:flutter_grocery/common/widgets/web_app_bar_widget.dart';
 import 'package:flutter_grocery/common/widgets/web_product_shimmer_widget.dart';
+import 'package:flutter_grocery/features/cart/screens/cart_screen.dart';
 import 'package:flutter_grocery/features/category/providers/category_provider.dart';
 import 'package:flutter_grocery/features/splash/providers/splash_provider.dart';
+import 'package:flutter_grocery/helper/default_bottom_bar.dart';
 import 'package:flutter_grocery/helper/responsive_helper.dart';
 import 'package:flutter_grocery/localization/language_constraints.dart';
 import 'package:flutter_grocery/utill/color_resources.dart';
@@ -95,11 +98,60 @@ class _CategoryProductScreenState extends State<CategoryProductScreen> {
                       ),
                     ),
                     actions: [
+                      Stack(
+                        clipBehavior: Clip.none,
+                        children: [
+                          IconButton(
+                            onPressed: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => const CartScreen(),
+                                  ));
+                            },
+                            icon: Image.asset(
+                              'assets/image/cart_topbar.png',
+                              width: MediaQuery.of(context).size.width * 0.05,
+                              height: MediaQuery.of(context).size.width * 0.05,
+                              color:
+                                  Theme.of(context).textTheme.bodyLarge?.color,
+                            ),
+                          ),
+                          Positioned(
+                            right: 0,
+                            top: 0,
+                            child: Consumer<CartProvider>(
+                              builder: (context, cartProvider, child) {
+                                return cartProvider.cartList.isNotEmpty
+                                    ? Container(
+                                        padding: const EdgeInsets.all(4),
+                                        decoration: const BoxDecoration(
+                                          color: Colors.red,
+                                          shape: BoxShape.circle,
+                                        ),
+                                        child: Text(
+                                          cartProvider.cartList.length
+                                              .toString(),
+                                          style: const TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 12,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      )
+                                    : const SizedBox();
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
                       PopupMenuButton<String>(
                         elevation: 20,
-                        icon: Icon(
-                          Icons.more_vert,
-                          color: Theme.of(context).textTheme.bodyLarge!.color,
+                        icon: Image.asset(
+                          'assets/image/filter.png',
+                          width: MediaQuery.of(context).size.width * 0.05,
+                          height: MediaQuery.of(context).size.width * 0.05,
+                          color: Theme.of(context).textTheme.bodyLarge?.color,
                         ),
                         onSelected: (String? value) {
                           int index = categoryProvider.allSortBy.indexOf(value);
@@ -114,7 +166,36 @@ class _CategoryProductScreenState extends State<CategoryProductScreen> {
                           }).toList();
                         },
                       ),
+                      const SizedBox(width: 10), // Add some padding at the end
                     ],
+                    // actions: [
+                    //   PopupMenuButton<String>(
+                    //     elevation: 20,
+                    //     icon: Image.asset(
+                    //       'assets/image/filter.png',
+                    //       width: MediaQuery.of(context).size.width *
+                    //           0.06, // 6% of screen width
+                    //       height: MediaQuery.of(context).size.width * 0.06,
+                    //       color: Theme.of(context).textTheme.bodyLarge?.color,
+                    //     ),
+                    //     // Icon(
+                    //     //   Icons.more_vert,
+                    //     //   color: Theme.of(context).textTheme.bodyLarge!.color,
+                    //     // ),
+                    //     onSelected: (String? value) {
+                    //       int index = categoryProvider.allSortBy.indexOf(value);
+                    //       categoryProvider.sortCategoryProduct(index);
+                    //     },
+                    //     itemBuilder: (context) {
+                    //       return categoryProvider.allSortBy.map((choice) {
+                    //         return PopupMenuItem<String>(
+                    //           value: choice,
+                    //           child: Text(getTranslated(choice, context)),
+                    //         );
+                    //       }).toList();
+                    //     },
+                    //   ),
+                    // ],
                   )) as PreferredSizeWidget?,
             body: bodyWidget(),
           );
@@ -188,6 +269,7 @@ class _CategoryProductScreenState extends State<CategoryProductScreen> {
                       ))),
             const FooterWebWidget(footerType: FooterType.sliver),
           ])),
+          // const DefaultBottomBar(index: 0)
           // const CategoryCartTitleWidget(),
         ],
       );
@@ -247,23 +329,27 @@ class _ProductShimmer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GridView.builder(
-      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisSpacing: ResponsiveHelper.isDesktop(context) ? 13 : 10,
-        mainAxisSpacing: ResponsiveHelper.isDesktop(context) ? 13 : 10,
-        childAspectRatio:
-            ResponsiveHelper.isDesktop(context) ? (1 / 1.4) : (1 / 1.6),
-        crossAxisCount: ResponsiveHelper.isDesktop(context)
-            ? 5
-            : ResponsiveHelper.isTab(context)
-                ? 2
-                : 2,
-      ),
-      shrinkWrap: true,
-      padding: EdgeInsets.zero,
-      itemBuilder: (context, index) =>
-          const WebProductShimmerWidget(isEnabled: true),
-      itemCount: 20,
+    return Column(
+      children: [
+        GridView.builder(
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisSpacing: ResponsiveHelper.isDesktop(context) ? 13 : 10,
+            mainAxisSpacing: ResponsiveHelper.isDesktop(context) ? 13 : 10,
+            childAspectRatio:
+                ResponsiveHelper.isDesktop(context) ? (1 / 1.4) : (1 / 1.6),
+            crossAxisCount: ResponsiveHelper.isDesktop(context)
+                ? 5
+                : ResponsiveHelper.isTab(context)
+                    ? 2
+                    : 2,
+          ),
+          shrinkWrap: true,
+          padding: EdgeInsets.zero,
+          itemBuilder: (context, index) =>
+              const WebProductShimmerWidget(isEnabled: true),
+          itemCount: 20,
+        ),
+      ],
     );
   }
 }

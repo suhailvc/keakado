@@ -25,7 +25,9 @@ class LocationRepo {
 
   Future<ApiResponseModel> removeAddressByID(int? id) async {
     try {
-      final response = await dioClient!.post('${AppConstants.removeAddressUri}$id', data: {"_method": "delete"});
+      final response = await dioClient!.post(
+          '${AppConstants.removeAddressUri}$id',
+          data: {"_method": "delete"});
       return ApiResponseModel.withSuccess(response);
     } catch (e) {
       return ApiResponseModel.withError(ApiErrorHandler.getMessage(e));
@@ -44,7 +46,8 @@ class LocationRepo {
     }
   }
 
-  Future<ApiResponseModel> updateAddress(AddressModel addressModel, int? addressId) async {
+  Future<ApiResponseModel> updateAddress(
+      AddressModel addressModel, int? addressId) async {
     try {
       Response response = await dioClient!.post(
         '${AppConstants.updateAddressUri}$addressId',
@@ -66,7 +69,8 @@ class LocationRepo {
 
   Future<ApiResponseModel> getAddressFromGeocode(LatLng latLng) async {
     try {
-      Response response = await dioClient!.get('${AppConstants.geocodeUri}?lat=${latLng.latitude}&lng=${latLng.longitude}');
+      Response response = await dioClient!.get(
+          '${AppConstants.geocodeUri}?lat=${latLng.latitude}&lng=${latLng.longitude}');
       return ApiResponseModel.withSuccess(response);
     } catch (e) {
       return ApiResponseModel.withError(ApiErrorHandler.getMessage(e));
@@ -75,7 +79,8 @@ class LocationRepo {
 
   Future<ApiResponseModel> searchLocation(String text) async {
     try {
-      Response response = await dioClient!.get('${AppConstants.searchLocationUri}?search_text=$text');
+      Response response = await dioClient!
+          .get('${AppConstants.searchLocationUri}?search_text=$text');
       return ApiResponseModel.withSuccess(response);
     } catch (e) {
       return ApiResponseModel.withError(ApiErrorHandler.getMessage(e));
@@ -84,7 +89,8 @@ class LocationRepo {
 
   Future<ApiResponseModel> getPlaceDetails(String? placeID) async {
     try {
-      Response response = await dioClient!.get('${AppConstants.placeDetailsUri}?placeid=$placeID');
+      Response response = await dioClient!
+          .get('${AppConstants.placeDetailsUri}?placeid=$placeID');
       return ApiResponseModel.withSuccess(response);
     } catch (e) {
       return ApiResponseModel.withError(ApiErrorHandler.getMessage(e));

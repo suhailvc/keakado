@@ -68,6 +68,7 @@ class _OrderReturnScreenState extends State<OrderReturnScreen> {
     });
   }
 
+  List<String?> validationErrors = [];
   @override
   void initState() {
     super.initState();
@@ -81,7 +82,7 @@ class _OrderReturnScreenState extends State<OrderReturnScreen> {
     );
     // Initialize returnImagess with null values
     returnImagess = List.generate(30, (index) => []);
-
+    validationErrors = List.generate(30, (index) => null);
     _loadData(context);
   }
 
@@ -158,623 +159,469 @@ class _OrderReturnScreenState extends State<OrderReturnScreen> {
                                     return Padding(
                                       padding: EdgeInsets.only(
                                           top: index == 0 ? 0 : 16.0),
-                                      child: Container(
-                                        decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(12),
-                                          color: const Color(0xFFF9F9F9),
-                                        ),
-                                        child: Row(
-                                          children: [
-                                            Checkbox(
-                                              value: selectedProducts[index],
-                                              onChanged: (bool? value) {
-                                                setState(() {
-                                                  selectedProducts[index] =
-                                                      value ?? false;
-                                                });
-                                              },
-                                            ),
-                                            ClipRRect(
+                                      child: Column(
+                                        children: [
+                                          Container(
+                                            decoration: BoxDecoration(
                                               borderRadius:
-                                                  BorderRadius.circular(
-                                                      Dimensions.radiusSizeTen),
-                                              child: CustomImageWidget(
-                                                placeholder: Images.placeHolder,
-                                                image:
-                                                    '${splashProvider.baseUrls!.productImageUrl}/${orderProvider.orderDetails![index].productDetails!.image!.isNotEmpty ? orderProvider.orderDetails![index].productDetails!.image![0] : ''}',
-                                                height: 80,
-                                                width: 80,
-                                                fit: BoxFit.cover,
-                                              ),
+                                                  BorderRadius.circular(12),
+                                              color: const Color(0xFFF9F9F9),
                                             ),
-                                            const SizedBox(width: 16),
-                                            Expanded(
-                                              child: Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                children: [
-                                                  Text(
-                                                    "${filteredOrderDetails[index].productDetails?.name ?? ""}",
-                                                    style: TextStyle(
-                                                        fontSize: Dimensions
-                                                            .fontSizeLarge),
-                                                    maxLines: 2,
-                                                    overflow:
-                                                        TextOverflow.ellipsis,
+                                            child: Row(
+                                              children: [
+                                                Checkbox(
+                                                  value:
+                                                      selectedProducts[index],
+                                                  onChanged: (bool? value) {
+                                                    setState(() {
+                                                      selectedProducts[index] =
+                                                          value ?? false;
+                                                    });
+                                                  },
+                                                ),
+                                                ClipRRect(
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          Dimensions
+                                                              .radiusSizeTen),
+                                                  child: CustomImageWidget(
+                                                    placeholder:
+                                                        Images.placeHolder,
+                                                    image:
+                                                        '${splashProvider.baseUrls!.productImageUrl}/${orderProvider.orderDetails![index].productDetails!.image!.isNotEmpty ? orderProvider.orderDetails![index].productDetails!.image![0] : ''}',
+                                                    height: 80,
+                                                    width: 80,
+                                                    fit: BoxFit.cover,
                                                   ),
-                                                  const SizedBox(height: 4),
-                                                  Text(
-                                                    "${filteredOrderDetails[index].price ?? ""} $currencySymbol",
-                                                    style: TextStyle(
-                                                      fontSize: Dimensions
-                                                          .fontSizeExtraLarge,
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                    ),
-                                                  ),
-                                                  const SizedBox(height: 4),
-                                                  GestureDetector(
-                                                    onTap: () {
-                                                      showModalBottomSheet(
-                                                        isDismissible: true,
-                                                        context: context,
-                                                        isScrollControlled:
-                                                            true,
-                                                        shape:
-                                                            const RoundedRectangleBorder(
-                                                          borderRadius:
-                                                              BorderRadius.vertical(
-                                                                  top: Radius
-                                                                      .circular(
-                                                                          20)),
+                                                ),
+                                                const SizedBox(width: 16),
+                                                Expanded(
+                                                  child: Column(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                    children: [
+                                                      Text(
+                                                        "${filteredOrderDetails[index].productDetails?.name ?? ""}",
+                                                        style: TextStyle(
+                                                            fontSize: Dimensions
+                                                                .fontSizeLarge),
+                                                        maxLines: 2,
+                                                        overflow: TextOverflow
+                                                            .ellipsis,
+                                                      ),
+                                                      const SizedBox(height: 4),
+                                                      Text(
+                                                        "${filteredOrderDetails[index].price ?? ""} $currencySymbol",
+                                                        style: TextStyle(
+                                                          fontSize: Dimensions
+                                                              .fontSizeExtraLarge,
+                                                          fontWeight:
+                                                              FontWeight.bold,
                                                         ),
-                                                        builder: (context) {
-                                                          final provider = Provider
-                                                              .of<OrderReturnProvider>(
-                                                                  context);
-                                                          return Padding(
-                                                            padding:
-                                                                EdgeInsets.only(
-                                                              left: 16.0,
-                                                              right: 16.0,
-                                                              top: 16.0,
-                                                              bottom: MediaQuery
-                                                                      .of(context)
-                                                                  .viewInsets
-                                                                  .bottom,
+                                                      ),
+                                                      const SizedBox(height: 4),
+                                                      if (remarksControllers[
+                                                              index]
+                                                          .text
+                                                          .isNotEmpty)
+                                                        Text(
+                                                          "${remarksControllers[index].text}",
+                                                          style: poppinsMedium
+                                                              .copyWith(
+                                                            color: Theme.of(
+                                                                    context)
+                                                                .disabledColor,
+                                                            fontSize: 13,
+                                                          ),
+                                                          maxLines:
+                                                              2, // Limit the text to 2 lines
+                                                          overflow: TextOverflow
+                                                              .ellipsis, // Append "..." if the text overflows
+                                                        ),
+                                                      // : SizedBox(),
+                                                      GestureDetector(
+                                                        onTap: () {
+                                                          showModalBottomSheet(
+                                                            isDismissible: true,
+                                                            context: context,
+                                                            isScrollControlled:
+                                                                true,
+                                                            shape:
+                                                                const RoundedRectangleBorder(
+                                                              borderRadius:
+                                                                  BorderRadius.vertical(
+                                                                      top: Radius
+                                                                          .circular(
+                                                                              20)),
                                                             ),
-                                                            child: Column(
-                                                              mainAxisSize:
-                                                                  MainAxisSize
-                                                                      .min,
-                                                              children: [
-                                                                Row(
-                                                                  // mainAxisAlignment:
-                                                                  //     MainAxisAlignment
-                                                                  //         .center, // This spreads out the children
-                                                                  children: [
-                                                                    SizedBox(
-                                                                      width: MediaQuery.of(context)
-                                                                              .size
-                                                                              .width *
-                                                                          0.3,
-                                                                    ),
-                                                                    Text(
-                                                                      'Return Notes',
-                                                                      style: poppinsSemiBold
-                                                                          .copyWith(
-                                                                        fontSize:
-                                                                            Dimensions.fontSizeLarge,
-                                                                      ),
-                                                                    ),
-                                                                    SizedBox(
-                                                                      width: MediaQuery.of(context)
-                                                                              .size
-                                                                              .width *
-                                                                          0.27,
-                                                                    ),
-                                                                    InkWell(
-                                                                      onTap:
-                                                                          () {
-                                                                        Navigator.pop(
-                                                                            context); // This will close the current screen/dialog
-                                                                      },
-                                                                      child:
-                                                                          Container(
-                                                                        padding: const EdgeInsets
-                                                                            .all(
-                                                                            4),
-                                                                        decoration:
-                                                                            BoxDecoration(
-                                                                          shape:
-                                                                              BoxShape.circle,
-                                                                          color: Colors
-                                                                              .red
-                                                                              .shade50, // Light red background
-                                                                        ),
-                                                                        child:
-                                                                            Icon(
-                                                                          Icons
-                                                                              .close,
-                                                                          color: Colors
-                                                                              .red
-                                                                              .shade600, // Darker red for the X icon
-                                                                          size:
-                                                                              20,
-                                                                        ),
-                                                                      ),
-                                                                    ),
-                                                                  ],
+                                                            builder: (context) {
+                                                              final provider =
+                                                                  Provider.of<
+                                                                          OrderReturnProvider>(
+                                                                      context);
+                                                              return Padding(
+                                                                padding:
+                                                                    EdgeInsets
+                                                                        .only(
+                                                                  left: 16.0,
+                                                                  right: 16.0,
+                                                                  top: 16.0,
+                                                                  bottom: MediaQuery.of(
+                                                                          context)
+                                                                      .viewInsets
+                                                                      .bottom,
                                                                 ),
-                                                                // Row(
-                                                                //   children: [
-                                                                //     Text(
-                                                                //       'Return Notes',
-                                                                //       style: poppinsSemiBold
-                                                                //           .copyWith(
-                                                                //         fontSize:
-                                                                //             Dimensions.fontSizeLarge,
-                                                                //       ),
-                                                                //     ),
-                                                                //   ],
-                                                                // ),
-                                                                const SizedBox(
-                                                                    height: 16),
-                                                                Container(
-                                                                  height: 150,
-                                                                  padding:
-                                                                      const EdgeInsets
+                                                                child: Column(
+                                                                  mainAxisSize:
+                                                                      MainAxisSize
+                                                                          .min,
+                                                                  children: [
+                                                                    Row(
+                                                                      // mainAxisAlignment:
+                                                                      //     MainAxisAlignment
+                                                                      //         .center, // This spreads out the children
+                                                                      children: [
+                                                                        SizedBox(
+                                                                          width:
+                                                                              MediaQuery.of(context).size.width * 0.3,
+                                                                        ),
+                                                                        Text(
+                                                                          'Return Notes',
+                                                                          style:
+                                                                              poppinsSemiBold.copyWith(
+                                                                            fontSize:
+                                                                                Dimensions.fontSizeLarge,
+                                                                          ),
+                                                                        ),
+                                                                        SizedBox(
+                                                                          width:
+                                                                              MediaQuery.of(context).size.width * 0.27,
+                                                                        ),
+                                                                        InkWell(
+                                                                          onTap:
+                                                                              () {
+                                                                            Navigator.pop(context); // This will close the current screen/dialog
+                                                                          },
+                                                                          child:
+                                                                              Container(
+                                                                            padding:
+                                                                                const EdgeInsets.all(4),
+                                                                            decoration:
+                                                                                BoxDecoration(
+                                                                              shape: BoxShape.circle,
+                                                                              color: Colors.red.shade50, // Light red background
+                                                                            ),
+                                                                            child:
+                                                                                Icon(
+                                                                              Icons.close,
+                                                                              color: Colors.red.shade600, // Darker red for the X icon
+                                                                              size: 20,
+                                                                            ),
+                                                                          ),
+                                                                        ),
+                                                                      ],
+                                                                    ),
+                                                                    const SizedBox(
+                                                                        height:
+                                                                            16),
+                                                                    Container(
+                                                                      height:
+                                                                          150,
+                                                                      padding: const EdgeInsets
                                                                           .all(
                                                                           8.0),
-                                                                  decoration:
-                                                                      BoxDecoration(
-                                                                    color: Colors
-                                                                            .grey[
-                                                                        200],
-                                                                    borderRadius:
-                                                                        BorderRadius.circular(
-                                                                            10),
-                                                                  ),
-                                                                  child:
-                                                                      TextField(
-                                                                    controller:
-                                                                        remarksControllers[
-                                                                            index],
-                                                                    maxLines:
-                                                                        null,
-                                                                    expands:
-                                                                        true,
-                                                                    decoration:
-                                                                        const InputDecoration(
-                                                                      hintText:
-                                                                          'Enter your return notes',
-                                                                      border: InputBorder
-                                                                          .none,
-                                                                    ),
-                                                                  ),
-                                                                ),
-                                                                const SizedBox(
-                                                                    height: 16),
-                                                                // if (returnImagess[
-                                                                //             index] !=
-                                                                //         null ||
-                                                                //     returnImagess
-                                                                //         .isNotEmpty)
-                                                                //final file = returnImagess[index];
-                                                                if (returnImagess[
-                                                                            index] !=
-                                                                        null &&
-                                                                    returnImagess[
-                                                                            index]
-                                                                        .isNotEmpty)
-                                                                  Column(
-                                                                    children: [
-                                                                      Stack(
-                                                                        alignment:
-                                                                            Alignment.topRight,
-                                                                        children: [
-                                                                          Image
-                                                                              .file(
-                                                                            returnImagess[index][0]!,
-                                                                            height:
-                                                                                150,
-                                                                            width:
-                                                                                150,
-                                                                            fit:
-                                                                                BoxFit.cover,
-                                                                          ),
-                                                                          // IconButton(
-                                                                          //   icon:
-                                                                          //       const Icon(
-                                                                          //     Icons.cancel,
-                                                                          //     color:
-                                                                          //         Colors.red,
-                                                                          //   ),
-                                                                          //   onPressed:
-                                                                          //       () {
-                                                                          //     // Call provider to remove the image at this index
-                                                                          //     provider.removeImageAt(index);
-                                                                          //   },
-                                                                          // ),
-                                                                        ],
-                                                                      ),
-                                                                      const SizedBox(
-                                                                          height:
-                                                                              16),
-                                                                    ],
-                                                                  ),
-                                                                Row(
-                                                                  mainAxisAlignment:
-                                                                      MainAxisAlignment
-                                                                          .center,
-                                                                  children: [
-                                                                    ElevatedButton(
-                                                                      onPressed:
-                                                                          () async {
-                                                                        await showImagePickerOptions(
-                                                                            context,
-                                                                            index);
-                                                                      },
-                                                                      style: ElevatedButton
-                                                                          .styleFrom(
-                                                                        backgroundColor:
-                                                                            Theme.of(context).primaryColor,
-                                                                        padding: const EdgeInsets
-                                                                            .symmetric(
-                                                                            horizontal:
-                                                                                16.0,
-                                                                            vertical:
-                                                                                12.0),
-                                                                        shape:
-                                                                            RoundedRectangleBorder(
-                                                                          borderRadius:
-                                                                              BorderRadius.circular(10),
-                                                                        ),
+                                                                      decoration:
+                                                                          BoxDecoration(
+                                                                        color: Colors
+                                                                            .grey[200],
+                                                                        borderRadius:
+                                                                            BorderRadius.circular(10),
                                                                       ),
                                                                       child:
-                                                                          Text(
-                                                                        getTranslated(
-                                                                            "Add Image",
-                                                                            context),
-                                                                        style: TextStyle(
-                                                                            color:
-                                                                                Colors.white),
+                                                                          TextField(
+                                                                        controller:
+                                                                            remarksControllers[index],
+                                                                        maxLines:
+                                                                            null,
+                                                                        expands:
+                                                                            true,
+                                                                        decoration:
+                                                                            const InputDecoration(
+                                                                          hintText:
+                                                                              'Enter your return notes',
+                                                                          border:
+                                                                              InputBorder.none,
+                                                                        ),
                                                                       ),
                                                                     ),
-                                                                    SizedBox(
-                                                                      width: MediaQuery.of(context)
-                                                                              .size
-                                                                              .width *
-                                                                          0.04,
+                                                                    const SizedBox(
+                                                                        height:
+                                                                            16),
+                                                                    if (returnImagess[index] !=
+                                                                            null &&
+                                                                        returnImagess[index]
+                                                                            .isNotEmpty)
+                                                                      Column(
+                                                                        children: [
+                                                                          Stack(
+                                                                            alignment:
+                                                                                Alignment.topRight,
+                                                                            children: [
+                                                                              Image.file(
+                                                                                returnImagess[index][0]!,
+                                                                                height: 150,
+                                                                                width: 150,
+                                                                                fit: BoxFit.cover,
+                                                                              ),
+                                                                            ],
+                                                                          ),
+                                                                          const SizedBox(
+                                                                              height: 16),
+                                                                        ],
+                                                                      ),
+                                                                    Row(
+                                                                      mainAxisAlignment:
+                                                                          MainAxisAlignment
+                                                                              .center,
+                                                                      children: [
+                                                                        ElevatedButton(
+                                                                          onPressed:
+                                                                              () async {
+                                                                            await showImagePickerOptions(context,
+                                                                                index);
+                                                                          },
+                                                                          style:
+                                                                              ElevatedButton.styleFrom(
+                                                                            backgroundColor:
+                                                                                Theme.of(context).primaryColor,
+                                                                            padding:
+                                                                                const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+                                                                            shape:
+                                                                                RoundedRectangleBorder(
+                                                                              borderRadius: BorderRadius.circular(10),
+                                                                            ),
+                                                                          ),
+                                                                          child:
+                                                                              Text(
+                                                                            getTranslated("Add Image",
+                                                                                context),
+                                                                            style:
+                                                                                TextStyle(color: Colors.white),
+                                                                          ),
+                                                                        ),
+                                                                        SizedBox(
+                                                                          width:
+                                                                              MediaQuery.of(context).size.width * 0.04,
+                                                                        ),
+                                                                        SizedBox(
+                                                                          height:
+                                                                              MediaQuery.of(context).size.width * 0.114,
+                                                                          width:
+                                                                              MediaQuery.of(context).size.width * 0.25,
+                                                                          child:
+                                                                              ElevatedButton(
+                                                                            onPressed:
+                                                                                () async {
+                                                                              if (remarksControllers[index].text.isEmpty) {
+                                                                                ScaffoldMessenger.of(context).clearSnackBars(); // Clear any existing snack bars
+                                                                                Navigator.pop(context); // Close bottom sheet first
+                                                                                Future.delayed(Duration(milliseconds: 100), () {
+                                                                                  // Small delay to ensure bottom sheet is closed
+                                                                                  showCustomSnackBarHelper('Add return notes', isError: true);
+                                                                                });
+                                                                                return;
+                                                                              }
+                                                                              if (returnImagess[index].isEmpty) {
+                                                                                ScaffoldMessenger.of(context).clearSnackBars(); // Clear any existing snack bars
+                                                                                Navigator.pop(context); // Close bottom sheet first
+                                                                                Future.delayed(Duration(milliseconds: 100), () {
+                                                                                  // Small delay to ensure bottom sheet is closed
+                                                                                  showCustomSnackBarHelper('Add return image', isError: true);
+                                                                                });
+                                                                                return;
+                                                                              }
+
+                                                                              Navigator.pop(context);
+                                                                            },
+                                                                            style:
+                                                                                ElevatedButton.styleFrom(
+                                                                              backgroundColor: Theme.of(context).primaryColor,
+                                                                              padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+                                                                              shape: RoundedRectangleBorder(
+                                                                                borderRadius: BorderRadius.circular(10),
+                                                                              ),
+                                                                            ),
+                                                                            child:
+                                                                                Text(
+                                                                              getTranslated("Save", context),
+                                                                              style: TextStyle(color: Colors.white),
+                                                                            ),
+                                                                          ),
+                                                                        ),
+                                                                      ],
                                                                     ),
                                                                     SizedBox(
                                                                       height: MediaQuery.of(context)
                                                                               .size
-                                                                              .width *
-                                                                          0.114,
-                                                                      width: MediaQuery.of(context)
-                                                                              .size
-                                                                              .width *
-                                                                          0.25,
-                                                                      child:
-                                                                          ElevatedButton(
-                                                                        onPressed:
-                                                                            () async {
-                                                                          Navigator.pop(
-                                                                              context);
-                                                                        },
-                                                                        style: ElevatedButton
-                                                                            .styleFrom(
-                                                                          backgroundColor:
-                                                                              Theme.of(context).primaryColor,
-                                                                          padding: const EdgeInsets
-                                                                              .symmetric(
-                                                                              horizontal: 16.0,
-                                                                              vertical: 12.0),
-                                                                          shape:
-                                                                              RoundedRectangleBorder(
-                                                                            borderRadius:
-                                                                                BorderRadius.circular(10),
-                                                                          ),
-                                                                        ),
-                                                                        child:
-                                                                            Text(
-                                                                          getTranslated(
-                                                                              "Save",
-                                                                              context),
-                                                                          style:
-                                                                              TextStyle(color: Colors.white),
-                                                                        ),
-                                                                      ),
+                                                                              .height *
+                                                                          0.01,
                                                                     ),
                                                                   ],
                                                                 ),
-                                                                // const SizedBox(
-                                                                //     height: 16),
-                                                                // ElevatedButton(
-                                                                //   onPressed: () {
-                                                                //     Navigator.pop(
-                                                                //         context);
-                                                                //   },
-                                                                //   style: ElevatedButton
-                                                                //       .styleFrom(
-                                                                //     backgroundColor:
-                                                                //         Colors
-                                                                //             .green,
-                                                                //     padding: const EdgeInsets
-                                                                //         .symmetric(
-                                                                //         horizontal:
-                                                                //             16.0,
-                                                                //         vertical:
-                                                                //             12.0),
-                                                                //     shape:
-                                                                //         RoundedRectangleBorder(
-                                                                //       borderRadius:
-                                                                //           BorderRadius.circular(
-                                                                //               10),
-                                                                //     ),
-                                                                //   ),
-                                                                //   child:
-                                                                //       const Text(
-                                                                //     'Save Notes',
-                                                                //     style: TextStyle(
-                                                                //         color: Colors
-                                                                //             .white),
-                                                                //   ),
-                                                                // ),
-                                                                SizedBox(
-                                                                  height: MediaQuery.of(
-                                                                              context)
-                                                                          .size
-                                                                          .height *
-                                                                      0.01,
-                                                                ),
-                                                              ],
-                                                            ),
+                                                              );
+                                                            },
                                                           );
                                                         },
-                                                      );
-                                                    },
-                                                    child: Text(
-                                                      'Return Notes',
-                                                      style: poppinsSemiBold
-                                                          .copyWith(
-                                                        fontSize: Dimensions
-                                                            .fontSizeDefault,
-                                                        color: Theme.of(context)
-                                                            .disabledColor
-                                                            .withOpacity(0.2),
+                                                        child: Row(
+                                                          children: [
+                                                            Text(
+                                                              'Return Notes',
+                                                              style:
+                                                                  poppinsSemiBold
+                                                                      .copyWith(
+                                                                fontSize: Dimensions
+                                                                    .fontSizeDefault,
+                                                                color: Theme.of(
+                                                                        context)
+                                                                    .disabledColor
+                                                                    .withOpacity(
+                                                                        0.2),
+                                                              ),
+                                                            ),
+                                                            SizedBox(
+                                                                width: MediaQuery.of(
+                                                                            context)
+                                                                        .size
+                                                                        .height *
+                                                                    0.01),
+                                                            Icon(
+                                                              Icons.edit,
+                                                              size: MediaQuery.of(
+                                                                          context)
+                                                                      .size
+                                                                      .height *
+                                                                  0.02,
+                                                              color: Theme.of(
+                                                                      context)
+                                                                  .disabledColor
+                                                                  .withOpacity(
+                                                                      0.2),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                        // child: Row(
+                                                        //   children: [
+                                                        //     Text(
+                                                        //       'Return Notes',
+                                                        //       style:
+                                                        //           poppinsSemiBold
+                                                        //               .copyWith(
+                                                        //         fontSize: Dimensions
+                                                        //             .fontSizeDefault,
+                                                        //         color: Theme.of(
+                                                        //                 context)
+                                                        //             .disabledColor
+                                                        //             .withOpacity(
+                                                        //                 0.2),
+                                                        //       ),
+                                                        //     ),
+                                                        //   ],
+                                                        // ),
                                                       ),
-                                                    ),
+                                                    ],
                                                   ),
-                                                ],
-                                              ),
-                                            ),
-                                            // Column(
-                                            //   children: [
-                                            //     IconButton(
-                                            //       icon: const Icon(Icons.add),
-                                            //       onPressed: () {
-                                            //         setState(() {
-                                            //           // Define maximum quantity
-                                            //           int maxQuantity =
-                                            //               filteredOrderDetails[
-                                            //                           index]
-                                            //                       .quantity ??
-                                            //                   1;
+                                                ),
+                                                Column(
+                                                  children: [
+                                                    IconButton(
+                                                      icon:
+                                                          const Icon(Icons.add),
+                                                      onPressed: () {
+                                                        setState(() {
+                                                          // Get the current quantity and store it in a variable
 
-                                            //           // Increase quantity but do not exceed maxQuantity
-                                            //           if (quantity <
-                                            //               maxQuantity) {
-                                            //             quantity = quantity + 1;
-                                            //           }
-                                            //         });
-                                            //       },
-                                            //     ),
-                                            //     Text(
-                                            //       quantity.toString(),
-                                            //       style: TextStyle(
-                                            //         fontSize:
-                                            //             Dimensions.fontSizeLarge,
-                                            //         fontWeight: FontWeight.bold,
-                                            //       ),
-                                            //     ),
-                                            //     IconButton(
-                                            //       icon: const Icon(Icons.remove),
-                                            //       onPressed: () {
-                                            //         setState(() {
-                                            //           // Ensure quantity does not go below 1
-                                            //           if (quantity > 1) {
-                                            //             filteredOrderDetails[
-                                            //                         index]
-                                            //                     .quantity =
-                                            //                 (filteredOrderDetails[
-                                            //                                 index]
-                                            //                             .quantity ??
-                                            //                         1) -
-                                            //                     1;
-                                            //           }
-                                            //         });
-                                            //       },
-                                            //     ),
-                                            //   ],
-                                            // ),
-                                            // Column(
-                                            //   children: [
-                                            //     IconButton(
-                                            //       icon: const Icon(Icons.add),
-                                            //       onPressed: () {
-                                            //         setState(() {
-                                            //           // Get the current quantity and store it in a variable
-                                            //           // int currentQuantity =
-                                            //           //     filteredOrderDetails[
-                                            //           //                 index]
-                                            //           //             .quantity ??
-                                            //           //         1;
-
-                                            //           // // Assign maxAllowedQuantity only once when the quantity is first incremented
-                                            //           // if (maxAllowedQuantity ==
-                                            //           //     null) {
-                                            //           //   maxAllowedQuantity =
-                                            //           //       filteredOrderDetails[
-                                            //           //               index]
-                                            //           //           .quantity; // Assign the current quantity
-                                            //           // }
-                                            //           // print(maxAllowedQuantity);
-                                            //           // Safely check if the current quantity is less than the max allowed quantity
-                                            //           if (filteredOrderDetails[
-                                            //                       index]
-                                            //                   .maxQuantity! <
-                                            //               maxAllowedQuantity!) {
-                                            //             // Increment the quantity
-                                            //             filteredOrderDetails[
-                                            //                         index]
-                                            //                     .quantity =
-                                            //                 filteredOrderDetails[
-                                            //                             index]
-                                            //                         .quantity! +
-                                            //                     1;
-                                            //           }
-
-                                            //           // Update the returnQuantities list with the new quantity as a string
-                                            //           returnQuantities[index] =
-                                            //               filteredOrderDetails[
-                                            //                       index]
-                                            //                   .quantity
-                                            //                   .toString();
-                                            //         });
-                                            //       },
-                                            //     ),
-                                            //     Text(
-                                            //       "${filteredOrderDetails[index].quantity ?? 1}",
-                                            //       style: TextStyle(
-                                            //         fontSize: Dimensions
-                                            //             .fontSizeLarge,
-                                            //         fontWeight: FontWeight.bold,
-                                            //       ),
-                                            //     ),
-                                            //     IconButton(
-                                            //       icon:
-                                            //           const Icon(Icons.remove),
-                                            //       onPressed: () {
-                                            //         setState(() {
-                                            //           // Get the current quantity before decrement
-                                            //           int currentQuantity =
-                                            //               filteredOrderDetails[
-                                            //                           index]
-                                            //                       .quantity ??
-                                            //                   1;
-
-                                            //           // Decrease the quantity only if it's greater than 1
-                                            //           if (currentQuantity > 1) {
-                                            //             filteredOrderDetails[
-                                            //                         index]
-                                            //                     .quantity =
-                                            //                 currentQuantity - 1;
-                                            //           }
-
-                                            //           // Update the returnQuantities list with the new quantity as a string
-                                            //           returnQuantities[index] =
-                                            //               filteredOrderDetails[
-                                            //                       index]
-                                            //                   .quantity
-                                            //                   .toString();
-                                            //         });
-                                            //       },
-                                            //     ),
-                                            //   ],
-                                            // )
-
-                                            Column(
-                                              children: [
-                                                IconButton(
-                                                  icon: const Icon(Icons.add),
-                                                  onPressed: () {
-                                                    setState(() {
-                                                      // Get the current quantity and store it in a variable
-                                                      // int currentQuantity =
-                                                      //     filteredOrderDetails[
-                                                      //                 index]
-                                                      //             .quantity ??
-                                                      //         1;
-                                                      // print(currentQuantity);
-                                                      // // Set the maximum allowed quantity to be the value of currentQuantity
-                                                      // int maxAllowedQuantity =
-                                                      //     currentQuantity;
-
-                                                      // Safely check if the current quantity is less than the max allowed quantity
-                                                      if (filteredOrderDetails[
-                                                                  index]
-                                                              .quantity! <
-                                                          filteredOrderDetails[
-                                                                  index]
-                                                              .maxQuantity!) {
-                                                        // Increment the quantity
-                                                        filteredOrderDetails[
-                                                                    index]
-                                                                .quantity =
+                                                          // Safely check if the current quantity is less than the max allowed quantity
+                                                          if (filteredOrderDetails[
+                                                                      index]
+                                                                  .quantity! <
+                                                              filteredOrderDetails[
+                                                                      index]
+                                                                  .maxQuantity!) {
+                                                            // Increment the quantity
                                                             filteredOrderDetails[
                                                                         index]
-                                                                    .quantity! +
-                                                                1;
-                                                        returnQuantities[
-                                                                index] =
-                                                            filteredOrderDetails[
-                                                                    index]
-                                                                .quantity
-                                                                .toString();
-                                                      }
-
-                                                      // Update the returnQuantities list with the new quantity as a string
-                                                      // returnQuantities[index] =
-                                                      //     filteredOrderDetails[
-                                                      //             index]
-                                                      //         .quantity
-                                                      //         .toString();
-                                                    });
-                                                  },
-                                                ),
-                                                Text(
-                                                  "${filteredOrderDetails[index].quantity ?? 1}",
-                                                  style: TextStyle(
-                                                    fontSize: Dimensions
-                                                        .fontSizeLarge,
-                                                    fontWeight: FontWeight.bold,
-                                                  ),
-                                                ),
-                                                IconButton(
-                                                  icon:
-                                                      const Icon(Icons.remove),
-                                                  onPressed: () {
-                                                    setState(() {
-                                                      if ((filteredOrderDetails[
-                                                                      index]
-                                                                  .quantity ??
-                                                              1) >
-                                                          1) {
-                                                        filteredOrderDetails[
-                                                                    index]
-                                                                .quantity =
-                                                            (filteredOrderDetails[
+                                                                    .quantity =
+                                                                filteredOrderDetails[
                                                                             index]
-                                                                        .quantity ??
-                                                                    1) -
-                                                                1;
-                                                        returnQuantities[
-                                                                index] =
+                                                                        .quantity! +
+                                                                    1;
+                                                            returnQuantities[
+                                                                    index] =
+                                                                filteredOrderDetails[
+                                                                        index]
+                                                                    .quantity
+                                                                    .toString();
+                                                          }
+                                                        });
+                                                      },
+                                                    ),
+                                                    Text(
+                                                      "${filteredOrderDetails[index].quantity ?? 1}",
+                                                      style: TextStyle(
+                                                        fontSize: Dimensions
+                                                            .fontSizeLarge,
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                      ),
+                                                    ),
+                                                    IconButton(
+                                                      icon: const Icon(
+                                                          Icons.remove),
+                                                      onPressed: () {
+                                                        setState(() {
+                                                          if ((filteredOrderDetails[
+                                                                          index]
+                                                                      .quantity ??
+                                                                  1) >
+                                                              1) {
                                                             filteredOrderDetails[
-                                                                    index]
-                                                                .quantity
-                                                                .toString();
-                                                      }
-                                                    });
-                                                  },
+                                                                        index]
+                                                                    .quantity =
+                                                                (filteredOrderDetails[index]
+                                                                            .quantity ??
+                                                                        1) -
+                                                                    1;
+                                                            returnQuantities[
+                                                                    index] =
+                                                                filteredOrderDetails[
+                                                                        index]
+                                                                    .quantity
+                                                                    .toString();
+                                                          }
+                                                        });
+                                                      },
+                                                    ),
+                                                  ],
                                                 ),
                                               ],
                                             ),
-                                          ],
-                                        ),
+                                          ),
+                                          if (selectedProducts[index] &&
+                                              validationErrors[index] != null)
+                                            Padding(
+                                              padding: const EdgeInsets.only(
+                                                  top: 8.0, left: 8.0),
+                                              child: Text(
+                                                validationErrors[index]!,
+                                                style: const TextStyle(
+                                                  color: Colors.red,
+                                                  fontSize:
+                                                      Dimensions.fontSizeSmall,
+                                                ),
+                                              ),
+                                            ),
+                                        ],
                                       ),
                                     );
                                   },
@@ -853,6 +700,47 @@ class _OrderReturnScreenState extends State<OrderReturnScreen> {
                             onPressed: orderReturnProvider.isLoading
                                 ? null
                                 : () async {
+                                    // await Provider.of<OrderProvider>(context,
+                                    //         listen: false)
+                                    //     .getOrderList(context);
+                                    bool hasError = false;
+
+                                    setState(() {
+                                      // Reset all validation errors
+                                      validationErrors =
+                                          List.generate(30, (index) => null);
+
+                                      // Check each selected product
+                                      for (int i = 0;
+                                          i < selectedProducts.length;
+                                          i++) {
+                                        if (selectedProducts[i]) {
+                                          if (remarksControllers[i]
+                                                  .text
+                                                  .isEmpty &&
+                                              returnImages[i].isEmpty) {
+                                            validationErrors[i] =
+                                                'Please add both return notes and image';
+                                            hasError = true;
+                                          } else if (remarksControllers[i]
+                                              .text
+                                              .isEmpty) {
+                                            validationErrors[i] =
+                                                'Please add return notes';
+                                            hasError = true;
+                                          } else if (returnImages[i].isEmpty) {
+                                            validationErrors[i] =
+                                                'Please add return image';
+                                            hasError = true;
+                                          }
+                                        }
+                                      }
+                                    });
+
+                                    if (hasError) {
+                                      return;
+                                    }
+
                                     List<Map<String, String>>
                                         selectedProductIds = [];
                                     for (int i = 0;
@@ -864,6 +752,9 @@ class _OrderReturnScreenState extends State<OrderReturnScreen> {
                                             .isEmpty) {
                                           return showCustomSnackBarHelper(
                                               'Need Return Reason');
+                                        } else if (returnImages[i].isEmpty) {
+                                          return showCustomSnackBarHelper(
+                                              'Need Return Image');
                                         } else {
                                           print(
                                               '${remarksControllers[i].text}-----------');
@@ -880,9 +771,6 @@ class _OrderReturnScreenState extends State<OrderReturnScreen> {
                                                 ? ''
                                                 : remarksControllers[i].text,
                                             'qty': returnQuantities[i],
-                                            // 'qty': returnQuantities[i].isEmpty
-                                            //     ? ""
-                                            //     : returnQuantities[i],
                                             "image": (i < returnImages.length &&
                                                     returnImages[i]
                                                         .isNotEmpty &&
@@ -891,10 +779,6 @@ class _OrderReturnScreenState extends State<OrderReturnScreen> {
                                                     ? ""
                                                     : returnImages[i][0]!)
                                                 : "",
-
-                                            // "image": returnImages[i][0].isEmpty
-                                            //     ? ""
-                                            //     : returnImages[i][0]!
                                           });
                                         }
                                       }
@@ -903,7 +787,6 @@ class _OrderReturnScreenState extends State<OrderReturnScreen> {
                                       await orderReturnProvider.returnProducts(
                                           widget.orderId.toString(),
                                           selectedProductIds,
-                                          // 'eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIzIiwianRpIjoiMTA1MGZhMzgzNWRmZWQ0ZmQ4YTVhOTllMzIxNTE5NjUyMTczNDgzZWQxZTFmM2FiMzZhOTkyOGY1Y2UzYzM2ZjYyNDRkYTgwNjg5Mjc3NTMiLCJpYXQiOjE3MzM0MDA1NDUuNTgzNTg3LCJuYmYiOjE3MzM0MDA1NDUuNTgzNTg4LCJleHAiOjE3NjQ5MzY1NDUuNTc3MzkxLCJzdWIiOiIxMCIsInNjb3BlcyI6W119.FA4LJSLVFNe0x4iUQLJ27dOYbfoe3Vta2Q_txneV2qbQovP45bNarPw0nJCHKGLsaYa4R7hsc0Kam-KC8ua4V5ZNxrsKmCWO5ubHgKpHmFBY1UKPVyJI6iHuHLXNjB6BUPlrjFUDvqbiqf0JzjFJSyWuPU4VkYEdZfOWy5AwCWr1muDdNENU4HPCGbegHo3Hk4ZhqKsqg1waXPoOLse8jVpEMObHHndqJ1j4YrTtrzLsM9gmn-5nWLIo_MlD8W_PDAYTb4SLJ9Y9ybpo0BhLxRYtjWafwx_dZsWuyf33kJ2K2exF7qhpQ4oL8HQUCoaGP2lPicKM94XntP0P_aImjFfiWZgIoet56NCluDgEN7wPPnruBaBMq13I2sPRXSAn1JwBcyR-fGypuN1Ja2VyMtlAMHSvmp9zVbbAoEUfzkWeZAzvUg8Ei8c9x19TQe8BB33IpVDuW1tQOlVelDwBWVGARYqGht3Dr8kQk-nhOibnSyeiUuEY-p6KKKzdTQNQsc93_DrStyaqwH_BIvaqLplkoeZWyn7BRNqfB1hoBQVlLUX4YTr61oN2VXBtsrxopXpxWoepyMP0dKhRcQQsK6zFKR4KSbb2a4slL5z9GLDp_J3TidAYWZhBg8s-xcPS0n_2dG'
                                           Provider.of<AuthProvider>(context,
                                                   listen: false)
                                               .getUserToken());

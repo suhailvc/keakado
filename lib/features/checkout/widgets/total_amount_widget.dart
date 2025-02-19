@@ -34,9 +34,7 @@ class TotalAmountWidget extends StatelessWidget {
         child: CustomDirectionalityWidget(
             child: Text(
           PriceConverterHelper.convertPrice(
-              context,
-              (amount + (freeDelivery ? 0 : AppConstants.deliveryCagrge)) -
-                  walletPaid),
+              context, (amount + AppConstants.deliveryCagrge) - walletPaid),
           style: poppinsMedium.copyWith(
               fontSize: Dimensions.fontSizeExtraLarge,
               color: Theme.of(context).primaryColor),

@@ -15,7 +15,7 @@ class HelpAndSupportScreen extends StatefulWidget {
   State<HelpAndSupportScreen> createState() => _HelpAndSupportScreenState();
 }
 
-class _HelpAndSupportScreenState extends State<HelpAndSupportScreen> {  
+class _HelpAndSupportScreenState extends State<HelpAndSupportScreen> {
   late LatLng _initialPosition;
 
   @override
@@ -34,7 +34,6 @@ class _HelpAndSupportScreenState extends State<HelpAndSupportScreen> {
     );
   }
 
-  
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
@@ -165,23 +164,28 @@ class _HelpAndSupportScreenState extends State<HelpAndSupportScreen> {
                   )
                 ],
               ),
-            ),    Expanded(
-                      child: GoogleMap(
-                        initialCameraPosition: CameraPosition(
-                          target: _initialPosition,
-                          zoom: 15,
-                        ),
-                        markers: {
-                          Marker(draggable: false,
-                            markerId: const MarkerId('branchLocation'),
-                            position: _initialPosition,
-                            infoWindow: const InfoWindow(
-                              title: 'Branch Location',
-                            ),
-                          ),
-                        },
-                      ),
+            ),
+            SizedBox(
+              height: 10,
+            ),
+            Expanded(
+              child: GoogleMap(
+                initialCameraPosition: CameraPosition(
+                  target: _initialPosition,
+                  zoom: 15,
+                ),
+                markers: {
+                  Marker(
+                    draggable: false,
+                    markerId: const MarkerId('branchLocation'),
+                    position: _initialPosition,
+                    infoWindow: const InfoWindow(
+                      title: 'Branch Location',
                     ),
+                  ),
+                },
+              ),
+            ),
           ],
         ),
       ),

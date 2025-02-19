@@ -142,6 +142,8 @@ class _HomeScreenState extends State<HomeScreen> {
       AppConstants.mimimumOrderValue =
           splashProvider.configModel!.freeDeliveryOverAmount!;
       AppConstants.deliveryCagrge = splashProvider.configModel!.deliveryCharge!;
+      AppConstants.mimimumExpressOrderValue =
+          splashProvider.configModel!.freeExpressDeliveryOverAmount!;
       print(
           '----------------------------------minimumorder${AppConstants.mimimumOrderValue}');
       print(
@@ -243,71 +245,232 @@ class _HomeScreenState extends State<HomeScreen> {
                     //         false) &&
                     //     isFeaturedProduct)
                     Consumer<CategoryProvider>(
-                        builder: (context, categoryProvider, child) {
-                      return categoryProvider.categoryList == null
-                          ? const CategoriesShimmerWidget()
-                          : Column(children: [
-                              TitleWidget(
-                                title: getTranslated("Promotions", context),
-                                // onTap: () {
-                                //   Navigator.pushNamed(
-                                //       context,
-                                //       RouteHelper.getHomeItemRoute(
-                                //           ProductType.featuredItem));
-                                // }
-                              ),
-                              LimitedBox(
-                                maxHeight: 250,
-                                child: ListView.builder(
-                                  scrollDirection: Axis.horizontal,
-                                  itemBuilder: (context, index) => Padding(
-                                    padding: const EdgeInsets.only(left: 16.0),
-                                    child: GestureDetector(
-                                      onTap: () {
-                                        Navigator.pushNamed(
-                                          context,
-                                          RouteHelper.getSubCategoriesRoute(
-                                              categoryId:
-                                                  '${categoryProvider.categoryList![index].id}',
-                                              categoryName:
-                                                  '${categoryProvider.categoryList![index].name}'),
-                                        );
+                      builder: (context, categoryProvider, child) {
+                        final Size size = MediaQuery.of(context).size;
+                        final double containerWidth =
+                            size.width * 0.4; // 40% of screen width
+                        final double containerHeight =
+                            size.height * 0.3; // 30% of screen height
 
-                                        // categoryProvider.onChangeSelectIndex(-1,
-                                        //     notify: false);
-                                        // Navigator.of(context).pushNamed(
-                                        //   RouteHelper.getCategoryProductsRoute(
-                                        //       subCategory:
-                                        //           '${categoryProvider.categoryList![index].name}',
-                                        //       categoryId:
-                                        //           '${categoryProvider.categoryList![index].id}'),
-                                        // );
-                                      },
-                                      child: Container(
-                                        height: 250,
-                                        width: 165,
-                                        decoration: BoxDecoration(
-                                          color: Colors.amber,
-                                          borderRadius:
-                                              BorderRadius.circular(15),
-                                          image: DecorationImage(
-                                            image: CachedNetworkImageProvider(
-                                              '${splashProvider.baseUrls?.categoryImageUrl}/${categoryProvider.categoryList?[index].promotionImage}',
+                        return categoryProvider.categoryList == null
+                            ? const CategoriesShimmerWidget()
+                            : Column(children: [
+                                TitleWidget(
+                                  title: getTranslated("Promotions", context),
+                                ),
+                                LimitedBox(
+                                  maxHeight: containerHeight,
+                                  child: ListView.builder(
+                                    scrollDirection: Axis.horizontal,
+                                    itemBuilder: (context, index) {
+                                      if (categoryProvider.categoryList?[index]
+                                              .promotionImage ==
+                                          null) {
+                                        return const SizedBox.shrink();
+                                      }
+
+                                      return Padding(
+                                        padding: EdgeInsets.only(
+                                            left: size.width *
+                                                0.04), // 4% of screen width
+                                        child: GestureDetector(
+                                          onTap: () {
+                                            Navigator.pushNamed(
+                                              context,
+                                              RouteHelper.getSubCategoriesRoute(
+                                                categoryId:
+                                                    '${categoryProvider.categoryList![index].id}',
+                                                categoryName:
+                                                    '${categoryProvider.categoryList![index].name}',
+                                              ),
+                                            );
+                                          },
+                                          child: Container(
+                                            height: containerHeight,
+                                            width: containerWidth,
+                                            decoration: BoxDecoration(
+                                              color: const Color.fromARGB(
+                                                  255, 233, 209, 138),
+                                              borderRadius:
+                                                  BorderRadius.circular(size
+                                                          .width *
+                                                      0.04), // 4% of screen width
                                             ),
-                                            fit: BoxFit.cover,
-                                            // AssetImage(
-                                            //    'assets/image/promotion_${(index % 2) + 1}.png'),
+                                            child: Stack(
+                                              children: [
+                                                // Image
+                                                Container(
+                                                  decoration: BoxDecoration(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            size.width * 0.04),
+                                                    image: DecorationImage(
+                                                      image:
+                                                          CachedNetworkImageProvider(
+                                                        '${splashProvider.baseUrls?.categoryImageUrl}/${categoryProvider.categoryList?[index].promotionImage}',
+                                                      ),
+                                                      fit: BoxFit.cover,
+                                                    ),
+                                                  ),
+                                                ),
+                                                // Full image gradient overlay
+                                                Container(
+                                                  decoration: BoxDecoration(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            size.width * 0.04),
+                                                    gradient: LinearGradient(
+                                                      begin: Alignment
+                                                          .bottomCenter,
+                                                      end: Alignment.topCenter,
+                                                      colors: [
+                                                        Colors.black
+                                                            .withOpacity(0.5),
+                                                        Colors.black
+                                                            .withOpacity(0.0),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ),
+                                                // Category name
+                                                Positioned(
+                                                  top: containerHeight *
+                                                      0.05, // 5% of container height
+                                                  left: containerWidth *
+                                                      0.08, // 8% of container width
+                                                  right: containerWidth * 0.08,
+                                                  child: Text(
+                                                    '${categoryProvider.categoryList?[index].name}',
+                                                    style: TextStyle(
+                                                      color: Colors.black,
+                                                      fontSize: size.width *
+                                                          0.04, // 4% of screen width
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                    ),
+                                                    maxLines: 2,
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
+                                                    textAlign: TextAlign.center,
+                                                  ),
+                                                ),
+                                                // Shop Now Container
+                                                Positioned(
+                                                  bottom: containerHeight *
+                                                      0.05, // 5% of container height
+                                                  left: containerWidth *
+                                                      0.08, // 8% of container width
+                                                  right: containerWidth * 0.08,
+                                                  child: Container(
+                                                    padding:
+                                                        EdgeInsets.symmetric(
+                                                      vertical: size.height *
+                                                          0.01, // 1% of screen height
+                                                      horizontal: size.width *
+                                                          0.03, // 3% of screen width
+                                                    ),
+                                                    decoration: BoxDecoration(
+                                                      color: Theme.of(context)
+                                                          .primaryColor,
+                                                      borderRadius: BorderRadius
+                                                          .circular(size.width *
+                                                              0.06), // 6% of screen width
+                                                    ),
+                                                    child: Text(
+                                                      getTranslated(
+                                                          'Shop Now', context),
+                                                      style: TextStyle(
+                                                        color: Colors.white,
+                                                        fontSize: size.width *
+                                                            0.03, // 3.5% of screen width
+                                                        fontWeight:
+                                                            FontWeight.w600,
+                                                      ),
+                                                      textAlign:
+                                                          TextAlign.center,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
                                           ),
                                         ),
-                                        // child: Column(),
-                                      ),
-                                    ),
+                                      );
+                                    },
+                                    itemCount:
+                                        categoryProvider.categoryList?.length ??
+                                            0,
                                   ),
-                                  itemCount: 4,
-                                ),
-                              )
-                            ]);
-                    }),
+                                )
+                              ]);
+                      },
+                    ),
+                    // Consumer<CategoryProvider>(
+                    //     builder: (context, categoryProvider, child) {
+                    //   return categoryProvider.categoryList == null
+                    //       ? const CategoriesShimmerWidget()
+                    //       : Column(children: [
+                    //           TitleWidget(
+                    //             title: getTranslated("Promotions", context),
+                    //             // onTap: () {
+                    //             //   Navigator.pushNamed(
+                    //             //       context,
+                    //             //       RouteHelper.getHomeItemRoute(
+                    //             //           ProductType.featuredItem));
+                    //             // }
+                    //           ),
+                    //           LimitedBox(
+                    //             maxHeight: 250,
+                    //             child: ListView.builder(
+                    //               scrollDirection: Axis.horizontal,
+                    //               itemBuilder: (context, index) => Padding(
+                    //                 padding: const EdgeInsets.only(left: 16.0),
+                    //                 child: GestureDetector(
+                    //                   onTap: () {
+                    //                     Navigator.pushNamed(
+                    //                       context,
+                    //                       RouteHelper.getSubCategoriesRoute(
+                    //                           categoryId:
+                    //                               '${categoryProvider.categoryList![index].id}',
+                    //                           categoryName:
+                    //                               '${categoryProvider.categoryList![index].name}'),
+                    //                     );
+
+                    //                     // categoryProvider.onChangeSelectIndex(-1,
+                    //                     //     notify: false);
+                    //                     // Navigator.of(context).pushNamed(
+                    //                     //   RouteHelper.getCategoryProductsRoute(
+                    //                     //       subCategory:
+                    //                     //           '${categoryProvider.categoryList![index].name}',
+                    //                     //       categoryId:
+                    //                     //           '${categoryProvider.categoryList![index].id}'),
+                    //                     // );
+                    //                   },
+                    //                   child: Container(
+                    //                     height: 250,
+                    //                     width: 165,
+                    //                     decoration: BoxDecoration(
+                    //                       color: Colors.amber,
+                    //                       borderRadius:
+                    //                           BorderRadius.circular(15),
+                    //                       image: DecorationImage(
+                    //                         image: CachedNetworkImageProvider(
+                    //                           '${splashProvider.baseUrls?.categoryImageUrl}/${categoryProvider.categoryList?[index].promotionImage}',
+                    //                         ),
+                    //                         fit: BoxFit.cover,
+                    //                         // AssetImage(
+                    //                         //    'assets/image/promotion_${(index % 2) + 1}.png'),
+                    //                       ),
+                    //                     ),
+                    //                     // child: Column(),
+                    //                   ),
+                    //                 ),
+                    //               ),
+                    //               itemCount: 4,
+                    //             ),
+                    //           )
+                    //         ]);
+                    // }),
                     TitleWidget(
                         title: getTranslated('Organic Products', context),
                         onTap: () {

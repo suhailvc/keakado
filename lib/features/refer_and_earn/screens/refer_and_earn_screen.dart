@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:dotted_border/dotted_border.dart';
 import 'package:expandable_bottom_sheet/expandable_bottom_sheet.dart';
 import 'package:flutter/material.dart';
@@ -279,8 +281,14 @@ class DetailsView extends StatelessWidget {
                 ),
                 InkWell(
                   borderRadius: BorderRadius.circular(10),
-                  onTap: () =>
-                      Share.share(profileProvider.userInfoModel!.referCode!),
+                  onTap: () async {
+                    final webLink =
+                        'https://keakado.com/download'; // Landing page with device detection
+                    Share.share(
+                        '${profileProvider.userInfoModel!.referCode!}\n$webLink');
+                  },
+                  // onTap: () =>
+                  //     Share.share(profileProvider.userInfoModel!.referCode!),
                   child: Container(
                     margin: const EdgeInsets.symmetric(
                         horizontal: Dimensions.paddingSizeExtraSmall),

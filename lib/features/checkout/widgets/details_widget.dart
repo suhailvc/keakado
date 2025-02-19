@@ -30,10 +30,18 @@ class DetailsWidget extends StatelessWidget {
         Provider.of<OrderProvider>(context, listen: false).getCheckOutData;
 
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      const PaymentSectionWidget(),
-      PartialPayWidget(
-          totalPrice:
-              checkOutData!.amount! + (checkOutData.deliveryCharge ?? 0)),
+      if (Provider.of<OrderProvider>(context, listen: false).selectTimeSlot !=
+          -1) ...[
+        const PaymentSectionWidget(),
+        PartialPayWidget(
+            totalPrice:
+                checkOutData!.amount! + (checkOutData.deliveryCharge ?? 0)),
+      ],
+      // const PaymentSectionWidget(),
+      // PartialPayWidget(
+      //     totalPrice:
+      //         checkOutData!.amount! + (checkOutData.deliveryCharge ?? 0)),
+
       const ImageNoteUploadWidget(),
       Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8),

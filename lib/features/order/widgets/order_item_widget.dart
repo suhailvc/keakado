@@ -45,6 +45,49 @@ class _OrderItemWidgetState extends State<OrderItemWidget> {
 
   @override
   Widget build(BuildContext context) {
+    // double deliveryCharge = OrderHelper.getDeliveryCharge(
+    //     orderModel:widget.orderList![widget.index].trackModel);
+    // double itemsPrice = OrderHelper.getOrderDetailsValue(
+    //   orderDetailsList: widget.orderList![widget.index].o,
+    //   type: OrderValue.itemPrice,
+    // );
+    // double deliveryFee = OrderHelper.getOrderDetailsValue(
+    //   orderDetailsList: orderProvider.orderDetails,
+    //   type: OrderValue.deliveryFee,
+    // );
+    // double walletUsed = OrderHelper.getOrderDetailsValue(
+    //   orderDetailsList: orderProvider.orderDetails,
+    //   type: OrderValue.walletUsed,
+    // );
+    // double couponDiscount = OrderHelper.getOrderDetailsValue(
+    //   orderDetailsList: orderProvider.orderDetails,
+    //   type: OrderValue.couponDiscount,
+    // );
+    // double discount = OrderHelper.getOrderDetailsValue(
+    //   orderDetailsList: orderProvider.orderDetails,
+    //   type: OrderValue.discount,
+    // );
+    // double extraDiscount = OrderHelper.getExtraDiscount(
+    //     trackOrder: orderProvider.trackModel);
+    // double tax = OrderHelper.getOrderDetailsValue(
+    //   orderDetailsList: orderProvider.orderDetails,
+    //   type: OrderValue.tax,
+    // );
+    // bool isVatInclude = OrderHelper.isVatTaxInclude(
+    //     orderDetailsList: orderProvider.orderDetails);
+    // double subTotal = OrderHelper.getSubTotalAmount(
+    //   itemsPrice: itemsPrice,
+    //   tax: tax,
+    //   isVatInclude: isVatInclude,
+    // );
+    // double total = OrderHelper.getTotalOrderAmount(
+    //     subTotal: widget.orderList![widget.index].orderAmount!,
+    //     discount: discount,
+    //     extraDiscount: widget.orderList![widget.index].extraDiscount!,
+    //     deliveryCharge: widget.orderList![widget.index].deliveryCharge!,
+    //     couponDiscount: widget.orderList![widget.index].couponDiscountAmount!,
+    //     // couponDiscount: orderProvider.trackModel?.couponDiscountAmount,
+    //     walletUsed: widget.orderList![widget.index].);
     print(
         'status order ${widget.orderList![widget.index].id} ${widget.orderList![widget.index].orderStatus}');
     String _getOrderStatusText(int status) {
@@ -253,7 +296,7 @@ class _OrderItemWidgetState extends State<OrderItemWidget> {
                               .configModel!;
                       return Text(
                         PriceConverterHelper.convertPrice(context,
-                            widget.orderList![widget.index].orderAmount!),
+                            widget.orderList![widget.index].orderAmount),
                         // '${widget.orderList![widget.index].orderAmount!.toStringAsFixed(2)} ${config.currencySymbol}',
                         style: poppinsBold.copyWith(
                           fontSize: Dimensions.fontSizeExtraLarge,
@@ -298,11 +341,158 @@ class _OrderItemWidgetState extends State<OrderItemWidget> {
                                 ),
                               ),
                               SizedBox(
-                                width: 20,
+                                width: MediaQuery.of(context).size.width * 0.02,
+                              ),
+                              if (widget.orderList![widget.index].orderType !=
+                                  'pos')
+                                const SizedBox(width: 12),
+                              if (widget.orderList![widget.index].orderType !=
+                                  'pos')
+                                Consumer<ProductProvider>(
+                                  builder: (context, productProvider, _) =>
+                                      Consumer<OrderProvider>(
+                                    builder: (context, orderProvider, _) {
+                                      bool isReOrderAvailable = orderProvider
+                                                  .getReOrderIndex ==
+                                              null ||
+                                          (orderProvider.getReOrderIndex !=
+                                                  null &&
+                                              productProvider.product != null);
+
+                                      return Row(
+                                        children: [
+                                          (orderProvider.isLoading ||
+                                                      productProvider.product ==
+                                                          null) &&
+                                                  widget.index ==
+                                                      orderProvider
+                                                          .getReOrderIndex &&
+                                                  !orderProvider.isActiveOrder
+                                              ? CustomLoaderWidget(
+                                                  color: Theme.of(context)
+                                                      .primaryColor)
+                                              : GestureDetector(
+                                                  onTap: () async {
+                                                    if (orderProvider
+                                                        .isActiveOrder) {
+                                                      Navigator.of(context)
+                                                          .pushNamed(RouteHelper
+                                                              .getOrderTrackingRoute(
+                                                                  widget
+                                                                      .orderList![
+                                                                          widget
+                                                                              .index]
+                                                                      .id,
+                                                                  null));
+                                                    } else {
+                                                      if (!orderProvider
+                                                              .isLoading &&
+                                                          isReOrderAvailable) {
+                                                        orderProvider
+                                                                .setReorderIndex =
+                                                            widget.index;
+                                                        List<
+                                                                CartModel>?
+                                                            cartList =
+                                                            await orderProvider.reorderProduct(
+                                                                widget
+                                                                    .orderList![
+                                                                        widget
+                                                                            .index]
+                                                                    .totalQuantity,
+                                                                '${widget.orderList![widget.index].id}');
+                                                        if (cartList != null &&
+                                                            cartList
+                                                                .isNotEmpty) {
+                                                          showDialog(
+                                                              context:
+                                                                  Get.context!,
+                                                              builder: (context) =>
+                                                                  const ReOrderDialogWidget());
+                                                        }
+                                                      }
+                                                    }
+                                                  },
+                                                  child: Container(
+                                                    height: 40,
+                                                    width:
+                                                        MediaQuery.of(context)
+                                                                .size
+                                                                .width /
+                                                            4,
+                                                    decoration: BoxDecoration(
+                                                      color: Theme.of(context)
+                                                          .primaryColor,
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              8),
+                                                    ),
+                                                    alignment: Alignment.center,
+                                                    child: Text(
+                                                      getTranslated(
+                                                          orderProvider
+                                                                  .isActiveOrder
+                                                              ? 'track_order'
+                                                              : 're_order',
+                                                          context),
+                                                      style: poppinsSemiBold
+                                                          .copyWith(
+                                                        color: Colors.white,
+                                                        letterSpacing: 1.2,
+                                                        wordSpacing: 1.6,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                          // if (orderProvider.isActiveOrder)
+                                          //   GestureDetector(
+                                          //     onTap: () {
+                                          //       Navigator.of(context).pushNamed(
+                                          //         RouteHelper.getOrderDetailsRoute(
+                                          //             '${widget.orderList?[widget.index].id}'),
+                                          //         arguments: OrderDetailsScreen(
+                                          //             orderId: widget
+                                          //                 .orderList![widget.index]
+                                          //                 .id,
+                                          //             orderModel: widget
+                                          //                 .orderList![widget.index]),
+                                          //       );
+                                          //     },
+                                          //     child: Container(
+                                          //       height: 40,
+                                          //       width: MediaQuery.of(context)
+                                          //               .size
+                                          //               .width /
+                                          //           3.5,
+                                          //       decoration: BoxDecoration(
+                                          //         color:
+                                          //             Theme.of(context).primaryColor,
+                                          //         borderRadius:
+                                          //             BorderRadius.circular(8),
+                                          //       ),
+                                          //       alignment: Alignment.center,
+                                          //       child: Text(
+                                          //         getTranslated(
+                                          //             "Order Cancel", context),
+                                          //         style: poppinsSemiBold.copyWith(
+                                          //           color: Colors.white,
+                                          //           letterSpacing: 1.2,
+                                          //           wordSpacing: 1.6,
+                                          //         ),
+                                          //       ),
+                                          //     ),
+                                          //   ),
+                                        ],
+                                      );
+                                    },
+                                  ),
+                                ),
+                              SizedBox(
+                                width: MediaQuery.of(context).size.width * 0.02,
                               ),
                               Container(
                                 height: 40,
-                                width: MediaQuery.of(context).size.width / 4,
+                                width: MediaQuery.of(context).size.width / 4.5,
                                 decoration: BoxDecoration(
                                   color: Colors.red,
                                   borderRadius: BorderRadius.circular(8),
@@ -312,8 +502,8 @@ class _OrderItemWidgetState extends State<OrderItemWidget> {
                                   getTranslated('Cancelled', context),
                                   style: poppinsSemiBold.copyWith(
                                     color: Colors.white,
-                                    letterSpacing: 1.2,
-                                    wordSpacing: 1.6,
+                                    letterSpacing: 1,
+                                    wordSpacing: 1.3,
                                   ),
                                 ),
                               ),

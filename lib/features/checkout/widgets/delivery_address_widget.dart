@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_grocery/features/address/domain/models/address_model.dart';
 import 'package:flutter_grocery/common/models/config_model.dart';
@@ -76,9 +78,14 @@ class DeliveryAddressWidget extends StatelessWidget {
                                                 padding: const EdgeInsets.all(
                                                     Dimensions
                                                         .paddingSizeSmall),
-                                                itemCount: locationProvider
-                                                        .addressList?.length ??
-                                                    0,
+                                                itemCount: min(
+                                                    locationProvider.addressList
+                                                            ?.length ??
+                                                        0,
+                                                    5),
+                                                // itemCount: locationProvider
+                                                //         .addressList?.length ??
+                                                //     0,
                                                 itemBuilder: (context, index) {
                                                   return Center(
                                                     child: SizedBox(
@@ -116,7 +123,7 @@ class DeliveryAddressWidget extends StatelessWidget {
                                                 'add',
                                                 AddressModel()));
                                         await locationProvider
-                                            .initAddressList();
+                                            .initAddressList(); // Update order provider address index
                                       },
                                       child: Container(
                                         height: 50,

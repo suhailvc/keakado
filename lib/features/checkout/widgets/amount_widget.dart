@@ -136,11 +136,13 @@ class AmountWidget extends StatelessWidget {
                   return CustomDirectionalityWidget(
                     child: Text(
                       // '(+)${((checkOutData?.amount ?? 0) < 49 ? checkOutData?.deliveryCharge : 0)}',
-                      isFreeDelivery
-                          ? ' ${PriceConverterHelper.convertPrice(context, 0)}'
-                          : (selfPickup || orderProvider.distance != -1)
-                              ? '(+) ${PriceConverterHelper.convertPrice(context, selfPickup ? 0 : (((checkOutData?.amount ?? 0) < AppConstants.mimimumOrderValue) && Provider.of<CouponProvider>(context, listen: false).freeDeliveryCoupon == false ? AppConstants.deliveryCagrge : 0))}'
-                              : getTranslated('not_found', context),
+                      //  isFreeDelivery
+                      //?
+                      ' ${PriceConverterHelper.convertPrice(context, AppConstants.deliveryCagrge)}',
+                      // : //(selfPickup || orderProvider.distance != -1)
+                      //?
+                      // '(+) ${PriceConverterHelper.convertPrice(context, selfPickup ? 0 : (((checkOutData?.amount ?? 0) < AppConstants.mimimumOrderValue) && Provider.of<CouponProvider>(context, listen: false).freeDeliveryCoupon == false ? AppConstants.deliveryCagrge : 0))}',
+                      //: getTranslated('not_found', context),
                       style: poppinsRegular.copyWith(
                         fontSize: Dimensions.fontSizeLarge,
                       ),

@@ -12,6 +12,7 @@ import 'package:flutter_grocery/features/order/providers/return_status_provider.
 import 'package:flutter_grocery/features/order/screens/oder_return_screen.dart';
 
 import 'package:flutter_grocery/features/splash/providers/splash_provider.dart';
+import 'package:flutter_grocery/helper/custom_snackbar_helper.dart';
 import 'package:flutter_grocery/helper/date_converter_helper.dart';
 import 'package:flutter_grocery/helper/order_helper.dart';
 import 'package:flutter_grocery/helper/price_converter_helper.dart';
@@ -79,6 +80,8 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    print(
+        '----return status ${Provider.of<ReturnStatusProvider>(context, listen: false).status}');
     var querySize = MediaQuery.of(context).size;
     return Scaffold(
       backgroundColor: ColorResources.scaffoldGrey,
@@ -315,7 +318,12 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                                                     Text(
                                                       PriceConverterHelper
                                                           .convertPrice(
-                                                              context, total),
+                                                              context,
+                                                              orderProvider
+                                                                  .orderDetails![
+                                                                      index]
+                                                                  .productDetails
+                                                                  ?.price),
                                                       //"${orderProvider.orderDetails![index].price ?? ""} ${config?.currencySymbol ?? ""}",
                                                       style:
                                                           poppinsBold.copyWith(
@@ -558,7 +566,8 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                                 ),
                                 if (orderProvider.trackModel!.orderStatus ==
                                         'delivered' &&
-                                    widget.orderModel!.isReturnRequested == 0 &&
+                                    //  widget.orderModel!.isReturnRequested == 0 &&
+                                    orderProvider.trackModel!.isReturned == 0 &&
                                     Provider.of<ReturnStatusProvider>(context,
                                                 listen: false)
                                             .status ==
@@ -567,7 +576,25 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                                     padding: const EdgeInsets.only(top: 24),
                                     child: CustomButtonWidget(
                                       buttonText: 'Return Order / Refund',
-                                      onPressed: () {
+                                      onPressed: () async {
+                                        // await Provider.of<ReturnStatusProvider>(
+                                        //         context,
+                                        //         listen: false)
+                                        //     .getReturnStatus();
+                                        // if (widget.orderModel!
+                                        //             .isReturnRequested !=
+                                        //         0 &&
+                                        //     Provider.of<ReturnStatusProvider>(
+                                        //                 context,
+                                        //                 listen: false)
+                                        //             .status !=
+                                        //         '1') {
+                                        //   showCustomSnackBarHelper(
+                                        //       'Already returned',
+                                        //       isError: false);
+                                        // }
+                                        print(
+                                            '----return status${Provider.of<ReturnStatusProvider>(context, listen: false).status}');
                                         Navigator.push(
                                           context,
                                           MaterialPageRoute(

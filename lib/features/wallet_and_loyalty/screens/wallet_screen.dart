@@ -110,20 +110,25 @@ class _WalletScreenState extends State<WalletScreen> {
 
     return WillPopScope(
       onWillPop: () async {
-        if (!Navigator.canPop(context)) {
-          // Provider.of<SplashProvider>(context, listen: false).setPageIndex(0);
-          Navigator.pushAndRemoveUntil(
-              context,
-              MaterialPageRoute(
-                builder: (_) => const MenuScreen(),
-              ),
-              (route) => false);
-          return false;
-        } else {
-          // Provider.of<SplashProvider>(context, listen: false).setPageIndex(0);
-          return false;
-        }
+        // Simply navigate back
+        Navigator.pop(context);
+        return false; // Return false to prevent default back behavior since we handle it manually
       },
+      // onWillPop: () async {
+      //   if (!Navigator.canPop(context)) {
+      //     // Provider.of<SplashProvider>(context, listen: false).setPageIndex(0);
+      //     Navigator.pushAndRemoveUntil(
+      //         context,
+      //         MaterialPageRoute(
+      //           builder: (_) => const MenuScreen(),
+      //         ),
+      //         (route) => false);
+      //     return false;
+      //   } else {
+      //     // Provider.of<SplashProvider>(context, listen: false).setPageIndex(0);
+      //     return false;
+      //   }
+      // },
       child: Scaffold(
         resizeToAvoidBottomInset: false,
         backgroundColor: ColorResources.scaffoldGrey,

@@ -49,16 +49,29 @@ class _OrderSuccessScreenState extends State<OrderSuccessScreen> {
         Provider.of<SplashProvider>(context, listen: false);
 
     return PopScope(
-      canPop: false,
-      onPopInvoked: ((value) async {
-        Navigator.pushAndRemoveUntil(
-            context,
-            MaterialPageRoute(
-              builder: (_) => const MenuScreen(),
-            ),
-            (route) => false);
-        return Future(() => true);
-      }),
+      canPop: false, // Change this to true
+      // onPopInvoked: (didPop) {
+      //   if (didPop) {
+      //     return; // Do nothing when back is pressed
+      //   }
+      // },
+      // canPop: false,
+      // onPopInvoked: ((value) async {
+      //   splashProvider.setPageIndex(0);
+      //   Navigator.pushAndRemoveUntil(
+      //       context,
+      //       MaterialPageRoute(
+      //         builder: (_) => const BottomBarView(),
+      //       ),
+      //       (route) => false);
+      //   // Navigator.pushAndRemoveUntil(
+      //   //     context,
+      //   //     MaterialPageRoute(
+      //   //       builder: (_) => const MenuScreen(),
+      //   //     ),
+      //   //     (route) => false);
+      //   // return Future(() => true);
+      // }),
       child: Scaffold(
         backgroundColor: Theme.of(context).cardColor,
         appBar: ResponsiveHelper.isDesktop(context)

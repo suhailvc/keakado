@@ -11,21 +11,28 @@ class CategoryItemWidget extends StatelessWidget {
   final String? icon;
   final bool isSelected;
 
-  const CategoryItemWidget({Key? key, required this.title, required this.icon, required this.isSelected}) : super(key: key);
+  const CategoryItemWidget(
+      {Key? key,
+      required this.title,
+      required this.icon,
+      required this.isSelected})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Container(
       width: 100,
       height: 110,
-      margin: const EdgeInsets.symmetric(vertical: Dimensions.paddingSizeExtraSmall, horizontal: 2),
+      margin: const EdgeInsets.symmetric(
+          vertical: Dimensions.paddingSizeExtraSmall, horizontal: 2),
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(7),
-          color: isSelected ? Theme.of(context).primaryColor
-              : Theme.of(context).cardColor
-      ),
+          color: isSelected
+              ? Theme.of(context).primaryColor
+              : Theme.of(context).cardColor),
       child: Center(
-        child: Column(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
+        child:
+            Column(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
           Container(
             height: 60,
             width: 60,
@@ -33,27 +40,33 @@ class CategoryItemWidget extends StatelessWidget {
             //padding: EdgeInsets.all(5),
             decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: isSelected ? ColorResources.getCategoryBgColor(context)
-                    : ColorResources.getGreyLightColor(context).withOpacity(0.05)
-            ),
+                color: isSelected
+                    ? ColorResources.getCategoryBgColor(context)
+                    : ColorResources.getGreyLightColor(context)
+                        .withOpacity(0.05)),
             child: ClipRRect(
               borderRadius: BorderRadius.circular(50),
               child: CustomImageWidget(
-                image: '${Provider.of<SplashProvider>(context, listen: false).baseUrls!.categoryImageUrl}/$icon',
-                fit: BoxFit.cover, width: 100, height: 100,
-                ),
+                image:
+                    '${Provider.of<SplashProvider>(context, listen: false).baseUrls!.categoryImageUrl}/$icon',
+                fit: BoxFit.cover,
+                width: 100,
+                height: 100,
+              ),
             ),
           ),
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: Dimensions.paddingSizeExtraSmall),
+            padding: const EdgeInsets.symmetric(
+                horizontal: Dimensions.paddingSizeExtraSmall),
             child: Text(title!,
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
                 textAlign: TextAlign.center,
                 style: poppinsSemiBold.copyWith(
                     fontSize: Dimensions.fontSizeExtraSmall,
-                    color: isSelected ? Theme.of(context).canvasColor : Theme.of(context).textTheme.bodyLarge?.color
-                )),
+                    color: isSelected
+                        ? Theme.of(context).canvasColor
+                        : Theme.of(context).textTheme.bodyLarge?.color)),
           ),
         ]),
       ),

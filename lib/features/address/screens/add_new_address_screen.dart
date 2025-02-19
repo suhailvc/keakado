@@ -249,7 +249,7 @@ class _AddNewAddressScreenState extends State<AddNewAddressScreen> {
           '${widget.address?.contactPersonNumber}';
       _streetNumberController.text = widget.address?.streetNumber ?? '';
       _houseNumberController.text = widget.address?.houseNumber ?? '';
-      _florNumberController.text = widget.address?.floorNumber ?? '';
+      _florNumberController.text = widget.address?.zone ?? '';
 
       if (widget.address?.addressType == 'Home') {
         locationProvider.updateAddressIndex(0, false);

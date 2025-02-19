@@ -4,6 +4,8 @@ import 'dart:ui';
 
 // import 'package:firebase_core/firebase_core.dart';
 // import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart'
     show defaultTargetPlatform, kDebugMode, kIsWeb;
 import 'package:flutter/material.dart';
@@ -18,6 +20,7 @@ import 'package:flutter_grocery/features/order/providers/rating_provider.dart';
 import 'package:flutter_grocery/features/order/providers/return_product_provider.dart';
 import 'package:flutter_grocery/features/order/providers/return_status_provider.dart';
 import 'package:flutter_grocery/features/review/providers/review_provider.dart';
+import 'package:flutter_grocery/firebase_options.dart';
 import 'package:flutter_grocery/helper/responsive_helper.dart';
 import 'package:flutter_grocery/helper/route_helper.dart';
 import 'package:flutter_grocery/features/auth/providers/auth_provider.dart';
@@ -67,13 +70,16 @@ Future<void> main() async {
   setPathUrlStrategy();
   WidgetsFlutterBinding.ensureInitialized();
   sharedPreferences1 = await SharedPreferences.getInstance();
-  // if (!kIsWeb) {
-  //   await Firebase.initializeApp();
-  //   if (defaultTargetPlatform == TargetPlatform.android) {
-  //     FirebaseMessaging.instance.requestPermission();
+  //if (!kIsWeb) {
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  await FirebaseMessaging.instance.subscribeToTopic('grofresh');
+  if (defaultTargetPlatform == TargetPlatform.android) {
+    FirebaseMessaging.instance.requestPermission();
 
-  //     /// firebase crashlytics
-  //   }
+    /// firebase crashlytics
+  }
+  final fcmToken = await FirebaseMessaging.instance.getToken();
+  print('-------fcm token-----  $fcmToken');
   // } else {
   //   await Firebase.initializeApp(
   //       options: const FirebaseOptions(
@@ -85,12 +91,12 @@ Future<void> main() async {
   //           appId: "1:250728969979:web:b79642a7b2d2400b75a25e",
   //           measurementId: "G-X1HCG4K8HJ"));
 
-  //   await FacebookAuth.instance.webAndDesktopInitialize(
-  //     appId: "YOUR_FACEBOOK_KEY_HERE",
-  //     cookie: true,
-  //     xfbml: true,
-  //     version: "v13.0",
-  //   );
+  //   //   await FacebookAuth.instance.webAndDesktopInitialize(
+  //   //     appId: "YOUR_FACEBOOK_KEY_HERE",
+  //   //     cookie: true,
+  //   //     xfbml: true,
+  //   //     version: "v13.0",
+  //   //   );
   // }
 
   await di.init();
@@ -101,17 +107,22 @@ Future<void> main() async {
         'high_importance_channel',
         'High Importance Notifications',
         importance: Importance.high,
+        enableLights: true,
+        enableVibration: true,
+        playSound: true,
+        showBadge: true,
+        description: 'Important notifications from the app', // Add description
       );
     }
-    // final RemoteMessage? remoteMessage =
-    //     await FirebaseMessaging.instance.getInitialMessage();
-    // if (remoteMessage != null) {
-    //   orderID = remoteMessage.notification!.titleLocKey != null
-    //       ? int.parse(remoteMessage.notification!.titleLocKey!)
-    //       : null;
-    // }
+    final RemoteMessage? remoteMessage =
+        await FirebaseMessaging.instance.getInitialMessage();
+    if (remoteMessage != null) {
+      orderID = remoteMessage.notification!.titleLocKey != null
+          ? int.parse(remoteMessage.notification!.titleLocKey!)
+          : null;
+    }
     await NotificationHelper.initialize(flutterLocalNotificationsPlugin);
-   // FirebaseMessaging.onBackgroundMessage(myBackgroundMessageHandler);
+    FirebaseMessaging.onBackgroundMessage(myBackgroundMessageHandler);
   } catch (e) {
     if (kDebugMode) {
       print('error---> ${e.toString()}');
@@ -153,7 +164,7 @@ Future<void> main() async {
       ChangeNotifierProvider(create: (context) => OfferProvider()),
       ChangeNotifierProvider(create: (context) => RatingProvider()),
       ChangeNotifierProvider(create: (context) => ExpressDeliveryProvider()),
-          ChangeNotifierProvider(create: (context) => ReturnStatusProvider()),
+      ChangeNotifierProvider(create: (context) => ReturnStatusProvider()),
     ],
     child: MyApp(orderID: orderID, isWeb: !kIsWeb),
   ));

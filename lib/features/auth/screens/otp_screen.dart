@@ -174,6 +174,9 @@ class _OtpScreenState extends State<OtpScreen> {
                             } else if (status.isSuccess) {
                               Navigator.pushNamedAndRemoveUntil(
                                   context, RouteHelper.menu, (route) => false);
+                            } else if (status.isSuccess == false) {
+                              showCustomSnackBarHelper('Please check your otp',
+                                  isError: true);
                             }
                           },
                         );

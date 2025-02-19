@@ -143,15 +143,15 @@ class CheckOutHelper {
       orderProvider.setAddressIndex(index, notify: true);
 
       if (CheckOutHelper.isKmWiseCharge(configModel: configModel)) {
-        if (fromAddressList) {
-          if (orderProvider.selectedPaymentMethod != null) {
-            showCustomSnackBarHelper(
-                getTranslated('your_payment_method_has_been', Get.context!),
-                isError: false);
-          }
-          orderProvider.savePaymentMethod(index: null, method: null);
-          orderProvider.changePartialPayment();
-        }
+        // if (fromAddressList) {
+        //   if (orderProvider.selectedPaymentMethod != null) {
+        //     showCustomSnackBarHelper(
+        //         getTranslated('your_payment_method_has_been', Get.context!),
+        //         isError: false);
+        //   }
+        //   orderProvider.savePaymentMethod(index: null, method: null);
+        //   orderProvider.changePartialPayment();
+        // }
 
         bool isSuccess = await orderProvider.getDistanceInMeter(
           LatLng(

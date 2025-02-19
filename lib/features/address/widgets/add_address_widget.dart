@@ -96,11 +96,36 @@ class AddAddressWidget extends StatelessWidget {
                 onPressed: locationProvider.loading
                     ? null
                     : () async {
+                        if (locationProvider.selectAddressIndex < 0 ||
+                            locationProvider.selectAddressIndex >=
+                                locationProvider.getAllAddressType.length) {
+                          showCustomSnackBarHelper(
+                              getTranslated('Add Address Type', context));
+                          return;
+                        }
+                        if (streetNumberController.text.isEmpty) {
+                          showCustomSnackBarHelper(
+                              getTranslated('Add Street', context));
+                          return;
+                        }
+                        if (houseNumberController.text.isEmpty) {
+                          showCustomSnackBarHelper(
+                              getTranslated('Add Building', context));
+                          return;
+                        }
                         if (floorNumberController.text.isEmpty) {
                           showCustomSnackBarHelper(
                               getTranslated('Add Zone Number', context));
                           return;
                         }
+                        print(
+                            '----new address zone--${floorNumberController.text}');
+                        await Provider.of<ExpressDeliveryProvider>(context,
+                                listen: false)
+                            .checkDeliveryCharge(
+                          floorNumberController.text!,
+                          true,
+                        );
                         List<Branches> branches =
                             Provider.of<SplashProvider>(context, listen: false)
                                 .configModel!
@@ -157,6 +182,10 @@ class AddAddressWidget extends StatelessWidget {
                                     addressModel: addressModel,
                                     addressId: addressModel.id)
                                 .then((value) {});
+                            Provider.of<OrderProvider>(context, listen: false)
+                                .resetTimeSelections();
+                            print(
+                                '----new update address zone--${floorNumberController.text}');
                             await Provider.of<ExpressDeliveryProvider>(context,
                                     listen: false)
                                 .checkDeliveryCharge(
@@ -178,9 +207,10 @@ class AddAddressWidget extends StatelessWidget {
                                   Provider.of<LocationProvider>(context,
                                           listen: false)
                                       .initAddressList();
+
                                   Provider.of<OrderProvider>(context,
                                           listen: false)
-                                      .setAddressIndex(-1);
+                                      .setAddressIndex(0);
                                 } else {
                                   showCustomSnackBarHelper(value.message ?? '',
                                       isError: false);

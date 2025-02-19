@@ -61,6 +61,7 @@ class _TrackOrderScreenState extends State<TrackOrderScreen> {
 
   @override
   Widget build(BuildContext context) {
+    print('-------------orderId ${widget.orderID}');
     final double width = MediaQuery.sizeOf(context).width;
     Provider.of<SplashProvider>(context, listen: false);
 
@@ -420,30 +421,35 @@ class _TrackOrderScreenState extends State<TrackOrderScreen> {
                                                 OrderConstants.delivered,
                                             statusImage: Images.orderDelivered,
                                             subTitle: orderProvider.trackModel
-                                                        ?.deliveryDate ==
+                                                        ?.deliveryDate !=
                                                     null
-                                                ? null
-                                                : DateConverterHelper
-                                                    .isoStringToOrderDetailsDateTime(
-                                                        orderProvider
-                                                            .trackModel!
-                                                            .deliveryDate!),
-                                            child: orderProvider
-                                                        .deliveryManModel !=
-                                                    null
-                                                ? TrackingMapWidget(
-                                                    deliveryManModel:
-                                                        orderProvider
-                                                            .deliveryManModel,
-                                                    orderID:
-                                                        '${orderProvider.trackModel?.id}',
-                                                    addressModel: orderProvider
-                                                        .trackModel!
-                                                        .deliveryAddress,
-                                                    branchID: orderProvider
-                                                        .trackModel!.branchId,
-                                                  )
-                                                : const SizedBox(),
+                                                ? 'Est. Delivery: ${DateConverterHelper.isoStringToOrderDetailsDateTime(orderProvider.trackModel!.deliveryDate!).split(' ').take(3).join(' ')}'
+                                                : 'Est. Delivery: Calculating...',
+                                            // subTitle: orderProvider.trackModel
+                                            //             ?.deliveryDate ==
+                                            //         null
+                                            //     ? null
+                                            //     : DateConverterHelper
+                                            //         .isoStringToOrderDetailsDateTime(
+                                            //             orderProvider
+                                            //                 .trackModel!
+                                            //                 .deliveryDate!),
+                                            // child: orderProvider
+                                            //             .deliveryManModel !=
+                                            //         null
+                                            //     ? TrackingMapWidget(
+                                            //         deliveryManModel:
+                                            //             orderProvider
+                                            //                 .deliveryManModel,
+                                            //         orderID:
+                                            //             '${orderProvider.trackModel?.id}',
+                                            //         addressModel: orderProvider
+                                            //             .trackModel!
+                                            //             .deliveryAddress,
+                                            //         branchID: orderProvider
+                                            //             .trackModel!.branchId,
+                                            //       )
+                                            //     : const SizedBox(),
                                           ),
                                         ]),
                                       ),

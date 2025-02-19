@@ -72,7 +72,7 @@ class OrderRepo {
         fileKey: 'order_images',
         data: orderBody.toJson(),
       );
-      print('------place roder${response}');
+      print('------place roder ${response}');
       return ApiResponseModel.withSuccess(response);
     } catch (e) {
       print('catch----------$e');

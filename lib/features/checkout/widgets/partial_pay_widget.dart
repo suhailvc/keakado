@@ -26,12 +26,13 @@ class PartialPayWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     print('---------pric-----$totalPrice');
-    double amountNeedToPay =
-        Provider.of<CouponProvider>(context, listen: false).freeDeliveryCoupon
-            ? totalPrice
-            : (AppConstants.mimimumOrderValue > totalPrice
-                ? (totalPrice + AppConstants.deliveryCagrge)
-                : totalPrice);
+    double amountNeedToPay = (totalPrice + AppConstants.deliveryCagrge);
+    print('---------amount need to pay-----$amountNeedToPay');
+    // Provider.of<CouponProvider>(context, listen: false).freeDeliveryCoupon
+    //     ? totalPrice
+    //     : (AppConstants.mimimumOrderValue > totalPrice
+    //         ? (totalPrice + AppConstants.deliveryCagrge)
+    //         : totalPrice);
     // double amountNeedToPay = AppConstants.mimimumOrderValue > totalPrice
     //     ? (totalPrice + AppConstants.deliveryCagrge)
     //     : totalPrice;

@@ -42,6 +42,7 @@ class ConfigModel {
   CookiesManagement? _cookiesManagement;
   bool? _offlinePayment;
   double? _freeDeliveryOverAmount;
+  double? _freeExpressDeliveryOverAmount;
   bool? _freeDeliveryStatus;
   bool? _isVatTexInclude;
   String? _cancellationPolicy;
@@ -112,6 +113,7 @@ class ConfigModel {
     CookiesManagement? cookiesManagement,
     bool? offlinePayment,
     double? freeDeliveryOverAmount,
+    double? freeExpressDeliveryOverAmount,
     bool? freeDeliveryStatus,
     bool? isVatTexInclude,
     String? cancellationPolicy,
@@ -183,6 +185,7 @@ class ConfigModel {
     _cookiesManagement = cookiesManagement;
     _offlinePayment = offlinePayment;
     _freeDeliveryOverAmount = freeDeliveryOverAmount;
+    _freeExpressDeliveryOverAmount = freeExpressDeliveryOverAmount;
     _maxOrderForCODAmount = maxOrderForCODAmount;
     _freeDeliveryStatus = freeDeliveryStatus;
     _isVatTexInclude = isVatTexInclude;
@@ -256,6 +259,7 @@ class ConfigModel {
   CookiesManagement? get cookiesManagement => _cookiesManagement;
   bool? get offlinePayment => _offlinePayment;
   double? get freeDeliveryOverAmount => _freeDeliveryOverAmount;
+  double? get freeExpressDeliveryOverAmount => _freeExpressDeliveryOverAmount;
   bool? get freeDeliveryStatus => _freeDeliveryStatus;
   bool? get isVatTexInclude => _isVatTexInclude;
   String? get cancellationPolicy => _cancellationPolicy;
@@ -364,6 +368,9 @@ class ConfigModel {
     _offlinePayment = '${json['offline_payment']}' == 'true';
     _freeDeliveryOverAmount =
         double.tryParse('${json['free_delivery_over_amount']}');
+    _freeExpressDeliveryOverAmount =
+        double.tryParse('${json['free_express_delivery_over_amount']}');
+
     _maxOrderForCODAmount =
         double.tryParse('${json['maximum_amount_for_cod_order']}');
     _maxAmountCodStatus =

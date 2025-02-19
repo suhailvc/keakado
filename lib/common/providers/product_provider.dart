@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
@@ -261,26 +260,157 @@ class ProductProvider extends ChangeNotifier {
   //     notifyListeners();
   //   }
   // }
+  // void sortCategoryProduct(int filterIndex) {
+  //   List<Product>? productsToSort;
+
+  //   // Determine which product list to sort based on current view
+  //   if (_dailyProductModel?.products != null &&
+  //       _dailyProductModel!.products!.isNotEmpty) {
+  //     productsToSort = _dailyProductModel!.products;
+  //   } else if (_featuredProductModel?.products != null &&
+  //       _featuredProductModel!.products!.isNotEmpty) {
+  //     productsToSort = _featuredProductModel!.products;
+  //   } else if (_mostViewedProductModel?.products != null &&
+  //       _mostViewedProductModel!.products!.isNotEmpty) {
+  //     productsToSort = _mostViewedProductModel!.products;
+  //   } else if (_organicProductModel?.products != null &&
+  //       _organicProductModel!.products!.isNotEmpty) {
+  //     productsToSort = _organicProductModel!.products;
+  //   }
+  //   print('-------- prodct to $productsToSort');
+  //   if (productsToSort != null) {
+  //     print('-------- prodct to sort');
+  //     if (filterIndex == 0) {
+  //       // Low to high price
+  //       productsToSort.sort((a, b) => (a.price ?? 0).compareTo(b.price ?? 0));
+  //     } else if (filterIndex == 1) {
+  //       // High to low price
+  //       productsToSort.sort((a, b) => (b.price ?? 0).compareTo(a.price ?? 0));
+  //     } else if (filterIndex == 2) {
+  //       // A to Z
+  //       productsToSort.sort((a, b) => (a.name ?? '')
+  //           .toLowerCase()
+  //           .compareTo((b.name ?? '').toLowerCase()));
+  //     } else if (filterIndex == 3) {
+  //       // Z to A
+  //       productsToSort.sort((a, b) => (b.name ?? '')
+  //           .toLowerCase()
+  //           .compareTo((a.name ?? '').toLowerCase()));
+  //     }
+  //     notifyListeners();
+  //   }
+  // }
   void sortCategoryProduct(int filterIndex) {
-    if (filterIndex == 0) {
-      _productList.sort(
-          (product1, product2) => product1.price!.compareTo(product2.price!));
-    } else if (filterIndex == 1) {
-      _productList.sort(
-          (product1, product2) => product1.price!.compareTo(product2.price!));
-      Iterable iterable = _productList.reversed;
-      _productList = iterable.toList() as List<Product>;
-    } else if (filterIndex == 2) {
-      _productList.sort((product1, product2) =>
-          product1.name!.toLowerCase().compareTo(product2.name!.toLowerCase()));
-    } else if (filterIndex == 3) {
-      _productList.sort((product1, product2) =>
-          product1.name!.toLowerCase().compareTo(product2.name!.toLowerCase()));
-      Iterable iterable = _productList.reversed;
-      _productList = iterable.toList() as List<Product>;
+    print('Sorting triggered with index: $filterIndex');
+
+    // Handle Daily Products
+    if (_dailyProductModel?.products != null &&
+        _dailyProductModel!.products!.isNotEmpty) {
+      List<Product> productsToSort =
+          List<Product>.from(_dailyProductModel!.products!);
+
+      applySorting(productsToSort, filterIndex);
+
+      _dailyProductModel = ProductModel(
+        totalSize: _dailyProductModel!.totalSize,
+        limit: _dailyProductModel!.limit,
+        offset: _dailyProductModel!.offset,
+        products: productsToSort,
+      );
     }
+
+    // Handle Featured Products
+    if (_featuredProductModel?.products != null &&
+        _featuredProductModel!.products!.isNotEmpty) {
+      List<Product> productsToSort =
+          List<Product>.from(_featuredProductModel!.products!);
+
+      applySorting(productsToSort, filterIndex);
+
+      _featuredProductModel = ProductModel(
+        totalSize: _featuredProductModel!.totalSize,
+        limit: _featuredProductModel!.limit,
+        offset: _featuredProductModel!.offset,
+        products: productsToSort,
+      );
+    }
+
+    // Handle Most Viewed Products
+    if (_mostViewedProductModel?.products != null &&
+        _mostViewedProductModel!.products!.isNotEmpty) {
+      List<Product> productsToSort =
+          List<Product>.from(_mostViewedProductModel!.products!);
+
+      applySorting(productsToSort, filterIndex);
+
+      _mostViewedProductModel = ProductModel(
+        totalSize: _mostViewedProductModel!.totalSize,
+        limit: _mostViewedProductModel!.limit,
+        offset: _mostViewedProductModel!.offset,
+        products: productsToSort,
+      );
+    }
+
+    // Handle Organic Products
+    if (_organicProductModel?.products != null &&
+        _organicProductModel!.products!.isNotEmpty) {
+      List<Product> productsToSort =
+          List<Product>.from(_organicProductModel!.products!);
+
+      applySorting(productsToSort, filterIndex);
+
+      _organicProductModel = ProductModel(
+        totalSize: _organicProductModel!.totalSize,
+        limit: _organicProductModel!.limit,
+        offset: _organicProductModel!.offset,
+        products: productsToSort,
+      );
+    }
+
     notifyListeners();
   }
+
+// Helper method to apply sorting
+  void applySorting(List<Product> products, int filterIndex) {
+    switch (filterIndex) {
+      case 0: // Low to high price
+        products.sort((a, b) => ((a.price ?? 0).compareTo(b.price ?? 0)));
+        break;
+      case 1: // High to low price
+        products.sort((a, b) => ((b.price ?? 0).compareTo(a.price ?? 0)));
+        break;
+      case 2: // A to Z
+        products.sort((a, b) => (a.name ?? '')
+            .toLowerCase()
+            .compareTo((b.name ?? '').toLowerCase()));
+        break;
+      case 3: // Z to A
+        products.sort((a, b) => (b.name ?? '')
+            .toLowerCase()
+            .compareTo((a.name ?? '').toLowerCase()));
+        break;
+    }
+  }
+  // void sortCategoryProduct(int filterIndex) {
+  //   if (filterIndex == 0) {
+  //     _productList.sort(
+  //         (product1, product2) => product1.price!.compareTo(product2.price!));
+  //   } else if (filterIndex == 1) {
+  //     _productList.sort(
+  //         (product1, product2) => product1.price!.compareTo(product2.price!));
+  //     Iterable iterable = _productList.reversed;
+  //     _productList = iterable.toList() as List<Product>;
+  //   } else if (filterIndex == 2) {
+  //     _productList.sort((product1, product2) =>
+  //         product1.name!.toLowerCase().compareTo(product2.name!.toLowerCase()));
+  //   } else if (filterIndex == 3) {
+  //     _productList.sort((product1, product2) =>
+  //         product1.name!.toLowerCase().compareTo(product2.name!.toLowerCase()));
+  //     Iterable iterable = _productList.reversed;
+  //     _productList = iterable.toList() as List<Product>;
+  //   }
+  //   notifyListeners();
+  // }
 
   Future getProductDetailsScreen(String productID,
       {bool searchQuery = false}) async {

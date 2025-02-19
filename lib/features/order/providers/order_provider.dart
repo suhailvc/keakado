@@ -771,17 +771,15 @@ class OrderProvider extends ChangeNotifier {
   }
 
   List<CartModel> reOrderCartList = [];
-
   Future<List<CartModel>?> reorderProduct(int? quantity, String orderId) async {
     _isLoading = true;
     notifyListeners();
 
     final ProductProvider productProvider =
         Provider.of<ProductProvider>(Get.context!, listen: false);
-    print('re oreder');
+
     List<OrderDetailsModel>? orderDetailsList =
         await getOrderDetails(orderID: orderId);
-    print("---------------------------${orderDetailsList!.length.toString()}");
     reOrderCartList = [];
 
     for (OrderDetailsModel orderDetails in orderDetailsList ?? []) {
@@ -792,11 +790,10 @@ class OrderProvider extends ChangeNotifier {
         selectVariationType =
             OrderHelper.getVariationValue(orderDetails.formattedVariation);
       }
-      print('------------------id---------${orderDetails.productId}');
+
       try {
         product = await productProvider
             .getProductDetails('${orderDetails.productId}');
-        print('----------------product----$product');
       } catch (e) {
         _reOrderIndex = null;
         showCustomSnackBarHelper(getTranslated(
@@ -804,10 +801,12 @@ class OrderProvider extends ChangeNotifier {
       }
 
       CartModel? cartModel = OrderHelper.getReorderCartData(
-          quantity: quantity,
-          product: product,
-          selectVariationType: selectVariationType);
-      print("----------cartmodel-----------${cartModel}");
+        quantity: orderDetails
+            .quantity, // Use original order quantity instead of passed quantity
+        product: product,
+        selectVariationType: selectVariationType,
+      );
+
       if (cartModel != null) {
         reOrderCartList.add(cartModel);
       }
@@ -815,7 +814,52 @@ class OrderProvider extends ChangeNotifier {
 
     _isLoading = false;
     notifyListeners();
-    print('re order cart list------------------${reOrderCartList}');
     return reOrderCartList;
   }
+  // Future<List<CartModel>?> reorderProduct(int? quantity, String orderId) async {
+  //   _isLoading = true;
+  //   notifyListeners();
+
+  //   final ProductProvider productProvider =
+  //       Provider.of<ProductProvider>(Get.context!, listen: false);
+  //   print('re oreder');
+  //   List<OrderDetailsModel>? orderDetailsList =
+  //       await getOrderDetails(orderID: orderId);
+  //   print("---------------------------${orderDetailsList!.length.toString()}");
+  //   reOrderCartList = [];
+
+  //   for (OrderDetailsModel orderDetails in orderDetailsList ?? []) {
+  //     Product? product;
+  //     String? selectVariationType;
+
+  //     if (orderDetails.formattedVariation != null) {
+  //       selectVariationType =
+  //           OrderHelper.getVariationValue(orderDetails.formattedVariation);
+  //     }
+  //     print('------------------id---------${orderDetails.productId}');
+  //     try {
+  //       product = await productProvider
+  //           .getProductDetails('${orderDetails.productId}');
+  //       print('----------------product----$product');
+  //     } catch (e) {
+  //       _reOrderIndex = null;
+  //       showCustomSnackBarHelper(getTranslated(
+  //           'this_product_is_currently_unavailable', Get.context!));
+  //     }
+
+  //     CartModel? cartModel = OrderHelper.getReorderCartData(
+  //         quantity: quantity,
+  //         product: product,
+  //         selectVariationType: selectVariationType);
+  //     print("----------cartmodel-----------${cartModel}");
+  //     if (cartModel != null) {
+  //       reOrderCartList.add(cartModel);
+  //     }
+  //   }
+
+  //   _isLoading = false;
+  //   notifyListeners();
+  //   print('re order cart list------------------${reOrderCartList}');
+  //   return reOrderCartList;
+  // }
 }
