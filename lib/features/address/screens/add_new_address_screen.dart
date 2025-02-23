@@ -37,6 +37,7 @@ class AddNewAddressScreen extends StatefulWidget {
 class _AddNewAddressScreenState extends State<AddNewAddressScreen> {
   final TextEditingController _contactPersonNameController =
       TextEditingController();
+  final TextEditingController _landMarkController = TextEditingController();
   final TextEditingController _contactPersonNumberController =
       TextEditingController();
   final TextEditingController _streetNumberController = TextEditingController();
@@ -49,7 +50,7 @@ class _AddNewAddressScreenState extends State<AddNewAddressScreen> {
   final FocusNode _stateNode = FocusNode();
   final FocusNode _houseNode = FocusNode();
   final FocusNode _floorNode = FocusNode();
-
+  final FocusNode _landMarkNode = FocusNode();
   String? countryCode;
 
   @override
@@ -115,6 +116,8 @@ class _AddNewAddressScreenState extends State<AddNewAddressScreen> {
                           // for label us
                           if (!ResponsiveHelper.isDesktop(context))
                             AddressDetailsWidget(
+                              landMarkNode: _landMarkNode,
+                              landMarkController: _landMarkController,
                               contactPersonNameController:
                                   _contactPersonNameController,
                               contactPersonNumberController:
@@ -153,6 +156,8 @@ class _AddNewAddressScreenState extends State<AddNewAddressScreen> {
                                   Expanded(
                                       flex: 4,
                                       child: AddressDetailsWidget(
+                                        landMarkNode: _landMarkNode,
+                                        landMarkController: _landMarkController,
                                         contactPersonNameController:
                                             _contactPersonNameController,
                                         contactPersonNumberController:
@@ -187,6 +192,7 @@ class _AddNewAddressScreenState extends State<AddNewAddressScreen> {
           ])),
           if (!ResponsiveHelper.isDesktop(context))
             AddAddressWidget(
+              landMrkController: _landMarkController,
               isEnableUpdate: widget.isEnableUpdate,
               fromCheckout: widget.fromCheckout,
               contactPersonNumberController: _contactPersonNumberController,
@@ -248,6 +254,7 @@ class _AddNewAddressScreenState extends State<AddNewAddressScreen> {
       _contactPersonNumberController.text =
           '${widget.address?.contactPersonNumber}';
       _streetNumberController.text = widget.address?.streetNumber ?? '';
+      _landMarkController.text = widget.address?.landMark ?? '';
       _houseNumberController.text = widget.address?.houseNumber ?? '';
       _florNumberController.text = widget.address?.zone ?? '';
 

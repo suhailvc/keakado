@@ -79,22 +79,13 @@
 //     try {
 //       String? type = message.data['type'] ?? 'general';
 //       String? orderId = message.data['order_id'];
-//       bool? needRating = message.data['need_rating'] == 'true';
+//       // bool? needRating = message.data['need_rating'] == 'true';
 
 //       if (orderId != null /*&& orderId.isNotEmpty*/) {
 //         //if (needRating) {
 //         // Show rating dialog first
 //         showRatingDialog(orderId);
-//         //   handleRatingNavigation(orderId);
-//         // } //else {
-//         // Navigate to order details
-//         // Get.navigator!.push(
-//         //   MaterialPageRoute(
-//         //     builder: (context) => OrderDetailsScreen(
-//         //         orderModel: null, orderId: int.parse(orderId)),
-//         //   ),
-//         // );
-//         //}
+    
 //       } else if (type == 'message') {
 //         Get.navigator!.push(
 //           MaterialPageRoute(
@@ -283,6 +274,7 @@
 //     );
 //   }
 
+
 //   static Future<void> showNotification(RemoteMessage message,
 //       FlutterLocalNotificationsPlugin? fln, bool data) async {
 //     String? title;
@@ -360,6 +352,7 @@
 //       await showBigTextNotification(payloadData, fln!);
 //     }
 //   }
+
 
 //   static Future<void> showBigTextNotification(
 //       Map<String, String> data, FlutterLocalNotificationsPlugin fln) async {

@@ -298,7 +298,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                                                     style:
                                                         poppinsMedium.copyWith(
                                                             fontSize: Dimensions
-                                                                .fontSizeLarge),
+                                                                .fontSizeSmall),
                                                     maxLines: 2,
                                                     overflow:
                                                         TextOverflow.ellipsis,

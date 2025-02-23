@@ -23,31 +23,35 @@ class AddressDetailsWidget extends StatefulWidget {
   final TextEditingController streetNumberController;
   final TextEditingController houseNumberController;
   final TextEditingController florNumberController;
+  final TextEditingController landMarkController;
   final FocusNode stateNode;
   final FocusNode houseNode;
+  final FocusNode landMarkNode;
   final FocusNode florNode;
   final String countryCode;
   final Function(String value) onValueChange;
 
-  const AddressDetailsWidget({
-    Key? key,
-    required this.contactPersonNameController,
-    required this.contactPersonNumberController,
-    required this.addressNode,
-    required this.nameNode,
-    required this.numberNode,
-    required this.isEnableUpdate,
-    required this.fromCheckout,
-    required this.address,
-    required this.streetNumberController,
-    required this.houseNumberController,
-    required this.stateNode,
-    required this.houseNode,
-    required this.florNumberController,
-    required this.florNode,
-    required this.countryCode,
-    required this.onValueChange,
-  }) : super(key: key);
+  const AddressDetailsWidget(
+      {Key? key,
+      required this.contactPersonNameController,
+      required this.contactPersonNumberController,
+      required this.addressNode,
+      required this.nameNode,
+      required this.numberNode,
+      required this.isEnableUpdate,
+      required this.fromCheckout,
+      required this.address,
+      required this.streetNumberController,
+      required this.houseNumberController,
+      required this.stateNode,
+      required this.houseNode,
+      required this.florNumberController,
+      required this.florNode,
+      required this.countryCode,
+      required this.onValueChange,
+      required this.landMarkController,
+      required this.landMarkNode})
+      : super(key: key);
 
   @override
   State<AddressDetailsWidget> createState() => _AddressDetailsWidgetState();
@@ -125,11 +129,25 @@ class _AddressDetailsWidgetState extends State<AddressDetailsWidget> {
             inputType: TextInputType.streetAddress,
             inputAction: TextInputAction.next,
             focusNode: widget.stateNode,
-            nextFocus: widget.houseNode,
+            nextFocus: widget.landMarkNode,
             controller: widget.streetNumberController,
           ),
           const SizedBox(height: Dimensions.paddingSizeLarge),
+          labelWidget("Land Mark (Optional)", widget.stateNode),
 
+          const SizedBox(height: Dimensions.paddingSizeExtraSmall),
+
+          CustomTextFieldWidget(
+            fillColor: const Color(0xFFF5F5F5),
+            hintText: getTranslated('Land Mark', context),
+            isShowBorder: true,
+            inputType: TextInputType.streetAddress,
+            inputAction: TextInputAction.next,
+            focusNode: widget.landMarkNode,
+            nextFocus: widget.houseNode,
+            controller: widget.landMarkController,
+          ),
+          const SizedBox(height: Dimensions.paddingSizeLarge),
           Row(
             children: [
               labelWidget("Building No", widget.houseNode),
@@ -207,6 +225,7 @@ class _AddressDetailsWidgetState extends State<AddressDetailsWidget> {
               padding: const EdgeInsets.symmetric(
                   horizontal: Dimensions.paddingSizeLarge),
               child: AddAddressWidget(
+                landMrkController: widget.landMarkController,
                 isEnableUpdate: widget.isEnableUpdate,
                 fromCheckout: widget.fromCheckout,
                 contactPersonNumberController:

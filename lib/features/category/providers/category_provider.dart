@@ -225,7 +225,8 @@ class CategoryProvider extends ChangeNotifier {
   final CategoryRepo categoryRepo;
   final ProductRepo productRepo;
   final SearchRepo searchRepo;
-
+  String? _lastLanguageCode;
+  String? get lastLanguageCode => _lastLanguageCode;
   CategoryProvider(
       {required this.categoryRepo,
       required this.productRepo,
@@ -248,7 +249,33 @@ class CategoryProvider extends ChangeNotifier {
   CategoryModel? get categoryModel => _categoryModel;
   int get selectCategory => _selectCategory;
   Map<String, List<CategoryModel>> subCategoryMap = {};
+  // Future<ApiResponseModel> getCategoryList(
+  //     BuildContext context, bool reload) async {
+  //   // Store the current language code when fetching
+  //   _lastLanguageCode = Localizations.localeOf(context).languageCode;
 
+  //   if (_categoryList == null || reload) {
+  //     ApiResponseModel apiResponse = await categoryRepo.getCategoryList();
+  //     if (apiResponse.response != null &&
+  //         apiResponse.response!.statusCode == 200) {
+  //       _categoryList = [];
+  //       apiResponse.response!.data.forEach(
+  //           (category) => _categoryList!.add(CategoryModel.fromJson(category)));
+  //       _selectedCategoryIndex = -1;
+  //       _categoryIndex = 0;
+  //     } else {
+  //       ApiCheckerHelper.checkApi(apiResponse);
+  //     }
+  //     notifyListeners();
+  //     return apiResponse;
+  //   }
+  //   return ApiResponseModel(null, "No refresh needed");
+  // }
+
+  // void refreshCategories() {
+  //   _categoryList = null;
+  //   notifyListeners();
+  // }
   Future<ApiResponseModel> getCategoryList(BuildContext context, bool reload,
       {int? id}) async {
     ApiResponseModel apiResponse = await categoryRepo.getCategoryList();

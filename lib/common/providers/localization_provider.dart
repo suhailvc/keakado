@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_grocery/data/datasource/remote/dio/dio_client.dart';
 import 'package:flutter_grocery/common/reposotories/language_repo.dart';
+import 'package:flutter_grocery/features/category/providers/category_provider.dart';
 import 'package:flutter_grocery/main.dart';
 import 'package:flutter_grocery/utill/app_constants.dart';
 import 'package:flutter_grocery/features/home/screens/home_screens.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class LocalizationProvider extends ChangeNotifier {
@@ -57,6 +59,8 @@ class LocalizationProvider extends ChangeNotifier {
             getToken: sharedPreferences?.getString(AppConstants.token))
         .then((value) {
       HomeScreen.loadData(true, Get.context!, fromLanguage: true);
+      // Provider.of<CategoryProvider>(Get.context!, listen: false)
+      //     .refreshCategories();
     });
     notifyListeners();
 

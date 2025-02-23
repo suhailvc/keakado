@@ -15,6 +15,39 @@ class OrderReturnProvider with ChangeNotifier {
   File? get selectedImage => _selectedImage;
   bool get isLoading => _isLoading;
   String? get responseMessage => _responseMessage;
+  void removeImage(int index) {
+    if (returnImagess.length > index) {
+      returnImagess[index].clear();
+      returnImages[index].clear();
+      notifyListeners();
+    }
+  }
+
+  Future<void> pickImage(ImageSource source, int index) async {
+    final picker = ImagePicker();
+    try {
+      final XFile? pickedFile = await picker.pickImage(source: source);
+      if (pickedFile != null) {
+        // Clear existing images before adding new one
+        returnImagess[index].clear();
+        returnImages[index].clear();
+
+        final file = File(pickedFile.path);
+        final compressedFile = await compressImage(file);
+
+        returnImagess[index].add(compressedFile);
+
+        final bytes = await compressedFile.readAsBytes();
+        final base64String = base64Encode(bytes);
+        returnImages[index].add(base64String);
+
+        notifyListeners();
+      }
+    } catch (e) {
+      _responseMessage = 'Failed to pick image: $e';
+      notifyListeners();
+    }
+  }
 
   // Future<void> pickImage(ImageSource source, int index) async {
   //   final picker = ImagePicker();
@@ -24,67 +57,34 @@ class OrderReturnProvider with ChangeNotifier {
   //       // Convert XFile to File
   //       final file = File(pickedFile.path);
 
-  //       // Ensure the returnImagess list exists at the index
-  //       if (returnImagess[index] == null) {
-  //         returnImagess[index] = []; // Initialize the list if null
-  //       }
+  //       // Compress the image before processing
+  //       final compressedFile = await compressImage(file);
 
-  //       // Add the file to returnImagess
-  //       returnImagess[index].add(file);
+  //       // Ensure the returnImagess list exists at the index
+  //       returnImagess[index] ??= [];
+  //       returnImagess[index].add(compressedFile);
 
   //       // Convert the image file to a Base64 string
-  //       final bytes = await file.readAsBytes();
+  //       final bytes = await compressedFile.readAsBytes();
   //       final base64String = base64Encode(bytes);
-  //       if (returnImages[index] == null) {
-  //         returnImages[index] = []; // Initialize the list if null
-  //       }
-  //       print("---------base64---$base64String");
-  //       print("Base64 length: ${base64String.length}");
+
+  //       // Ensure the returnImages list exists at the index
+  //       returnImages[index] ??= [];
   //       returnImages[index].add(base64String);
 
+  //       print("---------Base64 Encoded Image: $base64String");
+  //       print("Base64 length: ${base64String.length}");
+
+  //       notifyListeners();
+  //     } else {
+  //       _responseMessage = 'No image selected.';
   //       notifyListeners();
   //     }
-  //   } catch (error) {
-  //     _responseMessage = 'Failed to pick image: $error';
+  //   } catch (e) {
+  //     _responseMessage = 'Failed to pick image: $e';
   //     notifyListeners();
   //   }
   // }
-  Future<void> pickImage(ImageSource source, int index) async {
-    final picker = ImagePicker();
-    try {
-      final XFile? pickedFile = await picker.pickImage(source: source);
-      if (pickedFile != null) {
-        // Convert XFile to File
-        final file = File(pickedFile.path);
-
-        // Compress the image before processing
-        final compressedFile = await compressImage(file);
-
-        // Ensure the returnImagess list exists at the index
-        returnImagess[index] ??= [];
-        returnImagess[index].add(compressedFile);
-
-        // Convert the image file to a Base64 string
-        final bytes = await compressedFile.readAsBytes();
-        final base64String = base64Encode(bytes);
-
-        // Ensure the returnImages list exists at the index
-        returnImages[index] ??= [];
-        returnImages[index].add(base64String);
-
-        print("---------Base64 Encoded Image: $base64String");
-        print("Base64 length: ${base64String.length}");
-
-        notifyListeners();
-      } else {
-        _responseMessage = 'No image selected.';
-        notifyListeners();
-      }
-    } catch (e) {
-      _responseMessage = 'Failed to pick image: $e';
-      notifyListeners();
-    }
-  }
 
 // Compress the image
   Future<File> compressImage(File file) async {
@@ -121,10 +121,10 @@ class OrderReturnProvider with ChangeNotifier {
   //   }
   // }
 
-  void removeImage() {
-    _selectedImage = null;
-    notifyListeners();
-  }
+  // void removeImage() {
+  //   _selectedImage = null;
+  //   notifyListeners();
+  // }
 
   Future<void> returnProducts(String orderId,
       List<Map<String, String>> products, String bearerToken) async {

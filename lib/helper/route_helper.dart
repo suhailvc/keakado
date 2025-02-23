@@ -217,7 +217,7 @@ class RouteHelper {
       '$wallet?token=$token&flag=$status';
   static String getSubCategoriesRoute(
           {required String categoryId, required String categoryName}) =>
-      '$subCategories?category_id=$categoryId&category_name=$categoryName';
+      '$subCategories?category_id=$categoryId&category_name=${Uri.encodeFull(categoryName)}';
   static String getReferAndEarnRoute() => referAndEarn;
   static String getReturnPolicyRoute() => returnPolicyScreen;
   static String getCancellationPolicyRoute() => cancellationPolicyScreen;

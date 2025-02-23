@@ -140,6 +140,17 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
       //     }
       //   }
       // });
+      if (widget.amount > AppConstants.mimimumOrderValue ||
+          Provider.of<CouponProvider>(context, listen: false)
+                  .freeDeliveryCoupon ==
+              true) {
+        AppConstants.deliveryCagrge = 0;
+      } else {
+        AppConstants.deliveryCagrge =
+            Provider.of<SplashProvider>(context, listen: false)
+                .configModel!
+                .deliveryCharge!;
+      }
     }
     super.initState();
 
@@ -413,7 +424,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
       builder: (context, expressProvider, child) {
         bool isExpressAvailable = expressProvider.status == '1' &&
             expressProvider.deliveryCharge?.status == 'success';
-        print('-----expre status ${expressProvider.deliveryCharge?.status}');
+        // print('-----expre status ${expressProvider.deliveryCharge?.status}');
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [

@@ -22,22 +22,24 @@ class AddAddressWidget extends StatelessWidget {
   final TextEditingController contactPersonNumberController;
   final TextEditingController streetNumberController;
   final TextEditingController houseNumberController;
+  final TextEditingController landMrkController;
   final TextEditingController floorNumberController;
   final AddressModel? address;
   final String countryCode;
 
-  const AddAddressWidget({
-    Key? key,
-    required this.isEnableUpdate,
-    required this.fromCheckout,
-    required this.contactPersonNumberController,
-    required this.contactPersonNameController,
-    required this.address,
-    required this.streetNumberController,
-    required this.floorNumberController,
-    required this.houseNumberController,
-    required this.countryCode,
-  }) : super(key: key);
+  const AddAddressWidget(
+      {Key? key,
+      required this.isEnableUpdate,
+      required this.fromCheckout,
+      required this.contactPersonNumberController,
+      required this.contactPersonNameController,
+      required this.address,
+      required this.streetNumberController,
+      required this.floorNumberController,
+      required this.houseNumberController,
+      required this.countryCode,
+      required this.landMrkController})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -167,6 +169,7 @@ class AddAddressWidget extends StatelessWidget {
                             latitude: isEnableUpdate
                                 ? locationProvider.position.latitude.toString()
                                 : locationProvider.position.latitude.toString(),
+                            landMark: landMrkController.text,
                             longitude:
                                 locationProvider.position.longitude.toString(),
                             floorNumber: floorNumberController.text,

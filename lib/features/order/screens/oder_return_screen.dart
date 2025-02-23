@@ -358,6 +358,54 @@ class _OrderReturnScreenState extends State<OrderReturnScreen> {
                                                                     const SizedBox(
                                                                         height:
                                                                             16),
+                                                                    // if (returnImagess[index] !=
+                                                                    //         null &&
+                                                                    //     returnImagess[index]
+                                                                    //         .isNotEmpty)
+                                                                    //   Column(
+                                                                    //     children: [
+                                                                    //       Stack(
+                                                                    //         alignment:
+                                                                    //             Alignment.topRight,
+                                                                    //         children: [
+                                                                    //           Container(
+                                                                    //             height: MediaQuery.of(context).size.height * 0.2, // 20% of screen height
+                                                                    //             width: MediaQuery.of(context).size.width * 0.4, // 40% of screen width
+                                                                    //             child: Image.file(
+                                                                    //               returnImagess[index][0]!,
+                                                                    //               fit: BoxFit.cover,
+                                                                    //             ),
+                                                                    //           ),
+                                                                    //           Positioned(
+                                                                    //             top: -MediaQuery.of(context).size.width * 0.007, // 2% of screen width
+                                                                    //             right: -MediaQuery.of(context).size.width * 0.007,
+                                                                    //             child: InkWell(
+                                                                    //               onTap: () {
+                                                                    //                 setState(() {
+                                                                    //                   returnImagess[index].clear();
+                                                                    //                   returnImages[index].clear();
+                                                                    //                 });
+                                                                    //               },
+                                                                    //               child: Container(
+                                                                    //                 padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.01), // 1% of screen width
+                                                                    //                 decoration: BoxDecoration(
+                                                                    //                   shape: BoxShape.circle,
+                                                                    //                   color: Colors.red.shade50,
+                                                                    //                 ),
+                                                                    //                 child: Icon(
+                                                                    //                   Icons.close,
+                                                                    //                   color: Colors.red.shade600,
+                                                                    //                   size: MediaQuery.of(context).size.width * 0.05, // 5% of screen width
+                                                                    //                 ),
+                                                                    //               ),
+                                                                    //             ),
+                                                                    //           ),
+                                                                    //         ],
+                                                                    //       ),
+                                                                    //       SizedBox(
+                                                                    //           height: MediaQuery.of(context).size.height * 0.02), // 2% of screen height
+                                                                    //     ],
+                                                                    //   ),
                                                                     if (returnImagess[index] !=
                                                                             null &&
                                                                         returnImagess[index]

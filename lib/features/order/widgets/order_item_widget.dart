@@ -268,6 +268,127 @@ class _OrderItemWidgetState extends State<OrderItemWidget> {
                             ),
                           )
                         : const SizedBox(),
+                    if (widget.orderList![widget.index].orderNote != null)
+                      GestureDetector(
+                        onTap: () {
+                          showModalBottomSheet(
+                            context: context,
+                            isScrollControlled: true,
+                            backgroundColor: Colors.transparent,
+                            builder: (context) {
+                              final screenHeight =
+                                  MediaQuery.of(context).size.height;
+                              final screenWidth =
+                                  MediaQuery.of(context).size.width;
+
+                              return Container(
+                                constraints: BoxConstraints(
+                                  maxHeight: screenHeight *
+                                      0.7, // 70% of screen height
+                                ),
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.only(
+                                    topLeft: Radius.circular(screenWidth *
+                                        0.05), // 5% of screen width
+                                    topRight:
+                                        Radius.circular(screenWidth * 0.05),
+                                  ),
+                                ),
+                                padding: EdgeInsets.all(
+                                    screenWidth * 0.04), // 4% of screen width
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Text(
+                                          'Order Note',
+                                          style: poppinsMedium.copyWith(
+                                            fontSize: screenWidth *
+                                                0.045, // 4.5% of screen width
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                        IconButton(
+                                          icon: Icon(
+                                            Icons.close,
+                                            size: screenWidth *
+                                                0.06, // 6% of screen width
+                                          ),
+                                          onPressed: () =>
+                                              Navigator.pop(context),
+                                        ),
+                                      ],
+                                    ),
+                                    Divider(),
+                                    Padding(
+                                      padding: EdgeInsets.symmetric(
+                                        vertical: screenHeight *
+                                            0.01, // 1% of screen height
+                                      ),
+                                      child: Text(
+                                        "${widget.orderList![widget.index].orderNote}",
+                                        style: poppinsMedium.copyWith(
+                                          fontSize: screenWidth *
+                                              0.04, // 4% of screen width
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              );
+                            },
+                          );
+                        },
+                        child: Container(
+                          padding: EdgeInsets.all(
+                              MediaQuery.of(context).size.width *
+                                  0.008), // 2% of screen width
+                          margin: EdgeInsets.only(
+                            bottom: MediaQuery.of(context).size.height *
+                                0.01, // 1% of screen height
+                          ),
+                          // decoration: BoxDecoration(
+                          //   color: Colors.grey[100],
+                          //   borderRadius: BorderRadius.circular(
+                          //     MediaQuery.of(context).size.width *
+                          //         0.02, // 2% of screen width
+                          //   ),
+                          //   border: Border.all(color: Colors.grey[300]!),
+                          // ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Flexible(
+                                child: Text(
+                                  "Order Notes",
+                                  style: poppinsMedium.copyWith(
+                                    fontSize:
+                                        MediaQuery.of(context).size.width *
+                                            0.035, // 3.5% of screen width
+                                    color: Colors.grey[600],
+                                  ),
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ),
+                              SizedBox(
+                                  width: MediaQuery.of(context).size.width *
+                                      0.01), // 1% of screen width
+                              Icon(
+                                Icons.note,
+                                size: MediaQuery.of(context).size.width *
+                                    0.04, // 4% of screen width
+                                color: Colors.grey[600],
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
                     Text(
                       DateConverterHelper.isoStringToOrderDetailsDateTime(
                         widget.orderList![widget.index].updatedAt!,
