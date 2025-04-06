@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_grocery/common/widgets/custom_button_widget.dart';
 import 'package:flutter_grocery/helper/route_helper.dart';
+import 'package:flutter_grocery/localization/language_constraints.dart';
 import 'package:flutter_grocery/utill/dimensions.dart';
 import 'package:flutter_grocery/utill/styles.dart';
 
@@ -59,7 +60,7 @@ class _LoginMenuScreenState extends State<LoginMenuScreen> {
                   ),
                 ),
                 child: Text(
-                  'Continue as guest',
+                  getTranslated('Continue as guest', context),
                   style: TextStyle(
                     color: Theme.of(context).primaryColor,
                     fontSize: 16,

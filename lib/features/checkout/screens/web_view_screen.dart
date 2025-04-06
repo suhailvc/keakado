@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_grocery/localization/language_constraints.dart';
 import 'package:flutter_grocery/utill/dimensions.dart';
 import 'package:flutter_grocery/utill/styles.dart';
 import 'package:webview_flutter/webview_flutter.dart';
@@ -113,7 +114,7 @@ class _WebViewScreenState extends State<WebViewScreen> {
               const SizedBox(height: 10), // Spacing between image and text
               // Text below the image
               Text(
-                "Do you really want to cancel your payment?",
+                getTranslated('Do you want to cancel the order?', context),
                 style: TextStyle(
                   fontSize: MediaQuery.of(context).size.width * 0.05,
                   color: Colors.black,
@@ -137,7 +138,9 @@ class _WebViewScreenState extends State<WebViewScreen> {
                       _showPaymentFailedBottomSheet(
                           context); // Show BottomSheet
                     },
-                    child: const Text("Yes"),
+                    child: Text(
+                      getTranslated('Yes', context),
+                    ),
                     style: TextButton.styleFrom(
                       foregroundColor: Colors.white,
                       backgroundColor: Colors.green, // Button background color
@@ -153,7 +156,7 @@ class _WebViewScreenState extends State<WebViewScreen> {
                     onPressed: () {
                       Navigator.of(context).pop(); // Close the dialog
                     },
-                    child: const Text("No"),
+                    child: Text(getTranslated('no', context)),
                     style: TextButton.styleFrom(
                       foregroundColor: Colors.black,
                       backgroundColor: const Color.fromARGB(255, 241, 239, 239),
@@ -180,7 +183,7 @@ class _WebViewScreenState extends State<WebViewScreen> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Text(
-                "Oops, Payment Failed",
+                getTranslated("Oops, Payment Failed", context),
                 style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
@@ -194,8 +197,8 @@ class _WebViewScreenState extends State<WebViewScreen> {
                   // You can add code here to retry the payment or reload WebView
                   _retryPayment(); // Example of retrying payment
                 },
-                child: const Text(
-                  "Try Again",
+                child: Text(
+                  getTranslated("Try Again", context),
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     color: Colors.white,
@@ -216,7 +219,7 @@ class _WebViewScreenState extends State<WebViewScreen> {
   // Function to handle retrying payment, like reloading WebView
   void _retryPayment() {
     // You can implement reloading the WebView or any retry mechanism
-   // _controller.loadRequest(Uri.parse(widget.url)); // Reload the payment page
+    // _controller.loadRequest(Uri.parse(widget.url)); // Reload the payment page
   }
 }
 // class WebViewScreen extends StatefulWidget {

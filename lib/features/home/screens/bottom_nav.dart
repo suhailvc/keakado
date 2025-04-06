@@ -8,6 +8,7 @@ import 'package:flutter_grocery/features/menu/domain/models/custom_drawer_contro
 import 'package:flutter_grocery/features/menu/screens/main_screen.dart';
 import 'package:flutter_grocery/features/offers/screens/offer_screen.dart';
 import 'package:flutter_grocery/features/profile/screens/profile_screen.dart';
+import 'package:flutter_grocery/localization/language_constraints.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 
@@ -143,7 +144,7 @@ class _MaterialBottomBarViewState extends State<BottomBarView> {
                 color: Colors.grey,
               ),
             ),
-      label: label,
+      label: getTranslated(label, context),
       activeIcon: label == "Cart"
           ? Stack(
               clipBehavior: Clip.none,

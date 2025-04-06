@@ -199,9 +199,10 @@ class _MainScreenState extends State<MainScreen> {
                                               const SizedBox(
                                                 width: 6,
                                               ),
-                                              const Text(
-                                                'Deliver to',
-                                                style: TextStyle(
+                                              Text(
+                                                getTranslated(
+                                                    'deliver_to', context),
+                                                style: const TextStyle(
                                                   color: Color(0xFF133051),
                                                   fontSize: 16,
                                                   fontWeight: FontWeight.w600,

@@ -64,7 +64,7 @@ class _HomeItemScreenState extends State<HomeItemScreen> {
                   widget.productType == 'mostReviewed_items'
                       ? 'Top Seller'
                       : widget.productType == 'daily_needs'
-                          ? 'Best Deals'
+                          ? 'Best deals'
                           : widget.productType == 'organic'
                               ? 'Organic Products'
                               : widget.productType,

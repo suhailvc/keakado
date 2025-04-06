@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_grocery/features/auth/providers/auth_provider.dart';
 import 'package:flutter_grocery/features/order/providers/rating_provider.dart';
+import 'package:flutter_grocery/localization/language_constraints.dart';
 import 'package:provider/provider.dart';
 
 class ReturnScreen extends StatefulWidget {
@@ -42,7 +43,7 @@ class _ReturnScreenState extends State<ReturnScreen> {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Text(
-            'Do you want to cancel the order?',
+            getTranslated('Do you want to cancel the order?', context),
             style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
           //   SizedBox(height: 20),
@@ -71,7 +72,8 @@ class _ReturnScreenState extends State<ReturnScreen> {
             controller: _feedbackController,
             maxLines: 5,
             decoration: InputDecoration(
-              hintText: 'Cancelation Reason...',
+              hintText:
+                  getTranslated('Do you want to cancel the order?', context),
               border: OutlineInputBorder(),
             ),
           ),
@@ -86,8 +88,8 @@ class _ReturnScreenState extends State<ReturnScreen> {
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.red, // Button color
                 ),
-                child: const Text(
-                  'No',
+                child: Text(
+                  getTranslated('no', context),
                   style: TextStyle(color: Colors.white),
                 ),
               ),
@@ -133,8 +135,8 @@ class _ReturnScreenState extends State<ReturnScreen> {
                   backgroundColor:
                       Theme.of(context).primaryColor, // Button color
                 ),
-                child: const Text(
-                  'Yes',
+                child: Text(
+                  getTranslated('Yes', context),
                   style: TextStyle(color: Colors.white),
                 ),
               ),

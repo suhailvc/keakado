@@ -36,13 +36,78 @@ class OrderItemWidget extends StatefulWidget {
 }
 
 class _OrderItemWidgetState extends State<OrderItemWidget> {
+  late double total;
+
   @override
   void initState() {
-    // TODO: implement initState
-    Provider.of<OrderProvider>(context, listen: false).getOrderList(context);
-    Provider.of<OrderProvider>(context, listen: false).getCancelStatus();
+    super.initState(); // Don't forget to call super.initState()!
+
+    // Load data safely
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      // Move provider calls outside of initState to avoid build-time setState issues
+      if (!mounted) return;
+      Provider.of<OrderProvider>(context, listen: false).getOrderList(context);
+      Provider.of<OrderProvider>(context, listen: false).getCancelStatus();
+    });
+
+    // Calculate total safely
+    _calculateTotal();
   }
 
+  void _calculateTotal() {
+    // Safely handle potential null values and index issues
+    if (widget.orderList == null || widget.index >= widget.orderList!.length) {
+      total = 0.0;
+      return;
+    }
+
+    final order = widget.orderList![widget.index];
+    print('--------payment staus ${order.paymentStatus}');
+    if (order.orderPartialPayments == null ||
+        order.orderPartialPayments!.isEmpty) {
+      if (order.paymentStatus == 'paid') {
+        total = (order.orderAmount ?? 0.0) +
+            (order.deliveryCharge ?? 0.0); //order.orderAmount ?? 0.0;
+        print("--------payment method ${total}");
+      } else {
+        total = (order.orderAmount ?? 0.0) + (order.deliveryCharge ?? 0.0);
+      }
+    } else {
+      total = order.orderPartialPayments![0].dueAmount ?? 0.0;
+    }
+  }
+  // @override
+  // void initState() {
+  //   // TODO: implement initState
+  //   Provider.of<OrderProvider>(context, listen: false).getOrderList(context);
+  //   Provider.of<OrderProvider>(context, listen: false).getCancelStatus();
+  //   // total = OrderHelper.getTotalOrderAmount(
+  //   //     subTotal: widget.orderList![widget.index].orderAmount ?? 0.0,
+  //   //     discount: 0.0,
+  //   //     extraDiscount: widget.orderList![widget.index].extraDiscount ?? 0.0,
+  //   //     deliveryCharge: widget.orderList![widget.index].deliveryCharge ?? 0.0,
+  //   //     couponDiscount:
+  //   //         widget.orderList![widget.index].couponDiscountAmount ?? 0.0,
+  //   //     walletUsed: 10.0);
+  //   if (widget.orderList![widget.index].orderPartialPayments == null) {
+  //     total = (widget.orderList![widget.index].orderAmount! +
+  //         widget.orderList![widget.index].deliveryCharge!);
+  //   } else {
+  //     total =
+  //         widget.orderList![widget.index].orderPartialPayments![0].dueAmount!;
+  //   }
+  // }
+
+  // late double total;
+  // double total = OrderHelper.getTotalOrderAmount(
+  //     subTotal: widget.orderList![widget.index].orderAmount!,
+  //     discount: 0.0, //widget.orderList![widget.index].! //discount,
+  //     extraDiscount: widget.orderList![widget.index].extraDiscount!,
+  //     deliveryCharge: widget.orderList![widget.index].deliveryCharge!,
+  //     couponDiscount: widget.orderList![widget.index].couponDiscountAmount,
+  //     // couponDiscount: orderProvider.trackModel?.couponDiscountAmount,
+  //     walletUsed: widget.orderList![widget.index]
+  //         .orderPartialPayments![Widget.index].paidAmount);
   @override
   Widget build(BuildContext context) {
     // double deliveryCharge = OrderHelper.getDeliveryCharge(
@@ -108,6 +173,7 @@ class _OrderItemWidgetState extends State<OrderItemWidget> {
     }
 
     return Container(
+      key: ValueKey('order-item-${widget.index}'),
       padding: EdgeInsets.all(
         ResponsiveHelper.isDesktop(context)
             ? 30
@@ -417,7 +483,7 @@ class _OrderItemWidgetState extends State<OrderItemWidget> {
                               .configModel!;
                       return Text(
                         PriceConverterHelper.convertPrice(context,
-                            widget.orderList![widget.index].orderAmount),
+                            total /*  widget.orderList![widget.index].orderAmount*/),
                         // '${widget.orderList![widget.index].orderAmount!.toStringAsFixed(2)} ${config.currencySymbol}',
                         style: poppinsBold.copyWith(
                           fontSize: Dimensions.fontSizeExtraLarge,

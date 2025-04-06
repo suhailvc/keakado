@@ -77,7 +77,7 @@ class CustomButtonWidget extends StatelessWidget {
                             color: textColor ?? Theme.of(context).cardColor),
                       )
                     : const SizedBox(),
-                Text(buttonText ?? '',
+                Text(getTranslated(buttonText, context) ?? '',
                     textAlign: TextAlign.center,
                     style: textStyle ??
                         poppinsBold.copyWith(

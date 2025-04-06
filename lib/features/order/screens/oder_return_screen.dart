@@ -108,7 +108,7 @@ class _OrderReturnScreenState extends State<OrderReturnScreen> {
         ),
         centerTitle: true,
         title: Text(
-          'Order Return',
+          getTranslated('Order Return', context),
           style: TextStyle(
             fontSize: Dimensions.fontSizeExtraLarge,
             color: Theme.of(context).textTheme.bodyLarge!.color,
@@ -211,15 +211,111 @@ class _OrderReturnScreenState extends State<OrderReturnScreen> {
                                                             .ellipsis,
                                                       ),
                                                       const SizedBox(height: 4),
-                                                      Text(
-                                                        "${filteredOrderDetails[index].price ?? ""} $currencySymbol",
-                                                        style: TextStyle(
-                                                          fontSize: Dimensions
-                                                              .fontSizeExtraLarge,
-                                                          fontWeight:
-                                                              FontWeight.bold,
-                                                        ),
+                                                      Column(
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .start,
+                                                        children: [
+                                                          // Calculate the discounted price based on discount type
+                                                          Builder(
+                                                            builder: (context) {
+                                                              double
+                                                                  originalPrice =
+                                                                  filteredOrderDetails[
+                                                                              index]
+                                                                          .price ??
+                                                                      0.0;
+                                                              double discount =
+                                                                  filteredOrderDetails[
+                                                                              index]
+                                                                          .discountOnProduct ??
+                                                                      0.0;
+                                                              String?
+                                                                  discountType =
+                                                                  filteredOrderDetails[
+                                                                          index]
+                                                                      .discountType;
+
+                                                              double
+                                                                  finalPrice =
+                                                                  originalPrice;
+
+                                                              // Apply discount based on discount type
+                                                              if (discount >
+                                                                  0) {
+                                                                if (discountType ==
+                                                                    'percent') {
+                                                                  // Calculate percentage discount
+                                                                  finalPrice = originalPrice -
+                                                                      ((originalPrice *
+                                                                              discount) /
+                                                                          100);
+                                                                } else {
+                                                                  // Fixed amount discount
+                                                                  finalPrice =
+                                                                      originalPrice -
+                                                                          discount;
+                                                                }
+                                                              }
+
+                                                              return discount >
+                                                                      0
+                                                                  ? Column(
+                                                                      crossAxisAlignment:
+                                                                          CrossAxisAlignment
+                                                                              .start,
+                                                                      children: [
+                                                                        // Original price with strikethrough
+                                                                        Text(
+                                                                          "${originalPrice.toStringAsFixed(2)} $currencySymbol",
+                                                                          style:
+                                                                              TextStyle(
+                                                                            fontSize:
+                                                                                Dimensions.fontSizeDefault,
+                                                                            decoration:
+                                                                                TextDecoration.lineThrough,
+                                                                            color:
+                                                                                Theme.of(context).disabledColor,
+                                                                          ),
+                                                                        ),
+                                                                        // Discounted price
+                                                                        Text(
+                                                                          "${finalPrice.toStringAsFixed(2)} $currencySymbol",
+                                                                          style:
+                                                                              TextStyle(
+                                                                            fontSize:
+                                                                                Dimensions.fontSizeExtraLarge,
+                                                                            fontWeight:
+                                                                                FontWeight.bold,
+                                                                            color:
+                                                                                Theme.of(context).primaryColor,
+                                                                          ),
+                                                                        ),
+                                                                      ],
+                                                                    )
+                                                                  : Text(
+                                                                      "${originalPrice.toStringAsFixed(2)} $currencySymbol",
+                                                                      style:
+                                                                          TextStyle(
+                                                                        fontSize:
+                                                                            Dimensions.fontSizeExtraLarge,
+                                                                        fontWeight:
+                                                                            FontWeight.bold,
+                                                                      ),
+                                                                    );
+                                                            },
+                                                          ),
+                                                        ],
                                                       ),
+                                                      // Text(
+                                                      //   "${filteredOrderDetails[index].price ?? ""} $currencySymbol",
+                                                      //   style: TextStyle(
+                                                      //     fontSize: Dimensions
+                                                      //         .fontSizeExtraLarge,
+                                                      //     fontWeight:
+                                                      //         FontWeight.bold,
+                                                      //   ),
+                                                      // ),
                                                       const SizedBox(height: 4),
                                                       if (remarksControllers[
                                                               index]
@@ -287,7 +383,9 @@ class _OrderReturnScreenState extends State<OrderReturnScreen> {
                                                                               MediaQuery.of(context).size.width * 0.3,
                                                                         ),
                                                                         Text(
-                                                                          'Return Notes',
+                                                                          getTranslated(
+                                                                              'Return Notes',
+                                                                              context),
                                                                           style:
                                                                               poppinsSemiBold.copyWith(
                                                                             fontSize:
@@ -502,7 +600,7 @@ class _OrderReturnScreenState extends State<OrderReturnScreen> {
                                                                             ),
                                                                             child:
                                                                                 Text(
-                                                                              getTranslated("Save", context),
+                                                                              getTranslated("save", context),
                                                                               style: TextStyle(color: Colors.white),
                                                                             ),
                                                                           ),
@@ -524,7 +622,9 @@ class _OrderReturnScreenState extends State<OrderReturnScreen> {
                                                         child: Row(
                                                           children: [
                                                             Text(
-                                                              'Return Notes',
+                                                              getTranslated(
+                                                                  'Return Notes',
+                                                                  context),
                                                               style:
                                                                   poppinsSemiBold
                                                                       .copyWith(
@@ -688,7 +788,7 @@ class _OrderReturnScreenState extends State<OrderReturnScreen> {
                           ),
                           child: Column(
                             children: [
-                              orderSummaryTile(context, 'Order ID',
+                              orderSummaryTile(context, 'order_id',
                                   orderProvider.trackModel!.id.toString()),
                               if (orderProvider.trackModel!.couponCode != null)
                                 orderSummaryTile(
@@ -699,7 +799,7 @@ class _OrderReturnScreenState extends State<OrderReturnScreen> {
                               if (orderProvider.trackModel!.createdAt != null)
                                 orderSummaryTile(
                                   context,
-                                  'Ordered At',
+                                  'ordered_at',
                                   DateConverterHelper
                                       .isoStringToOrderDetailsDateTime(
                                           orderProvider.trackModel!.createdAt
@@ -709,7 +809,7 @@ class _OrderReturnScreenState extends State<OrderReturnScreen> {
                                   null)
                                 orderSummaryTile(
                                   context,
-                                  'Delivery Date',
+                                  'delivery_date',
                                   DateConverterHelper
                                       .isoStringToOrderDetailsDateTime(
                                           orderProvider.trackModel!.deliveryDate
@@ -719,7 +819,7 @@ class _OrderReturnScreenState extends State<OrderReturnScreen> {
                                   null)
                                 orderSummaryTile(
                                   context,
-                                  'Payment Method',
+                                  'payment_method',
                                   getTranslated(
                                       orderProvider.trackModel!.paymentMethod
                                           .toString(),
@@ -887,7 +987,8 @@ class _OrderReturnScreenState extends State<OrderReturnScreen> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(title, style: TextStyle(fontWeight: FontWeight.w600)),
+          Text(getTranslated(title, context),
+              style: TextStyle(fontWeight: FontWeight.w600)),
           Text(
             data +
                 (!isPrice

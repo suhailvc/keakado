@@ -85,7 +85,7 @@ class _PhoneNumberScreenState extends State<PhoneNumberScreen> {
                     ),
                     SizedBox(height: MediaQuery.of(context).size.height * 0.05),
                     Text(
-                      "Enter your ${getTranslated('mobile_number', context)}",
+                      getTranslated('Enter your mobile number', context),
                       style: poppinsMedium,
                     ),
                     const SizedBox(height: 8),

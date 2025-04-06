@@ -46,8 +46,7 @@ class NotificationHelper {
           body = payloadData['body'];
 
           // Check if body contains "delivered" and then show rating dialog
-          if (type == 'rating' &&
-              orderId != null &&
+          if (orderId != null &&
               body != null &&
               body.toLowerCase().contains('delivered')) {
             showRatingDialog(orderId.toString());
@@ -96,8 +95,7 @@ class NotificationHelper {
 
       // Check for "delivered" in notification body
       String? body = message.notification?.body ?? message.data['body'];
-      if (message.data['type'] == 'rating' &&
-          message.data['order_id'] != null &&
+      if (message.data['order_id'] != null &&
           body != null &&
           body.toLowerCase().contains('delivered')) {
         showRatingDialog(message.data['order_id']);
@@ -130,8 +128,7 @@ class NotificationHelper {
       String? body = message.notification?.body ?? message.data['body'];
 
       // Check for "delivered" in notification body
-      if (type == 'rating' &&
-          orderId != null &&
+      if (orderId != null &&
           body != null &&
           body.toLowerCase().contains('delivered')) {
         showRatingDialog(orderId);

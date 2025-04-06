@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_grocery/common/providers/cart_provider.dart';
 import 'package:flutter_grocery/helper/route_helper.dart';
+import 'package:flutter_grocery/localization/language_constraints.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 
@@ -88,7 +89,7 @@ class DefaultBottomBar extends StatelessWidget {
                 color: Colors.grey,
               ),
             ),
-      label: label,
+      label: getTranslated(label, context),
       activeIcon: label == "Cart"
           ? Stack(
               clipBehavior: Clip.none,

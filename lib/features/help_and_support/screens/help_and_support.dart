@@ -4,6 +4,8 @@ import 'package:flutter_grocery/features/help_and_support/widgets/gmail_widget.d
 import 'package:flutter_grocery/features/help_and_support/widgets/whats_app_widget.dart';
 import 'package:flutter_grocery/features/splash/providers/splash_provider.dart';
 import 'package:flutter_grocery/localization/language_constraints.dart';
+import 'package:flutter_grocery/utill/dimensions.dart';
+import 'package:flutter_grocery/utill/styles.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
@@ -153,15 +155,22 @@ class _HelpAndSupportScreenState extends State<HelpAndSupportScreen> {
                     ),
                   ),
                   Center(
-                    child: Text(
-                      '+974 3383 4376',
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: screenWidth * 0.038,
-                        fontWeight: FontWeight.w500,
+                    child: Directionality(
+                      textDirection: TextDirection.ltr, // Forces LTR direction
+                      child: Text(
+                        '+974 3383 4376',
+                        style: poppinsRegular.copyWith(
+                            fontSize: Dimensions.fontSizeDefault),
                       ),
                     ),
                   )
+                  // Center(
+                  //   child: Text(
+                  //     '+974 3383 4376',
+                  //     style: poppinsRegular.copyWith(
+                  //         fontSize: Dimensions.fontSizeDefault),
+                  //   ),
+                  // )
                 ],
               ),
             ),

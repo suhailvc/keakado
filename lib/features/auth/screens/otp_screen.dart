@@ -62,46 +62,51 @@ class _OtpScreenState extends State<OtpScreen> {
                       ),
                     ),
                     Text(
-                      "Code has been sent to ${widget.phone}",
+                      textDirection: TextDirection.ltr,
+                      "${getTranslated('code has been sent to', context)} ${widget.phone}",
                       style: poppinsMedium,
                     ),
-                    const SizedBox(height: 16),
+                    const SizedBox(height: 11),
                     Consumer<VerificationProvider>(
                       builder: (context, verificationProvider, _) {
-                        return PinCodeTextField(
-                          controller: otpController,
-                          length: 4,
-                          appContext: context,
-                          obscureText: false,
-                          enabled: true,
-                          keyboardType: TextInputType.number,
-                          animationType: AnimationType.fade,
-                          pinTheme: PinTheme(
-                            shape: PinCodeFieldShape.box,
-                            fieldHeight: 56,
-                            fieldWidth: 80,
-                            borderWidth: 1,
-                            borderRadius: BorderRadius.circular(10),
-                            selectedColor:
-                                Theme.of(context).primaryColor.withOpacity(1),
-                            selectedFillColor: const Color(0xFFF5F5F5),
-                            inactiveFillColor: const Color(0xFFF5F5F5),
-                            inactiveColor:
-                                Theme.of(context).primaryColor.withOpacity(1),
-                            activeColor:
-                                Theme.of(context).primaryColor.withOpacity(1),
-                            activeFillColor: const Color(0xFFF5F5F5),
+                        return Directionality(
+                          textDirection: TextDirection.ltr,
+                          child: PinCodeTextField(
+                            controller: otpController,
+                            length: 4,
+                            appContext: context,
+                            obscureText: false,
+                            enabled: true,
+                            keyboardType: TextInputType.number,
+                            animationType: AnimationType.fade,
+                            pinTheme: PinTheme(
+                              shape: PinCodeFieldShape.box,
+                              fieldHeight: 56,
+                              fieldWidth: 80,
+                              borderWidth: 1,
+                              borderRadius: BorderRadius.circular(10),
+                              selectedColor:
+                                  Theme.of(context).primaryColor.withOpacity(1),
+                              selectedFillColor: const Color(0xFFF5F5F5),
+                              inactiveFillColor: const Color(0xFFF5F5F5),
+                              inactiveColor:
+                                  Theme.of(context).primaryColor.withOpacity(1),
+                              activeColor:
+                                  Theme.of(context).primaryColor.withOpacity(1),
+                              activeFillColor: const Color(0xFFF5F5F5),
+                            ),
+                            cursorColor: Theme.of(context).primaryColor,
+                            cursorWidth: 3,
+                            animationDuration:
+                                const Duration(milliseconds: 300),
+                            backgroundColor: Colors.transparent,
+                            enableActiveFill: true,
+                            onChanged: (query) => verificationProvider
+                                .updateVerificationCode(query, 4),
+                            beforeTextPaste: (text) {
+                              return true;
+                            },
                           ),
-                          cursorColor: Theme.of(context).primaryColor,
-                          cursorWidth: 3,
-                          animationDuration: const Duration(milliseconds: 300),
-                          backgroundColor: Colors.transparent,
-                          enableActiveFill: true,
-                          onChanged: (query) => verificationProvider
-                              .updateVerificationCode(query, 4),
-                          beforeTextPaste: (text) {
-                            return true;
-                          },
                         );
                       },
                     ),
@@ -112,8 +117,8 @@ class _OtpScreenState extends State<OtpScreen> {
                         style: const TextStyle(color: Colors.red),
                       ),
                     const SizedBox(height: 65),
-                    const Text(
-                      'Didn’t get OTP code?',
+                    Text(
+                      getTranslated('Didn’t get OTP code?', context),
                       style: TextStyle(
                         color: Colors.black,
                         fontSize: 16,
@@ -140,7 +145,7 @@ class _OtpScreenState extends State<OtpScreen> {
                         );
                       },
                       child: Text(
-                        'Resend Code',
+                        getTranslated('resend_code', context),
                         style: TextStyle(
                           color: Theme.of(context).primaryColor,
                           fontSize: 16,

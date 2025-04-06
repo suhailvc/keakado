@@ -316,21 +316,40 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                                                 Row(
                                                   children: [
                                                     Text(
-                                                      PriceConverterHelper
-                                                          .convertPrice(
-                                                              context,
+                                                      PriceConverterHelper.convertPrice(
+                                                          context,
+                                                          calculateFinalPrice(
                                                               orderProvider
                                                                   .orderDetails![
                                                                       index]
-                                                                  .productDetails
-                                                                  ?.price),
-                                                      //"${orderProvider.orderDetails![index].price ?? ""} ${config?.currencySymbol ?? ""}",
+                                                                  .productDetails,
+                                                              orderProvider
+                                                                      .orderDetails![
+                                                                          index]
+                                                                      .quantity ??
+                                                                  1)),
                                                       style:
                                                           poppinsBold.copyWith(
                                                         fontSize: Dimensions
                                                             .fontSizeLarge,
                                                       ),
                                                     ),
+                                                    // Text(
+                                                    //   PriceConverterHelper
+                                                    //       .convertPrice(
+                                                    //           context,
+                                                    //           orderProvider
+                                                    //               .orderDetails![
+                                                    //                   index]
+                                                    //               .productDetails
+                                                    //               ?.price),
+                                                    //   //"${orderProvider.orderDetails![index].price ?? ""} ${config?.currencySymbol ?? ""}",
+                                                    //   style:
+                                                    //       poppinsBold.copyWith(
+                                                    //     fontSize: Dimensions
+                                                    //         .fontSizeLarge,
+                                                    //   ),
+                                                    // ),
                                                     const Spacer(),
                                                     Container(
                                                       decoration: BoxDecoration(
@@ -443,7 +462,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                             ),
                             child: Column(
                               children: [
-                                orderSummaryTile(context, 'Order ID',
+                                orderSummaryTile(context, 'order_id',
                                     orderProvider.trackModel!.id.toString()),
                                 if (orderProvider.trackModel!.couponCode !=
                                     null)
@@ -455,7 +474,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                                 if (orderProvider.trackModel!.createdAt != null)
                                   orderSummaryTile(
                                       context,
-                                      'Ordered At',
+                                      'ordered_at',
                                       DateConverterHelper
                                           .isoStringToOrderDetailsDateTime(
                                               orderProvider
@@ -465,7 +484,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                                     null)
                                   orderSummaryTile(
                                       context,
-                                      'Delivery Date',
+                                      'delivery_date',
                                       DateConverterHelper
                                           .isoStringToOrderDetailsDateTime(
                                               orderProvider
@@ -475,7 +494,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                                     null)
                                   orderSummaryTile(
                                       context,
-                                      'Payment Method',
+                                      'payment_method',
                                       getTranslated(
                                           orderProvider
                                               .trackModel!.paymentMethod
@@ -506,7 +525,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                                     true),
                                 orderSummaryTile(
                                     context,
-                                    'Coupon Discount',
+                                    'coupon_discount',
                                     "-${couponDiscount.toStringAsFixed(2)}",
                                     true,
                                     true),
@@ -519,7 +538,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
 
                                 orderSummaryTile(
                                     context,
-                                    'Delivery Fee',
+                                    'delivery_fee',
                                     deliveryCharge
                                         .toStringAsFixed(2)
                                         .toString(),
@@ -546,7 +565,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceBetween,
                                     children: [
-                                      Text('Sub Total',
+                                      Text(getTranslated('Sub Total', context),
                                           style: poppinsBold.copyWith(
                                               fontSize: Dimensions
                                                   .fontSizeExtraLarge)),
@@ -629,7 +648,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(title, style: poppinsSemiBold),
+          Text(getTranslated(title, context), style: poppinsSemiBold),
           isPrice
               ? Text(
                   PriceConverterHelper.convertPrice(
@@ -645,6 +664,32 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
       ),
     );
   }
+}
+
+double calculateFinalPrice(ProductDetails? productDetails, int quantity) {
+  if (productDetails == null) return 0.0;
+
+  double basePrice = productDetails.price ?? 0.0;
+  double discount = productDetails.discount ?? 0.0;
+  String? discountType = productDetails.discountType;
+
+  // Calculate price after discount
+  double priceAfterDiscount;
+  if (discount > 0) {
+    if (discountType == 'percent') {
+      // Apply percentage discount
+      double discountAmount = (basePrice * discount) / 100;
+      priceAfterDiscount = basePrice - discountAmount;
+    } else {
+      // Apply fixed amount discount
+      priceAfterDiscount = basePrice - discount;
+    }
+  } else {
+    priceAfterDiscount = basePrice;
+  }
+
+  // Multiply by quantity
+  return priceAfterDiscount * quantity;
 }
 
 class _DiscountTag extends StatelessWidget {
@@ -672,10 +717,9 @@ class _DiscountTag extends StatelessWidget {
         children: [
           Center(
             child: Text(
-              // cart.discount == 'percent'
-              //     ? '-${product.discount} %'
-              //:
-              '-${PriceConverterHelper.convertPrice(context, productDetails!.discount!)}',
+              productDetails!.discountType == 'percent'
+                  ? '-${productDetails!.discount!} %'
+                  : '-${PriceConverterHelper.convertPrice(context, productDetails!.discount!)}',
               style: poppinsRegular.copyWith(
                   fontSize: MediaQuery.of(context).size.width * 0.022,
                   color: Theme.of(context).cardColor),

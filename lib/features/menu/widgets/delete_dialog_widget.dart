@@ -26,7 +26,7 @@ class DeleteDialogWidget extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text(
-                  getTranslated('Do you want delete your account', context),
+                  getTranslated('Do you want delete your account?', context),
                   style: poppinsBold.copyWith(
                     fontSize: 18,
                   ),

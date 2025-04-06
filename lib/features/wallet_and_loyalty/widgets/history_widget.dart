@@ -153,13 +153,13 @@ class WalletHistory extends StatelessWidget {
                 overflow: TextOverflow.ellipsis,
               ),
               SizedBox(
-                width: MediaQuery.of(context).size.width * 0.02,
+                width: MediaQuery.of(context).size.width * 0.01,
               ),
               if (transaction!.orderId != null)
                 Text(
                   '#${getTranslated(transaction!.orderId!, context)}',
                   style: poppinsRegular.copyWith(
-                      fontSize:MediaQuery.of(context).size.width*0.025,
+                      fontSize: MediaQuery.of(context).size.width * 0.022,
                       color: Theme.of(context).disabledColor),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,

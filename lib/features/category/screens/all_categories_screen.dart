@@ -49,7 +49,7 @@ class _AllCategoriesScreenState extends State<AllCategoriesScreen> {
   Future<void> _loadData() async {
     final categoryProvider =
         Provider.of<CategoryProvider>(context, listen: false);
-    await categoryProvider.getCategoryList(context, true);
+      await categoryProvider.getCategoryList(context, true);
 
     if (categoryProvider.categoryList?.isNotEmpty ?? false) {
       for (var category in categoryProvider.categoryList!) {
